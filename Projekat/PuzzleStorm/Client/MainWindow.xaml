@@ -6,9 +6,10 @@
     xmlns:local="clr-namespace:Client"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="MainWindow"
-    Width="525"
-    Height="350"
-    mc:Ignorable="d">
+    Width="800"
+    Height="500"
+    mc:Ignorable="d"
+    FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto">
     <Grid>
         <Frame x:Name="MainFrame" Content="{Binding CurrentPage, Converter={local:ApplicationPageValueConverter}}" />
     </Grid>
