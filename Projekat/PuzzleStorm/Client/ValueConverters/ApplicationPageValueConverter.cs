@@ -15,6 +15,9 @@ namespace Client {
                 case ApplicationPage.Login:
                     return new LoginPage();
 
+                case ApplicationPage.CreateAccount:
+                    return new CreateAccount();
+
                 default:
                     Debugger.Break();
                     return null;
