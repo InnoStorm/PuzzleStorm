@@ -8,7 +8,7 @@ namespace Client {
     /// </summary>
 
     [AddINotifyPropertyChangedInterface]
-    class BaseViewModel : INotifyPropertyChanged
+    public class BaseViewModel : INotifyPropertyChanged
     {
 
         /// <summary>
