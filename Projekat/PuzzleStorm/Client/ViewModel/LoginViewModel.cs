@@ -1,6 +1,5 @@
-﻿using System.Security;
-using System.Threading.Tasks;
-using System.Windows.Controls;
+﻿using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace Client {
@@ -22,6 +21,8 @@ namespace Client {
 
         public ICommand LoginCommand { get; set;  }
 
+        public ICommand CreateAccButtonCommand { get; set; }
+
         #endregion
 
         #region Constuctors
@@ -29,6 +30,7 @@ namespace Client {
         public LoginViewModel()
         {
             LoginCommand = new RelayCommandWithParameter(async (parameter) => await Login(parameter));
+            CreateAccButtonCommand = new RelayCommand(async () => await CreateButton());
         }
 
         #endregion
@@ -48,6 +50,14 @@ namespace Client {
             // LOGIN_SERVER ( USER, PASS )
         }
 
+
+        //Create button f-ja
+        public async Task CreateButton()
+        {
+            //((WindowViewModel)((MainWindow)Application.Current.MainWindow).DataContext).CurrentPage = ApplicationPage.CreateAccount;
+            ((MainWindow) Application.Current.MainWindow).MainFrame.Content = new CreateAccount();
+            Task.Delay(500);
+        }
         #endregion
     }
 }

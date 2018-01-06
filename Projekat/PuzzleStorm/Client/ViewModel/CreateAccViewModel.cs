@@ -1,6 +1,7 @@
-﻿using System.Security;
+﻿using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
-using System.Windows.Controls;
+using System.Windows;
 using System.Windows.Input;
 
 namespace Client {
@@ -24,6 +25,8 @@ namespace Client {
 
         public ICommand CreateAccCommand { get; set;  }
 
+        public ICommand BackCommand { get; set; }
+
         #endregion
 
         #region Constuctors
@@ -31,6 +34,7 @@ namespace Client {
         public CreateAccViewModel()
         {
             CreateAccCommand = new RelayCommandWithParameter(async (parameter) => await Create(parameter));
+            BackCommand = new RelayCommand(BackToLoginPage);
         }
 
         #endregion
@@ -51,6 +55,12 @@ namespace Client {
             // CREATE ( USER, EMAIL, PASS )
         }
 
+        public void BackToLoginPage()
+        {
+            ((WindowViewModel)((MainWindow)Application.Current.MainWindow).DataContext).CurrentPage = ApplicationPage.Login;
+            ((MainWindow) Application.Current.MainWindow).MainFrame.Content = new LoginPage();
+            //((MainWindow) Application.Current.MainWindow).MainFrame.Source = new System.Uri("Pages/LoginPage.xaml", UriKind.Relative);
+        }
         #endregion
     }
 }

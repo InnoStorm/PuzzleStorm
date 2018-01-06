@@ -3,11 +3,11 @@ using System.Windows.Input;
 
 namespace Client {
 
-    public class RelayCommandWithParameter : ICommand {
+    public class RelayCommand: ICommand {
 
         #region Private
 
-        private Action<object> mAction;
+        private Action mAction;
 
         #endregion
 
@@ -19,7 +19,7 @@ namespace Client {
 
         #region Constuctors
 
-        public RelayCommandWithParameter(Action<object> action)
+        public RelayCommand(Action action)
         {
             this.mAction = action;
         }
@@ -34,7 +34,7 @@ namespace Client {
 
         public void Execute(object parameter)
         {
-            mAction(parameter);
+            mAction();
         }
 
         #endregion

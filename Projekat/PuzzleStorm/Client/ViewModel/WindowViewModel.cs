@@ -11,7 +11,7 @@ namespace Client {
 
         #region Properties
 
-        public ApplicationPage CurrentPage { get; set; } = ApplicationPage.CreateAccount;
+        public ApplicationPage CurrentPage { get; set; } = ApplicationPage.Login;
 
         #endregion
 

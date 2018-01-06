@@ -71,7 +71,8 @@
                             <Button
                                 Grid.Column="1"
                                 Margin="10,13,10,0"
-                                materialDesign:ShadowAssist.ShadowDepth="Depth3">
+                                materialDesign:ShadowAssist.ShadowDepth="Depth3"
+                                Command="{Binding CreateAccButtonCommand}">
                                 CREATE ACCOUNT
                             </Button>
                         </Grid>
