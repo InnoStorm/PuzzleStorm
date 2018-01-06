@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data.Entity;
-using Server.Domain;
-using Server.EntityTypeConfigurations;
+using Server.Core.Domain;
+using Server.Persistence.EntityTypeConfigurations;
 
-namespace Server
+namespace Server.Persistence
 {
-    class StormContext : DbContext
+    public class StormContext : DbContext
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Player> Players { get; set; }

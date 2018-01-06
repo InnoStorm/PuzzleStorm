@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data.Entity.ModelConfiguration;
-using Server.Domain;
+using Server.Core.Domain;
 
 
-namespace Server.EntityTypeConfigurations
+namespace Server.Persistence.EntityTypeConfigurations
 {
     public class RoomPropertiesConfiguration : EntityTypeConfiguration<RoomProperties>
     {

@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Server.Domain;
+using Server.Core.Domain;
+using Server.Persistence;
 
 namespace Server
 {
@@ -11,10 +12,11 @@ namespace Server
     {
         static void Main(string[] args)
         {
-
-            using (var ctx = new StormContext())
+            using (var unitOfWork = new UnitOfWork(new StormContext()))
             {
-                
+                var user = unitOfWork.Users.Get(1);
+
+                Console.WriteLine(user.Username);
             }
         }
     }
