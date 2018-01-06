@@ -9,9 +9,14 @@ namespace Server.Domain
     public class Game
     {
         public int Id { get; set; }
+        public virtual Puzzle PuzzleForGame { get; set; }
+        public virtual Room RoomForThisGame { get; set; }
         public IList<Player> ListOfPlayers { get; set; }
-        public Puzzle Puzzle { get; set; }
-        public IList<int> GameScoreBoard { get; set; }
-        public Player CurrentPointer { get; set; }
+
+
+        public Game()
+        {
+            ListOfPlayers = new List<Player>();
+        }
     }
 }

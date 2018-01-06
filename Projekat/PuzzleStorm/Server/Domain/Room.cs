@@ -6,21 +6,21 @@ using System.Threading.Tasks;
 
 namespace Server.Domain
 {
-    public enum Difficulty
-    {
-        Begginer = 1,
-        Intermediate = 2,
-        Advanced = 3
-    }
-
+    
     public class Room
     {
         public int Id { get; set; }
-        public Player Creator { get; set; }
-        public int NumberOfRounds { get; set; }
-        public int MaxPlayers { get; set; }
-        public Difficulty Difficulty { get; set; }
+        public virtual RoomProperties Properties { get; set; }
+        public IList<Player> ListOfPlayers { get; set; }
+        public IList<Puzzle> ListOfPuzzles { get; set; }
         public bool IsPublic { get; set; }
-        public IList<int> RoomScoreBoard { get; set; }
+        public string Password { get; set; }
+        public virtual Game CurrentGame { get; set; }
+
+        public Room()
+        {
+            ListOfPlayers = new List<Player>();
+            ListOfPuzzles = new List<Puzzle>();
+        }
     }
 }

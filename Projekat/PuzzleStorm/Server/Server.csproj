@@ -54,14 +54,18 @@
     <Compile Include="Domain\Player.cs" />
     <Compile Include="Domain\Puzzle.cs" />
     <Compile Include="Domain\Room.cs" />
+    <Compile Include="Domain\RoomProperties.cs" />
     <Compile Include="Domain\User.cs" />
-    <Compile Include="Migrations\201801031805067_InitialModel.cs" />
-    <Compile Include="Migrations\201801031805067_InitialModel.Designer.cs">
-      <DependentUpon>201801031805067_InitialModel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201801031812076_InitialModel1.cs" />
-    <Compile Include="Migrations\201801031812076_InitialModel1.Designer.cs">
-      <DependentUpon>201801031812076_InitialModel1.cs</DependentUpon>
+    <Compile Include="EntityTypeConfigurations\GameConfiguration.cs" />
+    <Compile Include="EntityTypeConfigurations\PieceConfiguration.cs" />
+    <Compile Include="EntityTypeConfigurations\PlayerConfiguration.cs" />
+    <Compile Include="EntityTypeConfigurations\PuzzleConfiguration.cs" />
+    <Compile Include="EntityTypeConfigurations\RoomConfiguration.cs" />
+    <Compile Include="EntityTypeConfigurations\RoomPropertiesConfiguration.cs" />
+    <Compile Include="EntityTypeConfigurations\UserConfiguration.cs" />
+    <Compile Include="Migrations\201801042356231_Complete.cs" />
+    <Compile Include="Migrations\201801042356231_Complete.Designer.cs">
+      <DependentUpon>201801042356231_Complete.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Program.cs" />
@@ -75,11 +79,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201801031805067_InitialModel.resx">
-      <DependentUpon>201801031805067_InitialModel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201801031812076_InitialModel1.resx">
-      <DependentUpon>201801031812076_InitialModel1.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201801042356231_Complete.resx">
+      <DependentUpon>201801042356231_Complete.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
