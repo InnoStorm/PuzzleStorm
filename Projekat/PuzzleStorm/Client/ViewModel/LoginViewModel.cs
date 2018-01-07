@@ -48,6 +48,7 @@ namespace Client {
             //var user = this.UserName;
             //var pass = ((PasswordBox) parameter).Password;
             // LOGIN_SERVER ( USER, PASS )
+            ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new MainPage();
         }
 
 
