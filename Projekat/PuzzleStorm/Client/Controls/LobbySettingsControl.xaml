@@ -1,0 +1,133 @@
+﻿<UserControl
+    x:Class="Client.LobbySettingsControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Client"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
+    mc:Ignorable="d">
+    <UserControl.Template>
+        <ControlTemplate TargetType="UserControl">
+            <Border
+                Margin="10"
+                Background="AliceBlue"
+                BorderBrush="#4D1F1F"
+                BorderThickness="1"
+                CornerRadius="22">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!--  Podaci o sobi  -->
+                    <Grid Grid.Row="0" Margin="25,30">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <!--  Difficulty  -->
+                        <Grid Grid.Row="0" VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <!--  Difficulty:  -->
+                            <Label
+                                Grid.Column="0"
+                                HorizontalAlignment="Center"
+                                FontSize="16">
+                                Difficulty:
+                            </Label>
+
+                            <!--  Difficulty No  -->
+                            <Label
+                                Grid.Column="2"
+                                FontSize="18"
+                                FontWeight="Black">
+                                32
+                            </Label>
+                        </Grid>
+
+                        <!--  Linija ispod Difficulty  -->
+                        <Separator Grid.Row="1" />
+
+                        <!--  Max players  -->
+                        <Grid Grid.Row="2" VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <!--  Max players:  -->
+                            <Label
+                                Grid.Column="0"
+                                HorizontalAlignment="Center"
+                                FontSize="16">
+                                Max players:
+                            </Label>
+
+                            <!--  Max players No  -->
+                            <Label
+                                Grid.Column="2"
+                                FontSize="18"
+                                FontWeight="Black">
+                                5
+                            </Label>
+                        </Grid>
+
+                        <!--  Linija ispod Max  -->
+                        <Separator Grid.Row="3" />
+
+                        <!--  Rounds  -->
+                        <Grid Grid.Row="4" VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <!--  Rounds:  <Label Grid.Column="0" HorizontalAlignment="Center">Rounds:</Label>-->
+                            <Label
+                                Grid.Column="0"
+                                HorizontalAlignment="Center"
+                                FontSize="16">
+                                Rounds
+                            </Label>
+
+                            <!--  Max players No  -->
+                            <Label
+                                Grid.Column="2"
+                                FontSize="18"
+                                FontWeight="Black">
+                                4
+                            </Label>
+                        </Grid>
+                    </Grid>
+
+                    <!--  Change dugme  -->
+                    <Button
+                        Grid.Row="1"
+                        Margin="0,0,0,15"
+                        HorizontalAlignment="Center"
+                        FontSize="22"
+                        FontWeight="ExtraBold"
+                        Foreground="#464646"
+                        Style="{StaticResource MaterialDesignFlatButton}">
+                        CHANGE
+                    </Button>
+
+                </Grid>
+            </Border>
+        </ControlTemplate>
+    </UserControl.Template>
+</UserControl>
