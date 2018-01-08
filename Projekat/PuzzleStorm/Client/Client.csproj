@@ -74,13 +74,31 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\LobbyJoinedControl.xaml.cs">
+      <DependentUpon>LobbyJoinedControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\LobbyJoinedPlayerControl.xaml.cs">
+      <DependentUpon>LobbyJoinedPlayerControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\LobbySettingsControl.xaml.cs">
+      <DependentUpon>LobbySettingsControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\RoomPropsControl.xaml.cs">
       <DependentUpon>RoomPropsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SampleMessageDialog.xaml.cs">
+      <DependentUpon>SampleMessageDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="DataModels\ApplicationPage.cs" />
     <Compile Include="Pages\Base\BasePage.cs" />
     <Compile Include="Pages\CreateAccount.xaml.cs">
       <DependentUpon>CreateAccount.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\CreateRoomPage.xaml.cs">
+      <DependentUpon>CreateRoomPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\LobbyPage.xaml.cs">
+      <DependentUpon>LobbyPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
@@ -95,10 +113,28 @@
     <Compile Include="ViewModel\Base\RelayCommand.cs" />
     <Compile Include="ViewModel\Base\RelayCommandWithParameter.cs" />
     <Compile Include="ViewModel\CreateAccViewModel.cs" />
+    <Compile Include="ViewModel\CreateRoomViewModel.cs" />
+    <Compile Include="ViewModel\LobbyPageViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\MainPageViewModel.cs" />
     <Compile Include="ViewModel\WindowViewModel.cs" />
+    <Page Include="Controls\LobbyJoinedControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\LobbyJoinedPlayerControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\LobbySettingsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\RoomPropsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\SampleMessageDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -115,6 +151,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Pages\CreateAccount.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\CreateRoomPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\LobbyPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

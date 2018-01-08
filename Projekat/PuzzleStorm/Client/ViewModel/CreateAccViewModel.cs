@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using MaterialDesignThemes.Wpf;
 
 namespace Client {
 
@@ -31,7 +33,7 @@ namespace Client {
 
         public CreateAccViewModel()
         {
-            CreateAccCommand = new RelayCommandWithParameter(async (parameter) => await Create(parameter));
+            CreateAccCommand = new RelayCommandWithParameter(async (parameter) => { await Create(parameter); });
             BackCommand = new RelayCommand(BackToLoginPage);
         }
 
@@ -51,13 +53,24 @@ namespace Client {
             //var email = this.Email;
             //var pass = ((PasswordBox) parameter).Password;
             // CREATE ( USER, EMAIL, PASS )
+
+            var sampleMessageDialog = new SampleMessageDialog {
+                Message = { Text = "Uspesno ste kreirali nalog!" }
+            };
+
+            await DialogHost.Show(sampleMessageDialog);
+
+            ((WindowViewModel)((MainWindow)Application.Current.MainWindow).DataContext).CurrentPage = ApplicationPage.Login;
+            ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new LoginPage();
         }
 
         public void BackToLoginPage()
         {
+
             ((WindowViewModel)((MainWindow)Application.Current.MainWindow).DataContext).CurrentPage = ApplicationPage.Login;
             ((MainWindow) Application.Current.MainWindow).MainFrame.Content = new LoginPage();
             //((MainWindow) Application.Current.MainWindow).MainFrame.Source = new System.Uri("Pages/LoginPage.xaml", UriKind.Relative);
+
         }
         #endregion
     }

@@ -27,6 +27,11 @@ namespace Client {
         /// </summary>
         public ICommand LogOutCommand { get; set; }
 
+        /// <summary>
+        /// Komanda koja otvara prozor za kreiranje nove sobe
+        /// </summary>
+        public ICommand CreateNewRoomCommand { get; set; }
+
         #endregion
 
         #region Constructors
@@ -35,6 +40,8 @@ namespace Client {
         {
             TriTackeCommand = new RelayCommand(() => TriTackeButton());
             LogOutCommand = new RelayCommand(() => LogOutButton());
+
+            CreateNewRoomCommand = new RelayCommand(() => CreateNewRoom());
         }
 
         #endregion
@@ -58,6 +65,14 @@ namespace Client {
             //neko brisanje pre log outa ?? 
 
             ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new LoginPage();;
+        }
+
+        /// <summary>
+        /// F-ja za novu sobu
+        /// </summary>
+        public void CreateNewRoom()
+        {
+            ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new CreateRoomPage();;
         }
 
         #endregion

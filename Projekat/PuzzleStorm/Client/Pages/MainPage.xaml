@@ -72,7 +72,9 @@
             <Button
                 Grid.Column="0"
                 Margin="35,15"
+                materialDesign:ShadowAssist.ShadowDepth="Depth3"
                 Background="#9A8F78"
+                Command="{Binding CreateNewRoomCommand}"
                 FontSize="16"
                 FontWeight="Bold"
                 Foreground="Black">
@@ -82,6 +84,7 @@
             <Button
                 Grid.Column="1"
                 Margin="35,15"
+                materialDesign:ShadowAssist.ShadowDepth="Depth3"
                 Background="#9A8F78"
                 FontSize="16"
                 FontWeight="Bold"
@@ -92,6 +95,7 @@
             <Button
                 Grid.Column="2"
                 Margin="35,15"
+                materialDesign:ShadowAssist.ShadowDepth="Depth3"
                 Background="#9A8F78"
                 FontSize="16"
                 FontWeight="Bold"
