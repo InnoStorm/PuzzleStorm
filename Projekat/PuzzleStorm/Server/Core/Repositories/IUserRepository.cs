@@ -9,6 +9,6 @@ namespace Server.Core.Repositories
 {
     public interface IUserRepository : IRepository<User>
     {
-
+        User FindByUsername(string userName);
     }
 }

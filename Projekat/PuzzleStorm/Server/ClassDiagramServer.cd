@@ -1,0 +1,281 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="Server.Core.Domain.Game">
+    <Position X="25.25" Y="1.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAABIAAAAAAAAAAAAAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>Core\Domain\Game.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Server.Core.Domain.Piece">
+    <Position X="29" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAABgIAAAA=</HashCode>
+      <FileName>Core\Domain\Piece.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="ParentPuzzle" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Server.Core.Domain.Player">
+    <Position X="21.5" Y="1.25" Width="2.25" />
+    <AssociationLine Name="CurrentRoom" Type="Server.Core.Domain.Room" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="23.75" Y="2.5" />
+        <Point X="24.125" Y="2.5" />
+        <Point X="24.125" Y="5.755" />
+        <Point X="25.25" Y="5.755" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AQACAAAAAAABAAgAAAAAAAAAAAAAAAAACgAAAAAAAAA=</HashCode>
+      <FileName>Core\Domain\Player.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="UserForPlayer" />
+      <Property Name="CurrentGame" />
+      <Property Name="CurrentRoom" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Server.Core.Domain.Puzzle">
+    <Position X="28.75" Y="1.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>EAACAAAAIAAAAAAgAAAAAAAAAAIAAAAAAAAAAIAAAAA=</HashCode>
+      <FileName>Core\Domain\Puzzle.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="RoomOfPuzzle" />
+      <Property Name="GameOfPuzzle" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Server.Core.Domain.Room">
+    <Position X="25.25" Y="4.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AQACAAAAAAAAAAAAQAAAAAAAACAAAAACAAAAAgACAAA=</HashCode>
+      <FileName>Core\Domain\Room.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Properties" />
+      <Property Name="CurrentGame" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Server.Core.Domain.RoomProperties">
+    <Position X="21.5" Y="6.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAABAAAAAAAAAAAAAAAAgABAAAAAAAACAA=</HashCode>
+      <FileName>Core\Domain\RoomProperties.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Level" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Server.Core.Domain.User">
+    <Position X="21.5" Y="4.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAgAACAAAAAAAQAAAAAAAAAAAAACAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Domain\User.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Server.Persistence.EntityTypeConfigurations.GameConfiguration">
+    <Position X="33.5" Y="7.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Persistence\EntityTypeConfigurations\GameConfiguration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Server.Persistence.EntityTypeConfigurations.PieceConfiguration">
+    <Position X="32" Y="2.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Persistence\EntityTypeConfigurations\PieceConfiguration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Server.Persistence.EntityTypeConfigurations.PlayerConfiguration">
+    <Position X="34.75" Y="2.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Persistence\EntityTypeConfigurations\PlayerConfiguration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Server.Persistence.EntityTypeConfigurations.PuzzleConfiguration">
+    <Position X="32" Y="4.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Persistence\EntityTypeConfigurations\PuzzleConfiguration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Server.Persistence.EntityTypeConfigurations.RoomConfiguration">
+    <Position X="34.75" Y="4.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Persistence\EntityTypeConfigurations\RoomConfiguration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Server.Persistence.EntityTypeConfigurations.RoomPropertiesConfiguration">
+    <Position X="34.75" Y="5.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Persistence\EntityTypeConfigurations\RoomPropertiesConfiguration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Server.Persistence.EntityTypeConfigurations.UserConfiguration">
+    <Position X="32" Y="5.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Persistence\EntityTypeConfigurations\UserConfiguration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Server.Persistence.Repositories.GameRepository">
+    <Position X="7" Y="4.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Persistence\Repositories\GameRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Server.Persistence.Repositories.PieceRepository">
+    <Position X="0.75" Y="9.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Persistence\Repositories\PieceRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Server.Persistence.Repositories.PlayerRepository">
+    <Position X="0.75" Y="4.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Persistence\Repositories\PlayerRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Server.Persistence.Repositories.PuzzleRepository">
+    <Position X="4" Y="4.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Persistence\Repositories\PuzzleRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Server.Persistence.Repositories.Repository&lt;TEntity&gt;">
+    <Position X="2.5" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAgAAAABAAAAABAAAAAAIAAAAAgAAAIAEAAA=</HashCode>
+      <FileName>Persistence\Repositories\Repository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Server.Persistence.Repositories.RoomPropertiesRepository">
+    <Position X="0.75" Y="6.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Persistence\Repositories\RoomPropertiesRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Server.Persistence.Repositories.RoomRepository">
+    <Position X="4" Y="6.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Persistence\Repositories\RoomRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Server.Persistence.Repositories.UserRepository">
+    <Position X="4.25" Y="9.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIQAAAAAAAAAAAAAAAAAAAAAACAA=</HashCode>
+      <FileName>Persistence\Repositories\UserRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Server.Persistence.StormContext">
+    <Position X="24.25" Y="9.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>QAAAACAAAAAAAAAAAAAAAAACEAAgAAAgAAAAIAABAAA=</HashCode>
+      <FileName>Persistence\StormContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Server.Persistence.UnitOfWork" BaseTypeListCollapsed="true">
+    <Position X="20" Y="9.75" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>QAAAACAAACAABAIAAAAAAAACAAAgAAAgAAAAIAABAAA=</HashCode>
+      <FileName>Persistence\UnitOfWork.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_context" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.169" />
+  </Class>
+  <Interface Name="Server.Core.IUnitOfWork">
+    <Position X="16.75" Y="9.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAACAAAAAAAAIAAAAAAAACAAAgAAAgAAAAIAABAAA=</HashCode>
+      <FileName>Core\IUnitOfWork.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Server.Core.Repositories.IGameRepository">
+    <Position X="0.5" Y="17" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Repositories\IGameRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Server.Core.Repositories.IPieceRepository">
+    <Position X="3" Y="17" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Repositories\IPieceRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Server.Core.Repositories.IPlayerRepository">
+    <Position X="7.25" Y="17" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Repositories\IPlayerRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Server.Core.Repositories.IPuzzleRepository">
+    <Position X="7" Y="15.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Repositories\IPuzzleRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Server.Core.Repositories.IRepository&lt;TEntity&gt;">
+    <Position X="3.5" Y="11.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAABAAAAABAAAAAAIAAAAAgAAAIAEAAA=</HashCode>
+      <FileName>Core\Repositories\IRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Server.Core.Repositories.IRoomPropertiesRepository">
+    <Position X="0.5" Y="15.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Repositories\IRoomPropertiesRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Server.Core.Repositories.IRoomRepository">
+    <Position X="5" Y="17" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Repositories\IRoomRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Server.Core.Repositories.IUserRepository">
+    <Position X="4" Y="15" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Repositories\IUserRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="Server.Core.Domain.Difficulty">
+    <Position X="25.25" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAACAAQ=</HashCode>
+      <FileName>Core\Domain\RoomProperties.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
