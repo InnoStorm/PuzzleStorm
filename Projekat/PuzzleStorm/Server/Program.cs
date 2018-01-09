@@ -3,19 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Server.Core.Domain;
-using Server.Persistence;
-using Server.Persistence.Repositories;
+using DataLayer.Core.Domain;
+using DataLayer.Persistence;
 
-namespace Server
-{
-    class Program
-    {
-        static void Main(string[] args)
+namespace Server {
+    class Program {
+        static void Main(string[] args) 
         {
-            using (var unitOfWork = new UnitOfWork(new StormContext()))
-            {
-                /*
+            using (var unitOfWork = new UnitOfWork(new StormContext())) {
+
                 var userr = unitOfWork.Users.Get(1);
 
                 Console.Write("Unesite username: ");
@@ -24,8 +20,7 @@ namespace Server
                 var passWord = Console.ReadLine();
 
 
-                var user = new User
-                {
+                var user = new User {
                     Username = userName,
                     Password = passWord
                 };
@@ -34,25 +29,23 @@ namespace Server
 
                 unitOfWork.Complete();
 
-                var player = new Player()
-                {
+                var player = new Player() {
                     UserForPlayer = unitOfWork.Users.FindByUsername(userName)
                 };
 
                 unitOfWork.Players.Add(player);
 
                 unitOfWork.Complete();
-                */
 
-                RoomProperties roomprops = new RoomProperties()
-                {
-                    Level = Difficulty.Advanced,
-                    MaxPlayers = 4,
-                    NumberOfRounds = 3
-                };
 
-                unitOfWork.RoomProperties.Add(roomprops);
-                unitOfWork.Complete();
+                //RoomProperties roomprops = new RoomProperties() {
+                //    Level = Difficulty.Advanced,
+                //    MaxPlayers = 4,
+                //    NumberOfRounds = 3
+                //};
+
+                //unitOfWork.RoomProperties.Add(roomprops);
+                //unitOfWork.Complete();
 
                 //Console.WriteLine("Uspesno ste dodali igraca");
 
