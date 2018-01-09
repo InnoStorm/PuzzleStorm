@@ -13,18 +13,13 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Client
-{
+namespace Client {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for LoginPage.xaml
     /// </summary>
-    public partial class MainWindow : Window
-    {
-        public MainWindow()
-        {
-            InitializeComponent();
-
-            DataContext = new WindowViewModel(this);
+    public partial class LoginPage : BasePage<LoginViewModel> {
+        public LoginPage() {
+            InitializeComponent();   
         }
     }
 }

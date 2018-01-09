@@ -13,18 +13,13 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Client
-{
+namespace Client {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for CreateRoomPage.xaml
     /// </summary>
-    public partial class MainWindow : Window
-    {
-        public MainWindow()
-        {
+    public partial class CreateRoomPage : BasePage<CreateRoomViewModel> {
+        public CreateRoomPage() {
             InitializeComponent();
-
-            DataContext = new WindowViewModel(this);
         }
     }
 }
