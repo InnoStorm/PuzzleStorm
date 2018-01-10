@@ -1,59 +1,66 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
 using DataLayer.Core.Domain;
 using DataLayer.Persistence;
+using DTOLibrary.Requests;
+using DTOLibrary.Responses;
+using Server.Workers;
+using EasyNetQ;
 
 namespace Server {
-    class Program {
+    class Program
+    {
+        private static BlockingCollection<UserAuthWorker> _workersPool;
+        private static IBus _communicatorBus;
+
+        static void InitServer()
+        {
+            _workersPool = new BlockingCollection<UserAuthWorker>();
+            for (int i = 0; i < 10; i++) {
+                _workersPool.Add(new UserAuthWorker() { Id = i });
+            }
+
+            _communicatorBus = RabbitHutch.CreateBus("amqp://ygunknwy:pAncRrH8Gxk3ULDyy-Wju7NIqdBThwCJ@sheep.rmq.cloudamqp.com/ygunknwy");
+
+            _communicatorBus.RespondAsync<RegistrationRequest, RegistrationResponse>(request =>
+                Task.Factory.StartNew(() => {
+                    var worker = _workersPool.Take();
+                    try {
+                        return worker.Register(request);
+                    }
+                    finally {
+                        _workersPool.Add(worker);
+                    }
+                }));
+
+            _communicatorBus.RespondAsync<LoginRequest, LoginResponse>(request =>
+                Task.Factory.StartNew(() => {
+                    var worker = _workersPool.Take();
+                    try {
+                        return worker.Login(request);
+                    }
+                    finally {
+                        _workersPool.Add(worker);
+                    }
+                }));
+
+        }
+
         static void Main(string[] args) 
         {
-            using (var unitOfWork = new UnitOfWork(new StormContext())) {
+            Console.WriteLine("Starting up server...");
+            InitServer();
 
-                var userr = unitOfWork.Users.Get(1);
+            Console.WriteLine("Server is running...");
+            Console.Read();
 
-                Console.Write("Unesite username: ");
-                var userName = Console.ReadLine();
-                Console.Write("Unesite password: ");
-                var passWord = Console.ReadLine();
-
-
-                var user = new User {
-                    Username = userName,
-                    Password = passWord
-                };
-
-                unitOfWork.Users.Add(user);
-
-                unitOfWork.Complete();
-
-                var player = new Player() {
-                    UserForPlayer = unitOfWork.Users.FindByUsername(userName)
-                };
-
-                unitOfWork.Players.Add(player);
-
-                unitOfWork.Complete();
-
-
-                //RoomProperties roomprops = new RoomProperties() {
-                //    Level = Difficulty.Advanced,
-                //    MaxPlayers = 4,
-                //    NumberOfRounds = 3
-                //};
-
-                //unitOfWork.RoomProperties.Add(roomprops);
-                //unitOfWork.Complete();
-
-                //Console.WriteLine("Uspesno ste dodali igraca");
-
-                //User a = unitOfWork.Users.FindByUsername("marijaaa");
-
-
-                //Console.WriteLine(user.Username);
-            }
+            Console.WriteLine("Server is shutting down...");
+            _communicatorBus.Dispose();
         }
     }
 }
