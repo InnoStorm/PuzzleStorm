@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Game", "Game\Game.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{31E54061-6F97-4738-B805-3A6622FFCF14}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOLibrary", "DTOLibrary\DTOLibrary.csproj", "{495FB5C5-301C-438D-9DDB-6BAA4CE0BEDD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{31E54061-6F97-4738-B805-3A6622FFCF14}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31E54061-6F97-4738-B805-3A6622FFCF14}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31E54061-6F97-4738-B805-3A6622FFCF14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{495FB5C5-301C-438D-9DDB-6BAA4CE0BEDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{495FB5C5-301C-438D-9DDB-6BAA4CE0BEDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{495FB5C5-301C-438D-9DDB-6BAA4CE0BEDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{495FB5C5-301C-438D-9DDB-6BAA4CE0BEDD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
