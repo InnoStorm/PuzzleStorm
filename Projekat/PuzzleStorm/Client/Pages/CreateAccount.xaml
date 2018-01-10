@@ -27,9 +27,10 @@
 
                 <!--  Beli okvir oko forme  -->
                 <Border
-                    Width="500"
+                    Width="700"
+                    Height="315"
                     Margin="50,50,50,0"
-                    Padding="15,40,15,15"
+                    Padding="15,30,15,15"
                     Background="AliceBlue"
                     BorderBrush="Black"
                     BorderThickness="2"
@@ -38,22 +39,22 @@
                     <StackPanel>
 
                         <!--  PuzzleStorm  -->
-                        <TextBlock FontSize="30" FontWeight="Bold">PuzzleStorm</TextBlock>
+                        <TextBlock FontSize="38" FontWeight="ExtraBold">PuzzleStorm</TextBlock>
 
                         <!--  Acc name  -->
-                        <Grid Margin="0,10">
+                        <Grid Margin="10,20,10,10">
                             <materialDesign:PackIcon VerticalAlignment="Center" Kind="Account" />
                             <TextBox FontSize="15" Text="{Binding UserName}" />
                         </Grid>
 
                         <!--  Email  -->
-                        <Grid Margin="0,0,0,10">
+                        <Grid Margin="10,10,10,10">
                             <materialDesign:PackIcon VerticalAlignment="Center" Kind="MailRu" />
                             <TextBox FontSize="15" Text="{Binding Email}" />
                         </Grid>
 
                         <!--  Password  -->
-                        <Grid Margin="0,0,0,10">
+                        <Grid Margin="10,10,10,10">
                             <materialDesign:PackIcon VerticalAlignment="Center" Kind="Lock" />
                             <PasswordBox x:Name="PasswordText" FontSize="15" />
                         </Grid>
@@ -66,18 +67,22 @@
                             <!--  Create dugme  -->
                             <Button
                                 Grid.Column="0"
+                                Height="35"
                                 Margin="10,13,10,0"
                                 materialDesign:ShadowAssist.ShadowDepth="Depth3"
                                 Command="{Binding CreateAccCommand}"
-                                CommandParameter="{Binding ElementName=PasswordText}">
+                                CommandParameter="{Binding ElementName=PasswordText}"
+                                FontSize="16">
                                 CREATE
                             </Button>
                             <!--  Back dugme  -->
                             <Button
                                 Grid.Column="1"
+                                Height="35"
                                 Margin="10,13,10,0"
                                 materialDesign:ShadowAssist.ShadowDepth="Depth3"
-                                Command="{Binding BackCommand}">
+                                Command="{Binding BackCommand}"
+                                FontSize="16">
                                 BACK
                             </Button>
                         </Grid>
