@@ -17,6 +17,11 @@ namespace DataLayer.Persistence.Repositories
             return StormContext.Users.Where(u => u.Username == username).Single();
         }
 
+        public bool UsernameExists(string username)
+        {
+            return StormContext.Users.Any(x => x.Username == username);
+        }
+
         public User GetUserWithPlayer(string username)
         {
             return StormContext.Users.Include(u => u.PlayerForUser).Single(u => u.Username == username);
