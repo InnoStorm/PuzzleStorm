@@ -10,5 +10,6 @@ namespace DTOLibrary.Responses {
     {
         public string Username { get; set; }
         public OperationStatus Status { get; set; }
+        public string Details { get; set; }
     }
 }

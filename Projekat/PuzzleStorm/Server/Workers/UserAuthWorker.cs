@@ -37,7 +37,7 @@ namespace Server.Workers
                     unitOfWork.Complete();
 
 
-                    Console.Write($"[WORKER {Id}] Successfull registration for username: {request.Username}");
+                    Console.WriteLine($"[WORKER {Id}] Successfull registration for username: {request.Username}");
                     return new RegistrationResponse()
                     {
                         Status = OperationStatus.Successfull,
@@ -48,7 +48,7 @@ namespace Server.Workers
             }
             catch (Exception ex)
             {
-                Console.Write($"[WORKER {Id}] Failed registration for username: {request.Username}; Reason: {ex.Message}");
+                Console.WriteLine($"[WORKER {Id}] Failed registration for username: {request.Username}; Reason: {ex.Message}");
                 return new RegistrationResponse()
                 {
                     Status = OperationStatus.Failed,
@@ -66,21 +66,23 @@ namespace Server.Workers
                     if (!unitOfWork.Users.UsernameExists(request.Username))
                         throw new Exception("Username not found!");
 
-                    Console.Write($"[WORKER {Id}] Failed login for username: {request.Username};");
+                    Console.WriteLine($"[WORKER {Id}] Successfull login for username: {request.Username};");
                     return new LoginResponse()
                     {
                         Username = request.Username,
-                        Status = OperationStatus.Successfull
+                        Status = OperationStatus.Successfull,
+                        Details = "Successfull login"
                     };
                 }
             }
             catch (Exception ex)
             {
-                Console.Write($"[WORKER {Id}] Failed login for username: {request.Username}; Reason: {ex.Message}");
+                Console.WriteLine($"[WORKER {Id}] Failed login for username: {request.Username}; Reason: {ex.Message}");
                 return new LoginResponse()
                 {
                     Username = request.Username,
-                    Status = OperationStatus.Failed
+                    Status = OperationStatus.Failed,
+                    Details = ex.Message
                 };
             }
         }
