@@ -1,8 +1,14 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using DTOLibrary.Enums;
+using DTOLibrary.Requests;
+using DTOLibrary.Responses;
 using MaterialDesignThemes.Wpf;
+using EasyNetQ;
 
 namespace Client {
 
@@ -45,23 +51,48 @@ namespace Client {
         public async Task Create(object parameter)
         {
 
-            //SIMULACIJA KREIRANJA
-            Task.Delay(500);
+            try {
+                using (
+                    var bus =
+                        RabbitHutch.CreateBus(
+                            "amqp://ygunknwy:pAncRrH8Gxk3ULDyy-Wju7NIqdBThwCJ@sheep.rmq.cloudamqp.com/ygunknwy")) {
 
-            //CREATE NA SERVERU
-            //var user = this.UserName;
-            //var email = this.Email;
-            //var pass = ((PasswordBox) parameter).Password;
-            // CREATE ( USER, EMAIL, PASS )
+                    var myRequest = new RegistrationRequest() {
+                        Username = UserName,
+                        Password = ((PasswordBox)parameter).Password,
+                        Email = Email
+                    };
 
-            var sampleMessageDialog = new SampleMessageDialog {
-                Message = { Text = "Uspesno ste kreirali nalog!" }
-            };
+                    var response = bus.Request<RegistrationRequest, RegistrationResponse>(myRequest);
 
-            await DialogHost.Show(sampleMessageDialog);
+                    if (response.Status == OperationStatus.Successfull) {
+                        var sampleMessageDialog = new SampleMessageDialog {
+                            Message = { Text = "Uspesno ste se kreirali novi nalog!" }
+                        };
 
-            ((WindowViewModel)((MainWindow)Application.Current.MainWindow).DataContext).CurrentPage = ApplicationPage.Login;
-            ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new LoginPage();
+                        await DialogHost.Show(sampleMessageDialog);
+
+                        ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new LoginPage();
+                    }
+                    else {
+                        var sampleMessageDialog = new SampleMessageDialog {
+                            Message = { Text = "Greska prilikom kreiranja novog naloga.\n" + response.Details }
+                        };
+
+                        await DialogHost.Show(sampleMessageDialog);
+                    }
+
+                }
+            }
+            catch (Exception ex) {
+                var sampleMessageDialog = new SampleMessageDialog {
+                    Message = { Text = "Problem: " + ex.Message }
+                };
+
+                await DialogHost.Show(sampleMessageDialog);
+            }
+
+
         }
 
         public void BackToLoginPage()

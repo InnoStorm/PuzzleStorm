@@ -1,6 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using DTOLibrary.Enums;
+using DTOLibrary.Requests;
+using DTOLibrary.Responses;
+using EasyNetQ;
+using MaterialDesignThemes.Wpf;
 
 namespace Client {
 
@@ -40,15 +47,50 @@ namespace Client {
         // Login f-ja
         public async Task Login(object parameter)
         {
+            try {
+                using (
+                    var bus =
+                        RabbitHutch.CreateBus(
+                            "amqp://ygunknwy:pAncRrH8Gxk3ULDyy-Wju7NIqdBThwCJ@sheep.rmq.cloudamqp.com/ygunknwy")) {
 
-            // SIMULACIJA LOGOVANJA
-            Task.Delay(500);
+                        var myRequest = new LoginRequest() {
+                            Username = UserName,
+                            Password = ((PasswordBox)parameter).Password
+                        };
 
-            // LOGIN NA SERVERU 
-            //var user = this.UserName;
-            //var pass = ((PasswordBox) parameter).Password;
-            // LOGIN_SERVER ( USER, PASS )
-            ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new MainPage();
+                        var response = bus.Request<LoginRequest, LoginResponse>(myRequest);
+
+                    if (response.Status == OperationStatus.Successfull)
+                    {
+                        var sampleMessageDialog = new SampleMessageDialog
+                        {
+                            Message = {Text = "Uspesno ste se ulogovali!"}
+                        };
+
+                        await DialogHost.Show(sampleMessageDialog);
+
+                        ((MainWindow) Application.Current.MainWindow).MainFrame.Content = new MainPage();
+                    }
+                    else
+                    {
+                        var sampleMessageDialog = new SampleMessageDialog {
+                            Message = { Text = "Greska prilikom logovanja!" }
+                        };
+
+                        await DialogHost.Show(sampleMessageDialog);
+                    }
+
+                }
+            }
+            catch (Exception ex) {
+                var sampleMessageDialog = new SampleMessageDialog {
+                    Message = { Text = "Problem: " + ex.Message }
+                };
+
+                await DialogHost.Show(sampleMessageDialog);
+            }
+
+
         }
 
 
