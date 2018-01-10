@@ -1,0 +1,266 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="DataLayer.Core.Domain.Game" Collapsed="true">
+    <Position X="20" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAABIAAAAAAAAAAAAAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>Core\Domain\Game.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataLayer.Core.Domain.Piece" Collapsed="true">
+    <Position X="23.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAABgIAAAA=</HashCode>
+      <FileName>Core\Domain\Piece.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataLayer.Core.Domain.Player" Collapsed="true">
+    <Position X="18.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQACAAAAAAABAAgAAAAAAAAAAAAAAAAACgAAAAAAAAA=</HashCode>
+      <FileName>Core\Domain\Player.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataLayer.Core.Domain.Puzzle" Collapsed="true">
+    <Position X="21.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAACAAAAIAAAAAAgAAAAAAAAAAIAAAAAAAAAAIAAAAA=</HashCode>
+      <FileName>Core\Domain\Puzzle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataLayer.Core.Domain.Room" Collapsed="true">
+    <Position X="16.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQACAAAAAAAAAAAAQAAAAAAAACAAAAACAAAAAgACAAA=</HashCode>
+      <FileName>Core\Domain\Room.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataLayer.Core.Domain.RoomProperties" Collapsed="true">
+    <Position X="20" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAABAAAAAAAAAAAAAAAAgABAAAAAAAACAA=</HashCode>
+      <FileName>Core\Domain\RoomProperties.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataLayer.Core.Domain.User" Collapsed="true">
+    <Position X="18.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAgAACAAAAAAAQAAAAAAAAAAAAACAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Domain\User.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataLayer.Migrations.Complete" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="16.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAMAAAAAAAAAAAAAAAAAAAAAAAAAAQEAAAAAI=</HashCode>
+      <FileName>Migrations\201801042356231_Complete.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DataLayer.Migrations.Configuration" Collapsed="true">
+    <Position X="18.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Migrations\Configuration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataLayer.Persistence.EntityTypeConfigurations.GameConfiguration" Collapsed="true">
+    <Position X="21.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Persistence\EntityTypeConfigurations\GameConfiguration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataLayer.Persistence.EntityTypeConfigurations.PieceConfiguration" Collapsed="true">
+    <Position X="16.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Persistence\EntityTypeConfigurations\PieceConfiguration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataLayer.Persistence.EntityTypeConfigurations.PlayerConfiguration" Collapsed="true">
+    <Position X="20" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Persistence\EntityTypeConfigurations\PlayerConfiguration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataLayer.Persistence.EntityTypeConfigurations.PuzzleConfiguration" Collapsed="true">
+    <Position X="23.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Persistence\EntityTypeConfigurations\PuzzleConfiguration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataLayer.Persistence.EntityTypeConfigurations.RoomConfiguration" Collapsed="true">
+    <Position X="18.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Persistence\EntityTypeConfigurations\RoomConfiguration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataLayer.Persistence.EntityTypeConfigurations.RoomPropertiesConfiguration" Collapsed="true">
+    <Position X="21.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Persistence\EntityTypeConfigurations\RoomPropertiesConfiguration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataLayer.Persistence.EntityTypeConfigurations.UserConfiguration" Collapsed="true">
+    <Position X="20" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Persistence\EntityTypeConfigurations\UserConfiguration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataLayer.Persistence.Repositories.GameRepository" Collapsed="true">
+    <Position X="2.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Persistence\Repositories\GameRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="DataLayer.Persistence.Repositories.PieceRepository" Collapsed="true">
+    <Position X="7.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Persistence\Repositories\PieceRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="DataLayer.Persistence.Repositories.PlayerRepository" Collapsed="true">
+    <Position X="11.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Persistence\Repositories\PlayerRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="DataLayer.Persistence.Repositories.PuzzleRepository" Collapsed="true">
+    <Position X="14" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Persistence\Repositories\PuzzleRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="DataLayer.Persistence.Repositories.Repository&lt;TEntity&gt;" Collapsed="true">
+    <Position X="7.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAgAAAABAAAAABAAAAAAIAAAAAgAAAIAEAAA=</HashCode>
+      <FileName>Persistence\Repositories\Repository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="DataLayer.Persistence.Repositories.RoomPropertiesRepository" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Persistence\Repositories\RoomPropertiesRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="DataLayer.Persistence.Repositories.RoomRepository" Collapsed="true">
+    <Position X="5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Persistence\Repositories\RoomRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="DataLayer.Persistence.Repositories.UserRepository" Collapsed="true">
+    <Position X="9.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIQAAAEAAAAAAAAAAAAAAAAAACAA=</HashCode>
+      <FileName>Persistence\Repositories\UserRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="DataLayer.Persistence.StormContext" Collapsed="true">
+    <Position X="23.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAACAAAAAAAAAAAAAAAAACEAAgAAAgAAAAIAABAAA=</HashCode>
+      <FileName>Persistence\StormContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataLayer.Persistence.UnitOfWork" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="16.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAACAAACAABAIAAAAAAAACAAAgAAAgAAAAIAABAAA=</HashCode>
+      <FileName>Persistence\UnitOfWork.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Interface Name="DataLayer.Core.IUnitOfWork" Collapsed="true">
+    <Position X="16.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAACAAAAAAAAIAAAAAAAACAAAgAAAgAAAAIAABAAA=</HashCode>
+      <FileName>Core\IUnitOfWork.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="DataLayer.Core.Repositories.IGameRepository" Collapsed="true">
+    <Position X="5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Repositories\IGameRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="DataLayer.Core.Repositories.IPieceRepository" Collapsed="true">
+    <Position X="9.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Repositories\IPieceRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="DataLayer.Core.Repositories.IPlayerRepository" Collapsed="true">
+    <Position X="14" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Repositories\IPlayerRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="DataLayer.Core.Repositories.IPuzzleRepository" Collapsed="true">
+    <Position X="0.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Repositories\IPuzzleRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="DataLayer.Core.Repositories.IRepository&lt;TEntity&gt;" Collapsed="true">
+    <Position X="7.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAABAAAAABAAAAAAIAAAAAgAAAIAEAAA=</HashCode>
+      <FileName>Core\Repositories\IRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="DataLayer.Core.Repositories.IRoomPropertiesRepository" Collapsed="true">
+    <Position X="2.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Repositories\IRoomPropertiesRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="DataLayer.Core.Repositories.IRoomRepository" Collapsed="true">
+    <Position X="7.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Repositories\IRoomRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="DataLayer.Core.Repositories.IUserRepository" Collapsed="true">
+    <Position X="11.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAAAAEAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Repositories\IUserRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="DataLayer.Core.Domain.Difficulty" Collapsed="true">
+    <Position X="16.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAACAAQ=</HashCode>
+      <FileName>Core\Domain\RoomProperties.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
