@@ -5,6 +5,7 @@ using System.Configuration;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using EasyNetQ;
 using ServerAuth.Workers;
@@ -36,6 +37,7 @@ namespace ServerAuth
                 case CtrlType.CTRL_LOGOFF_EVENT:
                 case CtrlType.CTRL_SHUTDOWN_EVENT:
                 case CtrlType.CTRL_CLOSE_EVENT:
+                case CtrlType.CTRL_BREAK_EVENT:
                         Shutdown();
                     return false;
                 default:
@@ -44,6 +46,7 @@ namespace ServerAuth
         }
         #endregion
 
+        private static bool ServerRunning = true;
         private static BlockingCollection<AuthWorker> _workersPool;
         private static IBus _communicatorBus;
         
@@ -58,6 +61,10 @@ namespace ServerAuth
         {
             Log("Starting server...");
 
+            //CleanExit event handler
+            _handler += new EventHandler(Handler);
+            SetConsoleCtrlHandler(_handler, true);
+
             InitWorkerPool();
             CreateConnection();
             BindWorkerMethods();
@@ -71,25 +78,27 @@ namespace ServerAuth
         private static void MainLoop()
         {
             Log("Auth server is running...");
-            Log("Press CTRL + C or type 'exit' to shutdown " + Environment.NewLine);
+            Log("Press CTRL + C to shutdown " + Environment.NewLine);
 
-            while (true)
+            while (ServerRunning)
             {
-                string input = Console.ReadLine();
-                if (input?.ToLower() == "exit")
-                    break;
+                Thread.Sleep(100);
             }
+
+            Thread.Sleep(750);
         }
 
         private static void Shutdown()
         {
+            if (!ServerRunning) return;
+
             Log("Shuting down server...");
           
             _communicatorBus?.Dispose();
             _workersPool?.Dispose();
+            ServerRunning = false;
 
             Log("Server is down");
-            Console.ReadKey();
         }
         
         public static void Log(string message)
