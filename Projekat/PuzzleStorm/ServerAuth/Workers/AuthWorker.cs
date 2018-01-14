@@ -9,7 +9,7 @@ using DataLayer.Persistence;
 using DTOLibrary.Enums;
 using DTOLibrary.Requests;
 using DTOLibrary.Responses;
-using ServerAuth.Workers.AbstractWorker;
+using Server.Workers;
 
 namespace ServerAuth.Workers
 {

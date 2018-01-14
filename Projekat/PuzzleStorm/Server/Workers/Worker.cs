@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using DataLayer.Persistence;
 
 
-namespace ServerAuth.Workers.AbstractWorker
+namespace Server.Workers
 {
-    abstract class Worker
+    public abstract class Worker
     {
         public int Id { get; set; }
 
@@ -19,7 +19,7 @@ namespace ServerAuth.Workers.AbstractWorker
 
         protected void WorkerLog(string message)
         {
-            ServerAuth.Log($"[WORKER {Id}] {message}");
+            Console.WriteLine($"[{DateTime.Now}][WORKER {Id}] {message}");
         }
     }
 }
