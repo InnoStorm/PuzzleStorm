@@ -67,6 +67,20 @@ namespace ServerAuth
                         _authWorkerPool.Add(worker);
                     }
                 }));
+
+            Communicator.RespondAsync<SignOutRequest, SignOutResponse>(request =>
+                Task.Factory.StartNew(() =>
+                {
+                    var worker = _authWorkerPool.Take();
+                    try
+                    {
+                        return worker.SignOut(request);
+                    }
+                    finally
+                    {
+                        _authWorkerPool.Add(worker);
+                    }
+                }));
         }
 
         #endregion

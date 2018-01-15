@@ -9,7 +9,7 @@ namespace DataLayer.Migrations
         {
             AddColumn("dbo.Rooms", "IsDeleted", c => c.Boolean(nullable: false));
             AddColumn("dbo.Rooms", "IsStarted", c => c.Boolean(nullable: false));
-            AddColumn("dbo.Users", "IsLogged", c => c.String());
+            AddColumn("dbo.Users", "IsLogged", c => c.Boolean(nullable: false));
             AddColumn("dbo.Users", "AuthToken", c => c.String());
         }
         

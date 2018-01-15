@@ -73,6 +73,9 @@ namespace ServerAuth.Workers
                     if (user.Password != request.Password)
                         throw new Exception("Password does not match!");
 
+                    user.IsLogged = true;
+                    data.Complete();
+
                     WorkerLog($"Successfull login for username: {request.Username};");
                     return new LoginResponse()
                     {
@@ -94,6 +97,41 @@ namespace ServerAuth.Workers
             }
         }
 
+        public SignOutResponse SignOut(SignOutRequest request)
+        {
+            try
+            {
+                using (UnitOfWork data = CreateUnitOfWork())
+                {
+                    User user = data.Users.Find(x => x.Id == request.RequesterId).Single();
+                    
+                    if (user == null)
+                        throw new Exception("User not found!");
+
+
+                    user.IsLogged = false;
+                    data.Complete();
+
+                    WorkerLog($"Successfull signout for username: { user.Username}");
+
+                    return new SignOutResponse()
+                    {
+                        Status = OperationStatus.Successfull,
+                        Details = "Successful Signout!"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                WorkerLog($"Failed Signout; Reason: {ex.Message}");
+
+                return new SignOutResponse()
+                {
+                    Status = OperationStatus.Failed,
+                    Details = ex.Message
+                };
+            }
+        }
         //logout function
     }
 }

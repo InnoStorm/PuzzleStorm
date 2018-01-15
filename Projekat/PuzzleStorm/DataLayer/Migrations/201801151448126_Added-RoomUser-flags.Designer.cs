@@ -13,7 +13,7 @@ namespace DataLayer.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201801151420383_Added-RoomUser-flags"; }
+            get { return "201801151448126_Added-RoomUser-flags"; }
         }
         
         string IMigrationMetadata.Source

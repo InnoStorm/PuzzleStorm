@@ -67,6 +67,7 @@
     <Compile Include="Requests\RegistrationRequest.cs" />
     <Compile Include="Requests\Request.cs" />
     <Compile Include="Requests\RoomCurrentStateRequest.cs" />
+    <Compile Include="Requests\SignOutRequest.cs" />
     <Compile Include="Responses\CreateRoomResponse.cs" />
     <Compile Include="Responses\DeleteRoomResponse.cs" />
     <Compile Include="Responses\JoinRoomResponse.cs" />
@@ -74,6 +75,7 @@
     <Compile Include="Responses\RegistrationResponse.cs" />
     <Compile Include="Responses\Response.cs" />
     <Compile Include="Responses\RoomCurrentStateResponse.cs" />
+    <Compile Include="Responses\SignOutResponse.cs" />
     <Compile Include="SubDTOs\Player.cs" />
   </ItemGroup>
   <ItemGroup>
