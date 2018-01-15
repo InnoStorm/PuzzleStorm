@@ -81,7 +81,7 @@
       <Name>DTOLibrary</Name>
     </ProjectReference>
     <ProjectReference Include="..\Server\Server.csproj">
-      <Project>{31e54061-6f97-4738-b805-3a6622ffcf14}</Project>
+      <Project>{31E54061-6F97-4738-B805-3A6622FFCF14}</Project>
       <Name>Server</Name>
     </ProjectReference>
   </ItemGroup>
