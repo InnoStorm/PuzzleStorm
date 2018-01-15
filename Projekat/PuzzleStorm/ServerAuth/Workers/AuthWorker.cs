@@ -76,7 +76,7 @@ namespace ServerAuth.Workers
                     WorkerLog($"Successfull login for username: {request.Username};");
                     return new LoginResponse()
                     {
-                        Username = request.Username,
+                        AuthToken = request.Username,
                         Status = OperationStatus.Successfull,
                         Details = "Successfull login"
                     };
@@ -87,11 +87,13 @@ namespace ServerAuth.Workers
                 WorkerLog($"Failed login for username: {request.Username}; Reason: {ex.Message}");
                 return new LoginResponse()
                 {
-                    Username = request.Username,
+                    AuthToken = "",
                     Status = OperationStatus.Failed,
                     Details = ex.Message
                 };
             }
         }
+
+        //logout function
     }
 }
