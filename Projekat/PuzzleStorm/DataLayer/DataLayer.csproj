@@ -68,6 +68,10 @@
     <Compile Include="Core\Repositories\IRoomPropertiesRepository.cs" />
     <Compile Include="Core\Repositories\IRoomRepository.cs" />
     <Compile Include="Core\Repositories\IUserRepository.cs" />
+    <Compile Include="Migrations\201801151420383_Added-RoomUser-flags.cs" />
+    <Compile Include="Migrations\201801151420383_Added-RoomUser-flags.Designer.cs">
+      <DependentUpon>201801151420383_Added-RoomUser-flags.cs</DependentUpon>
+    </Compile>
     <Compile Include="Persistence\EntityTypeConfigurations\GameConfiguration.cs" />
     <Compile Include="Persistence\EntityTypeConfigurations\PieceConfiguration.cs" />
     <Compile Include="Persistence\EntityTypeConfigurations\PlayerConfiguration.cs" />
@@ -102,6 +106,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201801042356231_Complete.resx">
       <DependentUpon>201801042356231_Complete.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801151420383_Added-RoomUser-flags.resx">
+      <DependentUpon>201801151420383_Added-RoomUser-flags.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

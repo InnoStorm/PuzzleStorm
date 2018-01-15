@@ -12,6 +12,8 @@ namespace DataLayer.Core.Domain
         public bool IsPublic { get; set; }
         public string Password { get; set; }
         public virtual Game CurrentGame { get; set; }
+        public bool IsDeleted { get; set; }
+        public bool IsStarted { get; set; }
 
         public Room()
         {
