@@ -58,6 +58,7 @@
     <Compile Include="Enums\RoomPlayerUpdateType.cs" />
     <Compile Include="Enums\RoomUpdateType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Requests\ChangeRoomPropertiesRequest.cs" />
     <Compile Include="Requests\CreateRoomRequest.cs" />
     <Compile Include="Requests\DeleteRoomRequest.cs" />
     <Compile Include="Requests\JoinRoomRequest.cs" />
@@ -68,6 +69,7 @@
     <Compile Include="Requests\Request.cs" />
     <Compile Include="Requests\RoomCurrentStateRequest.cs" />
     <Compile Include="Requests\SignOutRequest.cs" />
+    <Compile Include="Responses\ChangeRoomPropertiesResponse.cs" />
     <Compile Include="Responses\CreateRoomResponse.cs" />
     <Compile Include="Responses\DeleteRoomResponse.cs" />
     <Compile Include="Responses\JoinRoomResponse.cs" />
