@@ -1,0 +1,960 @@
+﻿<local:BasePage
+    x:Class="Client.GamePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Client"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="GamePage"
+    d:DesignHeight="800"
+    d:DesignWidth="1300"
+    x:TypeArguments="local:GamePageViewModel"
+    Background="#DFDFDF"
+    mc:Ignorable="d">
+
+    <!--  Osnovni grid sa 3 kolone  -->
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="340" />
+        </Grid.ColumnDefinitions>
+
+        <!--  Grid za delove i slagalicu  -->
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!--  Grid za gornje delove  -->
+            <Grid Grid.Row="0" Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <Button
+                    Grid.Column="0"
+                    Width="120"
+                    Height="120"
+                    Command="{Binding ClickPieceCommand}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Image
+                                Name="SourceSlika"
+                                RenderTransformOrigin="0.5,0.5"
+                                Source="{Binding ListaShuffleSlika[0]}">
+                                <Image.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform />
+                                        <SkewTransform />
+                                        <RotateTransform Angle="22" />
+                                        <TranslateTransform />
+                                    </TransformGroup>
+                                </Image.RenderTransform>
+                            </Image>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
+                <Button
+                    Grid.Column="1"
+                    Width="120"
+                    Height="100"
+                    Command="{Binding ClickPieceCommand}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Image
+                                Name="SourceSlika"
+                                RenderTransformOrigin="0.5,0.5"
+                                Source="{Binding ListaShuffleSlika[1]}">
+                                <Image.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform />
+                                        <SkewTransform />
+                                        <RotateTransform Angle="-20" />
+                                        <TranslateTransform />
+                                    </TransformGroup>
+                                </Image.RenderTransform>
+                            </Image>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
+                <Button
+                    Grid.Column="2"
+                    Width="120"
+                    Height="150"
+                    Command="{Binding ClickPieceCommand}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Image
+                                Name="SourceSlika"
+                                RenderTransformOrigin="0.5,0.5"
+                                Source="{Binding ListaShuffleSlika[2]}">
+                                <Image.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform />
+                                        <SkewTransform />
+                                        <RotateTransform Angle="70" />
+                                        <TranslateTransform />
+                                    </TransformGroup>
+                                </Image.RenderTransform>
+                            </Image>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
+                <Button
+                    Grid.Column="3"
+                    Width="120"
+                    Height="120"
+                    Command="{Binding ClickPieceCommand}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Image
+                                Name="SourceSlika"
+                                RenderTransformOrigin="0.5,0.5"
+                                Source="{Binding ListaShuffleSlika[3]}">
+                                <Image.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform />
+                                        <SkewTransform />
+                                        <RotateTransform Angle="15" />
+                                        <TranslateTransform />
+                                    </TransformGroup>
+                                </Image.RenderTransform>
+                            </Image>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
+                <Button
+                    Grid.Column="4"
+                    Width="120"
+                    Height="120"
+                    Command="{Binding ClickPieceCommand}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Image
+                                Name="SourceSlika"
+                                RenderTransformOrigin="0.5,0.5"
+                                Source="{Binding ListaShuffleSlika[4]}">
+                                <Image.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform />
+                                        <SkewTransform />
+                                        <RotateTransform Angle="-45" />
+                                        <TranslateTransform />
+                                    </TransformGroup>
+                                </Image.RenderTransform>
+                            </Image>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </Grid>
+
+            <!--  Grid za delove sa strane i slagalicu  -->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!--  Grid za leve delove  -->
+                <Grid Grid.Column="0" Margin="20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <Button
+                        Grid.Row="0"
+                        Width="120"
+                        Height="120"
+                        Command="{Binding ClickPieceCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
+                        <Button.Template>
+                            <ControlTemplate>
+                                <Image
+                                    Name="SourceSlika"
+                                    RenderTransformOrigin="0.5,0.5"
+                                    Source="{Binding ListaShuffleSlika[5]}">
+                                    <Image.RenderTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform />
+                                            <SkewTransform />
+                                            <RotateTransform Angle="-45" />
+                                            <TranslateTransform />
+                                        </TransformGroup>
+                                    </Image.RenderTransform>
+                                </Image>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
+                    <Button
+                        Grid.Row="1"
+                        Width="120"
+                        Height="120"
+                        Command="{Binding ClickPieceCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
+                        <Button.Template>
+                            <ControlTemplate>
+                                <Image
+                                    Name="SourceSlika"
+                                    RenderTransformOrigin="0.5,0.5"
+                                    Source="{Binding ListaShuffleSlika[6]}">
+                                    <Image.RenderTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform />
+                                            <SkewTransform />
+                                            <RotateTransform Angle="30" />
+                                            <TranslateTransform />
+                                        </TransformGroup>
+                                    </Image.RenderTransform>
+                                </Image>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
+                    <Button
+                        Grid.Row="2"
+                        Width="120"
+                        Height="120"
+                        Command="{Binding ClickPieceCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
+                        <Button.Template>
+                            <ControlTemplate>
+                                <Image
+                                    Name="SourceSlika"
+                                    RenderTransformOrigin="0.5,0.5"
+                                    Source="{Binding ListaShuffleSlika[7]}">
+                                    <Image.RenderTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform />
+                                            <SkewTransform />
+                                            <RotateTransform Angle="60" />
+                                            <TranslateTransform />
+                                        </TransformGroup>
+                                    </Image.RenderTransform>
+                                </Image>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </Grid>
+
+                <!--  Grid za slagalicu  -->
+                <Grid Grid.Column="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <Border
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        BorderBrush="Black"
+                        BorderThickness="1">
+                        <Canvas Name="Canvas00">
+                            <Button
+                                Width="{Binding Path=ActualWidth, ElementName=Canvas00}"
+                                Height="{Binding Path=ActualHeight, ElementName=Canvas00}"
+                                Command="{Binding ClickGridCommand}"
+                                CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
+                                Opacity="0">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Image
+                                            Name="SourceSlika"
+                                            RenderTransformOrigin="0.5,0.5"
+                                            Source="{Binding ListaSourceSlika[0]}"
+                                            Stretch="Fill" />
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </Canvas>
+                    </Border>
+
+                    <Border
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        BorderBrush="Black"
+                        BorderThickness="1">
+                        <Canvas>
+                            <Button
+                                Width="{Binding Path=ActualWidth, ElementName=Canvas00}"
+                                Height="{Binding Path=ActualHeight, ElementName=Canvas00}"
+                                Command="{Binding ClickGridCommand}"
+                                CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
+                                Opacity="0">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Image
+                                            Name="SourceSlika"
+                                            RenderTransformOrigin="0.5,0.5"
+                                            Source="{Binding ListaSourceSlika[1]}"
+                                            Stretch="Fill" />
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </Canvas>
+                    </Border>
+
+                    <Border
+                        Grid.Row="0"
+                        Grid.Column="2"
+                        BorderBrush="Black"
+                        BorderThickness="1">
+                        <Canvas>
+                            <Button
+                                Width="{Binding Path=ActualWidth, ElementName=Canvas00}"
+                                Height="{Binding Path=ActualHeight, ElementName=Canvas00}"
+                                Command="{Binding ClickGridCommand}"
+                                CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
+                                Opacity="0">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Image
+                                            Name="SourceSlika"
+                                            RenderTransformOrigin="0.5,0.5"
+                                            Source="{Binding ListaSourceSlika[2]}"
+                                            Stretch="Fill" />
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </Canvas>
+                    </Border>
+
+                    <Border
+                        Grid.Row="0"
+                        Grid.Column="3"
+                        BorderBrush="Black"
+                        BorderThickness="1">
+                        <Canvas>
+                            <Button
+                                Width="{Binding Path=ActualWidth, ElementName=Canvas00}"
+                                Height="{Binding Path=ActualHeight, ElementName=Canvas00}"
+                                Command="{Binding ClickGridCommand}"
+                                CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
+                                Opacity="0">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Image
+                                            Name="SourceSlika"
+                                            RenderTransformOrigin="0.5,0.5"
+                                            Source="{Binding ListaSourceSlika[3]}"
+                                            Stretch="Fill" />
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </Canvas>
+                    </Border>
+
+                    <Border
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        BorderBrush="Black"
+                        BorderThickness="1">
+                        <Canvas>
+                            <Button
+                                Width="{Binding Path=ActualWidth, ElementName=Canvas00}"
+                                Height="{Binding Path=ActualHeight, ElementName=Canvas00}"
+                                Command="{Binding ClickGridCommand}"
+                                CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
+                                Opacity="0">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Image
+                                            Name="SourceSlika"
+                                            RenderTransformOrigin="0.5,0.5"
+                                            Source="{Binding ListaSourceSlika[4]}"
+                                            Stretch="Fill" />
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </Canvas>
+                    </Border>
+
+                    <Border
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        BorderBrush="Black"
+                        BorderThickness="1">
+                        <Canvas>
+                            <Button
+                                Width="{Binding Path=ActualWidth, ElementName=Canvas00}"
+                                Height="{Binding Path=ActualHeight, ElementName=Canvas00}"
+                                Command="{Binding ClickGridCommand}"
+                                CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
+                                Opacity="0">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Image
+                                            Name="SourceSlika"
+                                            RenderTransformOrigin="0.5,0.5"
+                                            Source="{Binding ListaSourceSlika[5]}"
+                                            Stretch="Fill" />
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </Canvas>
+                    </Border>
+
+                    <Border
+                        Grid.Row="1"
+                        Grid.Column="2"
+                        BorderBrush="Black"
+                        BorderThickness="1">
+                        <Canvas>
+                            <Button
+                                Width="{Binding Path=ActualWidth, ElementName=Canvas00}"
+                                Height="{Binding Path=ActualHeight, ElementName=Canvas00}"
+                                Command="{Binding ClickGridCommand}"
+                                CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
+                                Opacity="0">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Image
+                                            Name="SourceSlika"
+                                            RenderTransformOrigin="0.5,0.5"
+                                            Source="{Binding ListaSourceSlika[6]}"
+                                            Stretch="Fill" />
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </Canvas>
+                    </Border>
+
+                    <Border
+                        Grid.Row="1"
+                        Grid.Column="3"
+                        BorderBrush="Black"
+                        BorderThickness="1">
+                        <Canvas>
+                            <Button
+                                Width="{Binding Path=ActualWidth, ElementName=Canvas00}"
+                                Height="{Binding Path=ActualHeight, ElementName=Canvas00}"
+                                Command="{Binding ClickGridCommand}"
+                                CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
+                                Opacity="0">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Image
+                                            Name="SourceSlika"
+                                            RenderTransformOrigin="0.5,0.5"
+                                            Source="{Binding ListaSourceSlika[7]}"
+                                            Stretch="Fill" />
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </Canvas>
+                    </Border>
+
+                    <Border
+                        Grid.Row="2"
+                        Grid.Column="0"
+                        BorderBrush="Black"
+                        BorderThickness="1">
+                        <Canvas>
+                            <Button
+                                Width="{Binding Path=ActualWidth, ElementName=Canvas00}"
+                                Height="{Binding Path=ActualHeight, ElementName=Canvas00}"
+                                Command="{Binding ClickGridCommand}"
+                                CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
+                                Opacity="0">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Image
+                                            Name="SourceSlika"
+                                            RenderTransformOrigin="0.5,0.5"
+                                            Source="{Binding ListaSourceSlika[8]}"
+                                            Stretch="Fill" />
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </Canvas>
+                    </Border>
+
+                    <Border
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        BorderBrush="Black"
+                        BorderThickness="1">
+                        <Canvas>
+                            <Button
+                                Width="{Binding Path=ActualWidth, ElementName=Canvas00}"
+                                Height="{Binding Path=ActualHeight, ElementName=Canvas00}"
+                                Command="{Binding ClickGridCommand}"
+                                CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
+                                Opacity="0">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Image
+                                            Name="SourceSlika"
+                                            RenderTransformOrigin="0.5,0.5"
+                                            Source="{Binding ListaSourceSlika[9]}"
+                                            Stretch="Fill" />
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </Canvas>
+                    </Border>
+
+                    <Border
+                        Grid.Row="2"
+                        Grid.Column="2"
+                        BorderBrush="Black"
+                        BorderThickness="1">
+                        <Canvas>
+                            <Button
+                                Width="{Binding Path=ActualWidth, ElementName=Canvas00}"
+                                Height="{Binding Path=ActualHeight, ElementName=Canvas00}"
+                                Command="{Binding ClickGridCommand}"
+                                CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
+                                Opacity="0">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Image
+                                            Name="SourceSlika"
+                                            RenderTransformOrigin="0.5,0.5"
+                                            Source="{Binding ListaSourceSlika[10]}"
+                                            Stretch="Fill" />
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </Canvas>
+                    </Border>
+
+                    <Border
+                        Grid.Row="2"
+                        Grid.Column="3"
+                        BorderBrush="Black"
+                        BorderThickness="1">
+                        <Canvas>
+                            <Button
+                                Width="{Binding Path=ActualWidth, ElementName=Canvas00}"
+                                Height="{Binding Path=ActualHeight, ElementName=Canvas00}"
+                                Command="{Binding ClickGridCommand}"
+                                CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
+                                Opacity="0">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Image
+                                            Name="SourceSlika"
+                                            RenderTransformOrigin="0.5,0.5"
+                                            Source="{Binding ListaSourceSlika[11]}"
+                                            Stretch="Fill" />
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </Canvas>
+                    </Border>
+
+                    <Border
+                        Grid.Row="3"
+                        Grid.Column="0"
+                        BorderBrush="Black"
+                        BorderThickness="1">
+                        <Canvas>
+                            <Button
+                                Width="{Binding Path=ActualWidth, ElementName=Canvas00}"
+                                Height="{Binding Path=ActualHeight, ElementName=Canvas00}"
+                                Command="{Binding ClickGridCommand}"
+                                CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
+                                Opacity="0">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Image
+                                            Name="SourceSlika"
+                                            RenderTransformOrigin="0.5,0.5"
+                                            Source="{Binding ListaSourceSlika[12]}"
+                                            Stretch="Fill" />
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </Canvas>
+                    </Border>
+
+                    <Border
+                        Grid.Row="3"
+                        Grid.Column="1"
+                        BorderBrush="Black"
+                        BorderThickness="1">
+                        <Canvas>
+                            <Button
+                                Width="{Binding Path=ActualWidth, ElementName=Canvas00}"
+                                Height="{Binding Path=ActualHeight, ElementName=Canvas00}"
+                                Command="{Binding ClickGridCommand}"
+                                CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
+                                Opacity="0">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Image
+                                            Name="SourceSlika"
+                                            RenderTransformOrigin="0.5,0.5"
+                                            Source="{Binding ListaSourceSlika[13]}"
+                                            Stretch="Fill" />
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </Canvas>
+                    </Border>
+
+                    <Border
+                        Grid.Row="3"
+                        Grid.Column="2"
+                        BorderBrush="Black"
+                        BorderThickness="1">
+                        <Canvas>
+                            <Button
+                                Width="{Binding Path=ActualWidth, ElementName=Canvas00}"
+                                Height="{Binding Path=ActualHeight, ElementName=Canvas00}"
+                                Command="{Binding ClickGridCommand}"
+                                CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
+                                Opacity="0">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Image
+                                            Name="SourceSlika"
+                                            RenderTransformOrigin="0.5,0.5"
+                                            Source="{Binding ListaSourceSlika[14]}"
+                                            Stretch="Fill" />
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </Canvas>
+                    </Border>
+
+                    <Border
+                        Grid.Row="3"
+                        Grid.Column="3"
+                        BorderBrush="Black"
+                        BorderThickness="1">
+                        <Canvas>
+                            <Button
+                                Width="{Binding Path=ActualWidth, ElementName=Canvas00}"
+                                Height="{Binding Path=ActualHeight, ElementName=Canvas00}"
+                                Command="{Binding ClickGridCommand}"
+                                CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
+                                Opacity="0">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Image
+                                            Name="SourceSlika"
+                                            RenderTransformOrigin="0.5,0.5"
+                                            Source="{Binding ListaSourceSlika[15]}"
+                                            Stretch="Fill" />
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </Canvas>
+                    </Border>
+                </Grid>
+
+                <!--  Grid za desne delove  -->
+                <Grid Grid.Column="2" Margin="20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <Button
+                        Grid.Row="0"
+                        Width="120"
+                        Height="120"
+                        Command="{Binding ClickPieceCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
+                        <Button.Template>
+                            <ControlTemplate>
+                                <Image
+                                    Name="SourceSlika"
+                                    RenderTransformOrigin="0.5,0.5"
+                                    Source="{Binding ListaShuffleSlika[8]}">
+                                    <Image.RenderTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform />
+                                            <SkewTransform />
+                                            <RotateTransform Angle="-45" />
+                                            <TranslateTransform />
+                                        </TransformGroup>
+                                    </Image.RenderTransform>
+                                </Image>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
+                    <Button
+                        Grid.Row="1"
+                        Width="120"
+                        Height="120"
+                        Command="{Binding ClickPieceCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
+                        <Button.Template>
+                            <ControlTemplate>
+                                <Image
+                                    Name="SourceSlika"
+                                    RenderTransformOrigin="0.5,0.5"
+                                    Source="{Binding ListaShuffleSlika[9]}">
+                                    <Image.RenderTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform />
+                                            <SkewTransform />
+                                            <RotateTransform Angle="30" />
+                                            <TranslateTransform />
+                                        </TransformGroup>
+                                    </Image.RenderTransform>
+                                </Image>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
+                    <Button
+                        Grid.Row="2"
+                        Width="120"
+                        Height="120"
+                        Command="{Binding ClickPieceCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
+                        <Button.Template>
+                            <ControlTemplate>
+                                <Image
+                                    Name="SourceSlika"
+                                    RenderTransformOrigin="0.5,0.5"
+                                    Source="{Binding ListaShuffleSlika[10]}">
+                                    <Image.RenderTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform />
+                                            <SkewTransform />
+                                            <RotateTransform Angle="60" />
+                                            <TranslateTransform />
+                                        </TransformGroup>
+                                    </Image.RenderTransform>
+                                </Image>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </Grid>
+            </Grid>
+
+            <!--  Grid za donje delove  -->
+            <Grid Grid.Row="2" Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <Button
+                    Grid.Column="0"
+                    Width="120"
+                    Height="120"
+                    Command="{Binding ClickPieceCommand}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Image
+                                Name="SourceSlika"
+                                RenderTransformOrigin="0.5,0.5"
+                                Source="{Binding ListaShuffleSlika[11]}">
+                                <Image.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform />
+                                        <SkewTransform />
+                                        <RotateTransform Angle="22" />
+                                        <TranslateTransform />
+                                    </TransformGroup>
+                                </Image.RenderTransform>
+                            </Image>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
+                <Button
+                    Grid.Column="1"
+                    Width="120"
+                    Height="100"
+                    Command="{Binding ClickPieceCommand}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Image
+                                Name="SourceSlika"
+                                RenderTransformOrigin="0.5,0.5"
+                                Source="{Binding ListaShuffleSlika[12]}">
+                                <Image.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform />
+                                        <SkewTransform />
+                                        <RotateTransform Angle="-20" />
+                                        <TranslateTransform />
+                                    </TransformGroup>
+                                </Image.RenderTransform>
+                            </Image>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
+                <Button
+                    Grid.Column="2"
+                    Width="120"
+                    Height="150"
+                    Command="{Binding ClickPieceCommand}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Image
+                                Name="SourceSlika"
+                                RenderTransformOrigin="0.5,0.5"
+                                Source="{Binding ListaShuffleSlika[13]}">
+                                <Image.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform />
+                                        <SkewTransform />
+                                        <RotateTransform Angle="70" />
+                                        <TranslateTransform />
+                                    </TransformGroup>
+                                </Image.RenderTransform>
+                            </Image>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
+                <Button
+                    Grid.Column="3"
+                    Width="120"
+                    Height="120"
+                    Command="{Binding ClickPieceCommand}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Image
+                                Name="SourceSlika"
+                                RenderTransformOrigin="0.5,0.5"
+                                Source="{Binding ListaShuffleSlika[14]}">
+                                <Image.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform />
+                                        <SkewTransform />
+                                        <RotateTransform Angle="15" />
+                                        <TranslateTransform />
+                                    </TransformGroup>
+                                </Image.RenderTransform>
+                            </Image>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
+                <Button
+                    Grid.Column="4"
+                    Width="120"
+                    Height="120"
+                    Command="{Binding ClickPieceCommand}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Image
+                                Name="SourceSlika"
+                                RenderTransformOrigin="0.5,0.5"
+                                Source="{Binding ListaShuffleSlika[15]}">
+                                <Image.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform />
+                                        <SkewTransform />
+                                        <RotateTransform Angle="-45" />
+                                        <TranslateTransform />
+                                    </TransformGroup>
+                                </Image.RenderTransform>
+                            </Image>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </Grid>
+        </Grid>
+
+        <!--  Separator  -->
+        <StackPanel Grid.Column="1" Orientation="Horizontal">
+            <Rectangle
+                Width="1"
+                Margin="0,20"
+                VerticalAlignment="Stretch"
+                Stroke="#4D1F1F" />
+        </StackPanel>
+
+        <Grid Grid.Column="2" Margin="0,50">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <!--  PLAY DEO  -->
+            <Grid Grid.Row="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <!--  Play labela  -->
+                <Label
+                    Grid.Row="0"
+                    HorizontalAlignment="Center"
+                    Content="PLAY"
+                    FontSize="30"
+                    FontWeight="ExtraBold" />
+
+                <!--  Play controla  -->
+                <local:GameWhoPlaysControl Grid.Row="1" Margin="15,15" />
+            </Grid>
+
+            <!--  Separator  -->
+            <Separator
+                Grid.Row="1"
+                Margin="30,15"
+                Background="#4D1F1F" />
+
+            <!--  SCORE DEO  -->
+            <Grid Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <!--  SCORE labela  -->
+                <Label
+                    Grid.Row="0"
+                    HorizontalAlignment="Center"
+                    Content="SCORE"
+                    FontSize="30"
+                    FontWeight="ExtraBold" />
+
+                <!--  SCORE controla  -->
+                <local:GameScoreControl Grid.Row="1" Margin="15 15"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</local:BasePage>
+
