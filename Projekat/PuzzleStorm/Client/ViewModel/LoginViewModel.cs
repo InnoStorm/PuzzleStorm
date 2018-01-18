@@ -92,17 +92,19 @@ namespace Client {
             {
                 if (response.Status == OperationStatus.Successfull) {
                     var sampleMessageDialog = new SampleMessageDialog {
-                        Message = { Text = "Uspesno ste se ulogovali!" }
+                        Message = { Text = "Login Successfull!" }
                     };
 
                     await DialogHost.Show(sampleMessageDialog);
+
+                    Player.Instance.Id = response.UserId;
 
                     ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new MainPage();
                 }
                 else {
 
                     var sampleMessageDialog = new SampleMessageDialog {
-                        Message = { Text = "Greska prilikom logovanja!\n" + response.Details }
+                        Message = { Text = "Login error!\n" + response.Details }
                     };
 
                     await DialogHost.Show(sampleMessageDialog);

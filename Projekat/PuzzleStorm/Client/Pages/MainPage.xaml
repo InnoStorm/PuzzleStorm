@@ -23,7 +23,7 @@
         </Grid.RowDefinitions>
 
         <!--  Welcome message  -->
-        <Grid Grid.Row="0" Margin="55 15 0 5">
+        <Grid Grid.Row="0" Margin="55,15,0,5">
             <Grid.RowDefinitions>
                 <RowDefinition />
                 <RowDefinition />
@@ -58,9 +58,9 @@
                 </Grid.ColumnDefinitions>
 
                 <!--  Rooms Props  -->
-                <local:RoomPropsControl />
-                <local:RoomPropsControl Grid.Column="1" />
-                <local:RoomPropsControl Grid.Column="2" />
+                <local:RoomPropsControl Grid.Column="0" DataContext="{Binding RoomsItemsList[0]}" />
+                <local:RoomPropsControl Grid.Column="1" DataContext="{Binding RoomsItemsList[1]}" />
+                <local:RoomPropsControl Grid.Column="2" DataContext="{Binding RoomsItemsList[2]}" />
             </Grid>
 
             <!--  ... dugme  -->
@@ -108,10 +108,11 @@
                 Margin="35,15"
                 materialDesign:ShadowAssist.ShadowDepth="Depth3"
                 Background="#9A8F78"
+                Command="{Binding TriTackeCommand}"
                 FontSize="16"
                 FontWeight="Bold"
                 Foreground="Black">
-                JOIN ROOM
+                ALL ROOMS
             </Button>
 
             <Button

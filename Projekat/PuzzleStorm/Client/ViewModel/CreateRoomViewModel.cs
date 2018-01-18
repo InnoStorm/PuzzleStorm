@@ -1,16 +1,20 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using MaterialDesignThemes.Wpf;
 using System.Windows;
 using System.Windows.Controls;
+using DTOLibrary.Enums;
+using DTOLibrary.Requests;
+using DTOLibrary.Responses;
 
 namespace Client {
     public class CreateRoomViewModel : BaseViewModel {
 
         #region Properties
 
-        public int Difficulty { get; set; } = 8;
+        public int Difficulty { get; set; } = 16;
 
         public int MaxPlayers { get; set; } = 2;
 
@@ -38,7 +42,7 @@ namespace Client {
         #region Constuctors
 
         public CreateRoomViewModel() {
-            CreateRoomCommand = new RelayCommandWithParameter(async (parameter) => { await CreateRoom(parameter); });
+            CreateRoomCommand = new RelayCommand(async () => await CreateRoom());
             CancelCommand = new RelayCommand(BackToMainPage);
 
             #region Inicijalizacija Combobox-ova
@@ -46,9 +50,9 @@ namespace Client {
             //Combobox za diff
             CmbDifficulty = new ObservableCollection<int>
             {
-                8,
                 16,
-                32
+                25,
+                36
             };
 
             //Combobox za max
@@ -78,24 +82,93 @@ namespace Client {
 
         #region Metods
 
-        // Login f-ja
-        public async Task CreateRoom(object parameter) {
+        #region Create
 
-            //SIMULACIJA KREIRANJA
-            Task.Delay(500);
+        private CreateRoomResponse CreateTask(CreateRoomRequest request) {
+            try {
+                return RabbitBus.Instance.Bus.Request<CreateRoomRequest, CreateRoomResponse>(request);
+            }
+            catch (Exception ex) {
+                return new CreateRoomResponse() {
+                    Status = OperationStatus.Exception,
+                    Details = ex.Message
+                };
+            }
+        }
 
-            var sampleMessageDialog = new SampleMessageDialog {
-                Message = { Text = "Uspesno ste kreirali sobu!" }
+        public async Task CreateRoom()
+        {
+
+            // Napravi se request
+            CreateRoomRequest request = new CreateRoomRequest()
+            {
+                RequesterId = Player.Instance.Id,
+                MaxPlayers = MaxPlayers,
+                NumberOfRounds = Rounds,
+                Password = Password
+            };
+            // Dificulty za request
+            switch (Difficulty)
+            {
+                case 16:
+                    request.Level = PuzzleDifficulty.Begginer;
+                    break;
+
+                case 25:
+                    request.Level = PuzzleDifficulty.Intermediate;
+                    break;
+
+                case 36:
+                    request.Level = PuzzleDifficulty.Advanced;
+                    break;
+            }
+
+            // Taks za create
+            Task<CreateRoomResponse> task = new Task<CreateRoomResponse>(() => CreateTask(request));
+            task.Start();
+
+            // UI
+            var popup = new LoadingPopup() {
+                Message = { Text = "Creating a room.." }
             };
 
-            await DialogHost.Show(sampleMessageDialog);
+            CreateRoomResponse response = null;
 
-            //ZOVE SE F-ja NA SERVERU
-            //CREATEROOM ( Difficulty, MaxPlayers, Rounds, Password)
+            await DialogHost.Show(popup, async delegate (object sender, DialogOpenedEventArgs args) {
+                response = await task;
+                args.Session.Close(false);
+            });
 
-            //((WindowViewModel)((MainWindow)Application.Current.MainWindow).DataContext).CurrentPage = ApplicationPage.;
-            ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new LobbyPage();
+            if (response.Status != OperationStatus.Exception) {
+                if (response.Status == OperationStatus.Successfull) {
+                    var sampleMessageDialog = new SampleMessageDialog {
+                        Message = { Text = "Room created successfully!" }
+                    };
+
+                    await DialogHost.Show(sampleMessageDialog);
+
+                    ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new LobbyPage();
+                }
+                else {
+
+                    var sampleMessageDialog = new SampleMessageDialog {
+                        Message = { Text = "Room creating error!\n" + response.Details }
+                    };
+
+                    await DialogHost.Show(sampleMessageDialog);
+                }
+            }
+            else
+            {
+                var sampleMessageDialog = new SampleMessageDialog {
+                    Message = { Text = "Exception: " + response.Details }
+                };
+
+                await DialogHost.Show(sampleMessageDialog);
+            }
         }
+
+        #endregion
 
         public void BackToMainPage() {
 
