@@ -110,6 +110,21 @@ namespace ServerLobby
                         _lobbyWorkerPool.Add(worker);
                     }
                 }));
+
+            Communicator.RespondAsync<GetAllRoomsRequest, GetAllRoomsResponse>(request =>
+                Task.Factory.StartNew(() =>
+                {
+                    var worker = _lobbyWorkerPool.Take();
+                    try
+                    {
+                        return worker.GetAllRooms(request);
+                    }
+                    finally
+                    {
+                        _lobbyWorkerPool.Add(worker);
+                    }
+                }));
+                
         }
 
         #endregion

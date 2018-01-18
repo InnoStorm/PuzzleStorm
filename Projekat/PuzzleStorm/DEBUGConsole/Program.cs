@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DTOLibrary.Enums;
 using DTOLibrary.Requests;
 using DTOLibrary.Responses;
+using DTOLibrary.SubDTOs;
 using EasyNetQ;
 
 namespace DEBUGConsole {
@@ -14,55 +16,30 @@ namespace DEBUGConsole {
 
         static void Main(string[] args) {
 
-
-            // registracija
-            /*
             try 
             {
                 using (var bus = RabbitHutch.CreateBus(ConnectionString)) 
                 {
-                    //Console.WriteLine("Press any key to start DEMO");
+                    Console.WriteLine("Press any key to start DEMO");
 
-                    Random rnd = new Random(DateTime.Now.Millisecond);
+                    List<GetAllRoomsRequest> requests = new List<GetAllRoomsRequest>();
 
-                    
-                        var myRequest = new RegistrationRequest() {
-                            Email = "demo@mail.com",
-                            Username = $"User666",
-                            Password = "pass"
-                        };
+                    requests.Add(new GetAllRoomsRequest() {
+                            RequesterId = 3566,
+                    });
 
-                        var response = bus.Request<RegistrationRequest, RegistrationResponse>(myRequest);
-                        Console.WriteLine($"Username:{response.Username} Status: {response.Status}");
-                    
+
+                    foreach (var request in requests)
+                    {
+                        var response = bus.Request<GetAllRoomsRequest, GetAllRoomsResponse>(request);
+
+                        Console.WriteLine($"CreatedRoom => {response.List[0].CreatorUsername} Status: {response.Status}");
+                    }
+
+                    Console.WriteLine("END DEMO");
                 }
             }
             catch (Exception ex) {
-                Console.WriteLine(ex.Message);
-                Console.ReadKey();
-            }
-            */
-
-
-            // room current state request
-            try
-            {
-                using (var bus = RabbitHutch.CreateBus(ConnectionString))
-                {
-                        var myRequest = new RoomCurrentStateRequest()
-                        {
-                            //RequesterId = 1,
-                            RoomId = 2
-                        };
-
-                        var response = bus.Request<RoomCurrentStateRequest, RoomCurrentStateResponse>(myRequest);
-
-                        Console.WriteLine(response.NumberOfRounds);
-                        Console.WriteLine($"Status: {response.Status}");
-                }
-            }
-            catch (Exception ex)
-            {
                 Console.WriteLine(ex.Message);
                 Console.ReadKey();
             }
@@ -70,3 +47,87 @@ namespace DEBUGConsole {
         }
     }
 }
+
+
+
+
+//// room current state request
+//try
+//{
+//    using (var bus = RabbitHutch.CreateBus(ConnectionString))
+//    {
+//        Console.WriteLine("Started");
+//        Console.ReadLine();
+
+//        var request = new GetAllRoomsRequest()
+//        {
+//            RequesterId = 0
+//        };
+
+//        var response = bus.Request<GetAllRoomsRequest, GetAllRoomsResponse>(request);
+
+//        Console.WriteLine("Usernames:");
+//        foreach (var roomInfo in response.List)
+//        {
+//            Console.WriteLine(roomInfo.CreatorUsername);
+//        }
+
+//        Console.WriteLine("End.");
+//    }
+//}
+//catch (Exception ex)
+//{
+//    Console.WriteLine(ex.Message);
+//    Console.ReadKey();
+//}
+
+//using (var bus = RabbitHutch.CreateBus(ConnectionString)) 
+//{
+//Console.WriteLine("Press any key to start DEMO");
+
+//List<RegistrationRequest> requests = new List<RegistrationRequest>();
+
+//requests.Add(new RegistrationRequest()
+//{
+//    Email = "example@mail.com",
+//    Username = "marijaaa",
+//    Password = "666"
+//});
+
+//requests.Add(new RegistrationRequest()
+//{
+//    Email = "example@mail.com",
+//    Username = "savchaa",
+//    Password = "666"
+//});
+
+//requests.Add(new RegistrationRequest()
+//{
+//    Email = "example@mail.com",
+//    Username = $"stefan",
+//    Password = "666"
+//});
+
+//requests.Add(new RegistrationRequest()
+//{
+//    Email = "example@mail.com",
+//    Username = $"dacha204",
+//    Password = "666"
+//});
+
+//requests.Add(new RegistrationRequest()
+//{
+//    Email = "example@mail.com",
+//    Username = $"fifolino",
+//    Password = "666"
+//});
+
+//foreach (var request in requests)
+//{
+//    var response = bus.Request<RegistrationRequest, RegistrationResponse>(request);
+
+//    Console.WriteLine($"Registred => Username:{response.Username} Status: {response.Status}");
+//}
+
+//Console.WriteLine("END DEMO");
+//}

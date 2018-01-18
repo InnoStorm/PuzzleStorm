@@ -36,6 +36,9 @@ namespace ServerAuth.Workers
                     data.Users.Add(newUser);
                     data.Complete();
 
+                    data.Users.MakePlayerForUser(newUser.Id);
+                    data.Complete();
+
                     WorkerLog($"Successfull registration for username: { request.Username}");
 
                     return new RegistrationResponse()
@@ -79,7 +82,7 @@ namespace ServerAuth.Workers
                     WorkerLog($"Successfull login for username: {request.Username};");
                     return new LoginResponse()
                     {
-                        UserId = user.Id,
+                        PlayerId = user.PlayerForUser.Id,
                         AuthToken = request.Username,
                         Status = OperationStatus.Successfull,
                         Details = "Successfull login"
@@ -104,16 +107,15 @@ namespace ServerAuth.Workers
             {
                 using (UnitOfWork data = CreateUnitOfWork())
                 {
-                    User user = data.Users.Find(x => x.Id == request.RequesterId).Single();
-                    
-                    if (user == null)
+                    Player player = data.Players.Find(x => x.Id == request.RequesterId).Single();
+                    if (player == null)
                         throw new Exception("User not found!");
 
 
-                    user.IsLogged = false;
+                    player.UserForPlayer.IsLogged = false;
                     data.Complete();
 
-                    WorkerLog($"Successfull signout for username: { user.Username}");
+                    WorkerLog($"Successfull signout for username: { player.UserForPlayer.Username}");
 
                     return new SignOutResponse()
                     {
@@ -133,6 +135,5 @@ namespace ServerAuth.Workers
                 };
             }
         }
-        //logout function
     }
 }

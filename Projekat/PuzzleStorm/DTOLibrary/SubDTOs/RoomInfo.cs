@@ -10,7 +10,7 @@ namespace DTOLibrary.SubDTOs
     public class RoomInfo
     {
         public int RoomId { get; set; }
-        public int CreatorUsername { get; set; }
+        public string CreatorUsername { get; set; }
         public PuzzleDifficulty Level { get; set; }
         public int MaxPlayers { get; set; }
         public int NumberOfRounds { set; get; }

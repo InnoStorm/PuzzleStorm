@@ -10,16 +10,160 @@ using DTOLibrary.Enums;
 using DTOLibrary.Requests;
 using DTOLibrary.Responses;
 using DTOLibrary.Broadcasts;
+using DTOLibrary.SubDTOs;
 using Server.Workers;
 using ServerLobby;
 using Server;
 using EasyNetQ;
+using Player = DataLayer.Core.Domain.Player;
 
 namespace ServerLobby.Workers
 {
     public class LobbyWorker : Worker
     {
         public IBus Communicator { get; set; }
+
+
+        public CreateRoomResponse CreateNewRoom(CreateRoomRequest request)
+        {
+            try
+            {
+                using (UnitOfWork data = CreateUnitOfWork())
+                {
+                    var props = new RoomProperties()
+                    {
+                        Level = (Difficulty)request.Level,
+                        MaxPlayers = request.MaxPlayers,
+                        NumberOfRounds = request.NumberOfRounds,                     
+                    };
+
+                    data.RoomProperties.Add(props);
+                    data.Complete();
+
+                    var thisPlayer = data.Players.Get(request.RequesterId);
+
+                    if (thisPlayer == null)
+                        throw new Exception($"User with {request.RequesterId} id not found!");
+
+                    List<Player> players = new List<Player>();
+                    players.Add(thisPlayer);
+
+                    var room = new Room()
+                    {
+                        Properties = props,
+                        IsPublic = request.Password != null,
+                        Password = request.Password,
+                        ListOfPlayers = players
+                    };
+
+                    data.Rooms.Add(room);
+                    data.Complete();
+
+                    var roomStateUpdate = GenerateRoomStateUpdate(room.Id, RoomUpdateType.Created);
+
+                    NotifyAll(roomStateUpdate);
+
+                    WorkerLog($"Successfully added new room with Id {room.Id}.");
+
+                    return new CreateRoomResponse()
+                    {
+                        RoomId = room.Id,
+                        Status = OperationStatus.Successfull,
+                        Details = $"Successfully added new room with Id {room.Id}."
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                WorkerLog($"Failed to add new room, Reason: {ex.Message}");
+
+                return new CreateRoomResponse()
+                {
+                    Status = OperationStatus.Failed,
+                    Details = ex.Message
+                };
+            }
+        }
+
+        public GetAllRoomsResponse GetAllRooms(GetAllRoomsRequest request)
+        {
+            try
+            {
+                using (var data = CreateUnitOfWork())
+                {
+                    var rooms = data.Rooms.GetAllAvailable().ToList();
+
+                    GetAllRoomsResponse response = new GetAllRoomsResponse
+                    {
+                        Status = OperationStatus.Successfull,
+                        Details = "Successfull",
+                        List = new List<RoomInfo>(rooms.Count)
+                    };
+
+                    foreach (Room room in rooms)
+                    {
+                        response.List.Add(new RoomInfo()
+                        {
+                            RoomId = room.Id,
+                            CreatorUsername = room.ListOfPlayers[0].UserForPlayer.Username,
+                            Level = (PuzzleDifficulty)room.Properties.Level,
+                            MaxPlayers = room.Properties.MaxPlayers,
+                            NumberOfRounds = room.Properties.NumberOfRounds
+                        });
+                        break;
+                    }
+
+                    WorkerLog($"Successfull fetch of allRooms. Requester: {request.RequesterId}");
+
+                    return response;
+                }
+            }
+            catch (Exception ex)
+            {
+                WorkerLog($"Failed to find all rooms. Reason: {ex.Message}");
+
+                return new GetAllRoomsResponse()
+                {
+                    Status = OperationStatus.Failed,
+                    Details = ex.Message,
+                    List = null
+                };
+            }
+        }
+
+        public DeleteRoomResponse DeleteRoom(DeleteRoomRequest request)
+        {
+            try
+            {
+                using (UnitOfWork data = CreateUnitOfWork())
+                {
+                    var room = data.Rooms.Get(request.RoomId);
+
+                    room.IsDeleted = true;
+                    data.Complete();
+
+                    var roomStateUpdate = GenerateRoomStateUpdate(room.Id, RoomUpdateType.Deleted);
+
+                    NotifyAll(roomStateUpdate);
+
+                    return new DeleteRoomResponse()
+                    {
+                        Status = OperationStatus.Successfull,
+                        Details = $"Successfully deleted room with Id {request.RoomId}."
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                WorkerLog($"Failed to delete room, Reason: {ex.Message}");
+
+                return new DeleteRoomResponse()
+                {
+                    Status = OperationStatus.Failed,
+                    Details = ex.Message
+                };
+            }
+        }
 
         public RoomCurrentStateResponse GiveInfoAboutRoom(RoomCurrentStateRequest request)
         {
@@ -55,98 +199,6 @@ namespace ServerLobby.Workers
                 WorkerLog($"Failed to find info about adding room: {request.RoomId}; Reason: {ex.Message}");
 
                 return new RoomCurrentStateResponse()
-                {
-                    Status = OperationStatus.Failed,
-                    Details = ex.Message
-                };
-            }
-        }
-        
-        public CreateRoomResponse CreateNewRoom(CreateRoomRequest request)
-        {
-            try
-            {
-                using (UnitOfWork data = CreateUnitOfWork())
-                {
-                    var props = new RoomProperties()
-                    {
-                        Level = (Difficulty)request.Level,
-                        MaxPlayers = request.MaxPlayers,
-                        NumberOfRounds = request.NumberOfRounds,                     
-                    };
-
-                    data.RoomProperties.Add(props);
-                    data.Complete();
-
-                    var thisPlayer = data.Players.Get(request.RequesterId);
-                    List<Player> players = new List<Player>();
-                    players.Add(thisPlayer);
-
-                    var room = new Room()
-                    {
-                        Properties = props,
-                        CurrentGame = null,
-                        IsDeleted = false,
-                        IsPublic = request.Password != null ? true : false,
-                        Password = request.Password != null ? request.Password : null,
-                        IsStarted = false,
-                        ListOfPlayers = players
-                    };
-
-                    data.Rooms.Add(room);
-                    data.Complete();
-
-                    var roomStateUpdate = GenerateRoomStateUpdate(room.Id, RoomUpdateType.Created);
-
-                    NotifyAll(roomStateUpdate);
-
-                    return new CreateRoomResponse()
-                    {
-                        RoomId = room.Id,
-                        Status = OperationStatus.Successfull,
-                        Details = $"Successfully added new room with Id {room.Id}."
-                    };
-                }
-            }
-            catch (Exception ex)
-            {
-                WorkerLog($"Failed to add new room, Reason: {ex.Message}");
-
-                return new CreateRoomResponse()
-                {
-                    Status = OperationStatus.Failed,
-                    Details = ex.Message
-                };
-            }
-        }
-
-        public DeleteRoomResponse DeleteRoom(DeleteRoomRequest request)
-        {
-            try
-            {
-                using (UnitOfWork data = CreateUnitOfWork())
-                {
-                    var room = data.Rooms.Get(request.RoomId);
-
-                    room.IsDeleted = true;
-                    data.Complete();
-
-                    var roomStateUpdate = GenerateRoomStateUpdate(room.Id, RoomUpdateType.Deleted);
-
-                    NotifyAll(roomStateUpdate);
-
-                    return new DeleteRoomResponse()
-                    {
-                        Status = OperationStatus.Successfull,
-                        Details = $"Successfully deleted room with Id {request.RoomId}."
-                    };
-                }
-            }
-            catch (Exception ex)
-            {
-                WorkerLog($"Failed to delete room, Reason: {ex.Message}");
-
-                return new DeleteRoomResponse()
                 {
                     Status = OperationStatus.Failed,
                     Details = ex.Message
@@ -237,6 +289,7 @@ namespace ServerLobby.Workers
             }
         }
 
+        
         #region Utils
 
         private void NotifyAll(RoomsStateUpdate message)
