@@ -4,5 +4,6 @@
     {
         Successfull,
         Failed,
+        Exception
     }
 }
