@@ -47,58 +47,82 @@ namespace Client {
 
         #region Metods
 
+        private RegistrationResponse CreateTask(RegistrationRequest request) {
+            try {
+                return RabbitBus.Instance.Bus.Request<RegistrationRequest, RegistrationResponse>(request);
+            }
+            catch (Exception ex) {
+                return new RegistrationResponse() {
+                    Status = OperationStatus.Exception,
+                    Details = ex.Message
+                };
+            }
+        }
+
         // Login f-ja
         public async Task Create(object parameter)
         {
+ 
+            RegistrationRequest myRequest = new RegistrationRequest()
+            {
+                Username = UserName,
+                Password = ((PasswordBox) parameter).Password,
+                Email = Email
+            };
 
-            try {
-                using (
-                    var bus =
-                        RabbitHutch.CreateBus(
-                            "amqp://ygunknwy:pAncRrH8Gxk3ULDyy-Wju7NIqdBThwCJ@sheep.rmq.cloudamqp.com/ygunknwy")) {
+            Task<RegistrationResponse> task = new Task<RegistrationResponse>(() => CreateTask(myRequest));
+            task.Start();
 
-                    var myRequest = new RegistrationRequest() {
-                        Username = UserName,
-                        Password = ((PasswordBox)parameter).Password,
-                        Email = Email
+            //UI LOADING 
+            var popup = new LoadingPopup() {
+                Message = { Text = "Creating new account.." }
+            };
+
+            RegistrationResponse response = null;
+
+            await DialogHost.Show(popup, async delegate (object sender, DialogOpenedEventArgs args) {
+                response = await task;
+                args.Session.Close(false);
+            });
+
+            if (response.Status != OperationStatus.Exception)
+            {
+
+                if (response.Status == OperationStatus.Successfull)
+                {
+                    var sampleMessageDialog = new SampleMessageDialog
+                    {
+                        Message = {Text = "Uspesno ste se kreirali novi nalog!"}
                     };
 
-                    var response = bus.Request<RegistrationRequest, RegistrationResponse>(myRequest);
+                    await DialogHost.Show(sampleMessageDialog);
 
-                    if (response.Status == OperationStatus.Successfull) {
-                        var sampleMessageDialog = new SampleMessageDialog {
-                            Message = { Text = "Uspesno ste se kreirali novi nalog!" }
-                        };
+                    ((MainWindow) Application.Current.MainWindow).MainFrame.Content = new LoginPage();
+                }
+                else
+                {
+                    var sampleMessageDialog = new SampleMessageDialog
+                    {
+                        Message = {Text = "Greska prilikom kreiranja novog naloga.\n" + response.Details}
+                    };
 
-                        await DialogHost.Show(sampleMessageDialog);
-
-                        ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new LoginPage();
-                    }
-                    else {
-                        var sampleMessageDialog = new SampleMessageDialog {
-                            Message = { Text = "Greska prilikom kreiranja novog naloga.\n" + response.Details }
-                        };
-
-                        await DialogHost.Show(sampleMessageDialog);
-                    }
-
+                    await DialogHost.Show(sampleMessageDialog);
                 }
             }
-            catch (Exception ex) {
+            else
+            {
                 var sampleMessageDialog = new SampleMessageDialog {
-                    Message = { Text = "Problem: " + ex.Message }
+                    Message = { Text = "Exception: " + response.Details }
                 };
 
                 await DialogHost.Show(sampleMessageDialog);
             }
-
-
         }
 
         public void BackToLoginPage()
         {
 
-            ((WindowViewModel)((MainWindow)Application.Current.MainWindow).DataContext).CurrentPage = ApplicationPage.Login;
+            //((WindowViewModel)((MainWindow)Application.Current.MainWindow).DataContext).CurrentPage = ApplicationPage.Login;
             ((MainWindow) Application.Current.MainWindow).MainFrame.Content = new LoginPage();
             //((MainWindow) Application.Current.MainWindow).MainFrame.Source = new System.Uri("Pages/LoginPage.xaml", UriKind.Relative);
 

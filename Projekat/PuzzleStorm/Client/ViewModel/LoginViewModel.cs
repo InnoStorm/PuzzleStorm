@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -8,6 +9,7 @@ using DTOLibrary.Requests;
 using DTOLibrary.Responses;
 using EasyNetQ;
 using MaterialDesignThemes.Wpf;
+using PropertyChanged;
 
 namespace Client {
 
@@ -37,69 +39,92 @@ namespace Client {
         public LoginViewModel()
         {
             LoginCommand = new RelayCommandWithParameter(async (parameter) => await Login(parameter));
-            CreateAccButtonCommand = new RelayCommand(async () => await CreateButton());
+            CreateAccButtonCommand = new RelayCommand(CreateButton);
         }
 
         #endregion
 
         #region Metods
 
-        // Login f-ja
-        public async Task Login(object parameter)
+        #region Login
+
+        private LoginResponse LoginTask(LoginRequest request)
         {
-            try {
-                using (
-                    var bus =
-                        RabbitHutch.CreateBus(
-                            "amqp://ygunknwy:pAncRrH8Gxk3ULDyy-Wju7NIqdBThwCJ@sheep.rmq.cloudamqp.com/ygunknwy")) {
+            try
+            {
+                return RabbitBus.Instance.Bus.Request<LoginRequest, LoginResponse>(request);
+            }
+            catch (Exception ex)
+            {
+                return new LoginResponse()
+                {
+                    Status = OperationStatus.Exception,
+                    Details = ex.Message
+                };
+            }
+        }
 
-                        var myRequest = new LoginRequest() {
-                            Username = UserName,
-                            Password = ((PasswordBox)parameter).Password
-                        };
+        public async Task Login(object parameter) {
 
-                        var response = bus.Request<LoginRequest, LoginResponse>(myRequest);
+            LoginRequest myRequest = new LoginRequest() {
+                Username = UserName,
+                Password = ((PasswordBox)parameter).Password
+            };
 
-                    if (response.Status == OperationStatus.Successfull)
-                    {
-                        var sampleMessageDialog = new SampleMessageDialog
-                        {
-                            Message = {Text = "Uspesno ste se ulogovali!"}
-                        };
+            Task<LoginResponse> task = new Task<LoginResponse>(() => LoginTask(myRequest));
+            task.Start();
 
-                        await DialogHost.Show(sampleMessageDialog);
+            //UI LOADING 
+            var popup = new LoadingPopup() {
+                Message = { Text = "Just a moment.." }
+            };
 
-                        ((MainWindow) Application.Current.MainWindow).MainFrame.Content = new MainPage();
-                    }
-                    else
-                    {
-                        var sampleMessageDialog = new SampleMessageDialog {
-                            Message = { Text = "Greska prilikom logovanja!" }
-                        };
+            LoginResponse response = null;
 
-                        await DialogHost.Show(sampleMessageDialog);
-                    }
+            await DialogHost.Show(popup, async delegate (object sender, DialogOpenedEventArgs args) {
+                response = await task;
+                args.Session.Close(false);
+            });
 
+            //LoginResponse response = await task;
+
+            if (response.Status != OperationStatus.Exception)
+            {
+                if (response.Status == OperationStatus.Successfull) {
+                    var sampleMessageDialog = new SampleMessageDialog {
+                        Message = { Text = "Uspesno ste se ulogovali!" }
+                    };
+
+                    await DialogHost.Show(sampleMessageDialog);
+
+                    ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new MainPage();
+                }
+                else {
+
+                    var sampleMessageDialog = new SampleMessageDialog {
+                        Message = { Text = "Greska prilikom logovanja!\n" + response.Details }
+                    };
+
+                    await DialogHost.Show(sampleMessageDialog);
                 }
             }
-            catch (Exception ex) {
+            else //DOSO EXCEPTION
+            {
                 var sampleMessageDialog = new SampleMessageDialog {
-                    Message = { Text = "Problem: " + ex.Message }
+                    Message = { Text = "Exception: " + response.Details }
                 };
 
                 await DialogHost.Show(sampleMessageDialog);
-            }
-
-
+            } 
         }
 
+        #endregion
 
         //Create button f-ja
-        public async Task CreateButton()
+        public void CreateButton()
         {
             //((WindowViewModel)((MainWindow)Application.Current.MainWindow).DataContext).CurrentPage = ApplicationPage.CreateAccount;
-            ((MainWindow) Application.Current.MainWindow).MainFrame.Content = new CreateAccount();
-            Task.Delay(500);
+            ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new CreateAccount();
         }
         #endregion
     }
