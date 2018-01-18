@@ -92,7 +92,7 @@ namespace Client {
                 {
                     var sampleMessageDialog = new SampleMessageDialog
                     {
-                        Message = {Text = "Uspesno ste se kreirali novi nalog!"}
+                        Message = {Text = "New account created successfully!" }
                     };
 
                     await DialogHost.Show(sampleMessageDialog);
@@ -103,7 +103,7 @@ namespace Client {
                 {
                     var sampleMessageDialog = new SampleMessageDialog
                     {
-                        Message = {Text = "Greska prilikom kreiranja novog naloga.\n" + response.Details}
+                        Message = {Text = "Creating new account error!\n" + response.Details}
                     };
 
                     await DialogHost.Show(sampleMessageDialog);
