@@ -61,6 +61,7 @@
     <Compile Include="Requests\ChangeRoomPropertiesRequest.cs" />
     <Compile Include="Requests\CreateRoomRequest.cs" />
     <Compile Include="Requests\DeleteRoomRequest.cs" />
+    <Compile Include="Requests\GetAllRoomsRequest.cs" />
     <Compile Include="Requests\JoinRoomRequest.cs" />
     <Compile Include="Requests\LoginRequest.cs" />
     <Compile Include="Requests\PostLoginRequest.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Responses\ChangeRoomPropertiesResponse.cs" />
     <Compile Include="Responses\CreateRoomResponse.cs" />
     <Compile Include="Responses\DeleteRoomResponse.cs" />
+    <Compile Include="Responses\GetAllRoomsResponse.cs" />
     <Compile Include="Responses\JoinRoomResponse.cs" />
     <Compile Include="Responses\LoginResponse.cs" />
     <Compile Include="Responses\RegistrationResponse.cs" />
@@ -79,6 +81,7 @@
     <Compile Include="Responses\RoomCurrentStateResponse.cs" />
     <Compile Include="Responses\SignOutResponse.cs" />
     <Compile Include="SubDTOs\Player.cs" />
+    <Compile Include="SubDTOs\RoomInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DataLayer\DataLayer.csproj">
