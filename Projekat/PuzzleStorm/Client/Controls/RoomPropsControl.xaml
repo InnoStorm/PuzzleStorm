@@ -7,6 +7,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DesignHeight="600"
     d:DesignWidth="400"
+    Width="350"
+    Height="460"
     mc:Ignorable="d">
     <UserControl.Template>
         <ControlTemplate TargetType="UserControl">
@@ -30,10 +32,9 @@
                         Grid.Row="0"
                         Margin="0,10"
                         HorizontalAlignment="Center"
+                        Content="{Binding Name, FallbackValue=ROOM}"
                         FontSize="22"
-                        FontWeight="Medium">
-                        ROOM #1
-                    </Label>
+                        FontWeight="Medium" />
 
                     <!--  Linija ispod naslova sobe  -->
                     <Separator
@@ -73,8 +74,8 @@
                             <Label
                                 Grid.Column="2"
                                 FontSize="18"
-                                FontWeight="Black">
-                                Dacha204
+                                FontWeight="Black"
+                                Content="{Binding By, FallbackValue=Username}">
                             </Label>
                         </Grid>
 
@@ -101,8 +102,8 @@
                             <Label
                                 Grid.Column="2"
                                 FontSize="18"
-                                FontWeight="Black">
-                                32
+                                FontWeight="Black"
+                                Content="{Binding Difficulty, FallbackValue=XX}">
                             </Label>
                         </Grid>
 
@@ -129,8 +130,8 @@
                             <Label
                                 Grid.Column="2"
                                 FontSize="18"
-                                FontWeight="Black">
-                                5
+                                FontWeight="Black"
+                                Content="{Binding MaxPlayers, FallbackValue=X}">
                             </Label>
                         </Grid>
 
@@ -157,8 +158,8 @@
                             <Label
                                 Grid.Column="2"
                                 FontSize="18"
-                                FontWeight="Black">
-                                4
+                                FontWeight="Black"
+                                Content="{Binding Rounds, FallbackValue=X}">
                             </Label>
                         </Grid>
                     </Grid>

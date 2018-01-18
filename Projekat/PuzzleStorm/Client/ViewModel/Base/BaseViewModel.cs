@@ -1,4 +1,7 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 using PropertyChanged;
 
 namespace Client {
@@ -7,7 +10,6 @@ namespace Client {
     /// Base viewmodel koji implementira property changed event
     /// </summary>
 
-    [AddINotifyPropertyChangedInterface]
     public class BaseViewModel : INotifyPropertyChanged
     {
 

@@ -1,5 +1,4 @@
 ﻿<local:BasePage
-    x:TypeArguments="local:LobbyPageViewModel"
     x:Class="Client.LobbyPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -9,6 +8,7 @@
     Title="LobbyPage"
     d:DesignHeight="700"
     d:DesignWidth="1200"
+    x:TypeArguments="local:LobbyPageViewModel"
     Background="#DFDFDF"
     mc:Ignorable="d">
 
@@ -103,10 +103,11 @@
             Grid.Row="3"
             Height="55"
             Margin="400,0"
+            Background="#9A8F78"
             Content="START/READY"
             FontSize="25"
             FontWeight="ExtraBold"
-            Foreground="AliceBlue" />
+            Foreground="Black" />
 
         <!--  Back dugme  -->
         <Button

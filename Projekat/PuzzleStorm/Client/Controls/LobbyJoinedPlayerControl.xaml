@@ -9,7 +9,7 @@
     d:DesignWidth="300"
     Background="AliceBlue"
     mc:Ignorable="d">
-    <Grid Margin="30,0">
+    <Grid Margin="30,3">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
@@ -20,8 +20,8 @@
             Grid.Column="0"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            Content="Username"
-            FontSize="20"
+            Content="{Binding Username, FallbackValue=Username}"
+            FontSize="25"
             FontWeight="Bold" />
 
         <Ellipse
@@ -29,6 +29,8 @@
             Width="25"
             Height="25"
             Margin="0,0,20,0"
-            Fill="Green" />
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Fill="{Binding Ready, Converter={local:BoolToColorConverter}}" />
     </Grid>
 </UserControl>
