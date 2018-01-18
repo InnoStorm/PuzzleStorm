@@ -7,8 +7,8 @@ namespace DataLayer.Core.Domain
         public int Id { get; set; }
         public int NumberOfPieces { get; set; }
         public string PicturePath { get; set; }
-        public IList<Piece> ListOfPieces { get; set; }
-        public Room RoomOfPuzzle { get; set; }
+        public virtual IList<Piece> ListOfPieces { get; set; }
+        public virtual Room RoomOfPuzzle { get; set; }
         public virtual Game GameOfPuzzle { get; set; }
 
         public Puzzle()

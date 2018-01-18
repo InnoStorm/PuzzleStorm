@@ -31,6 +31,13 @@ namespace DataLayer.Persistence.Repositories
                 .Single(u => u.Username == username);
         }
 
+        public void MakePlayerForUser(int id)
+        {
+            var player = new Player();
+            var user = Get(id);
+            user.PlayerForUser = player;
+        }
+
         public StormContext StormContext
         {
             get { return Context as StormContext; }

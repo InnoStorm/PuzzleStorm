@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using DataLayer.Core.Domain;
 using DataLayer.Core.Repositories;
 using System.Data.Entity;
@@ -37,9 +38,13 @@ namespace DataLayer.Persistence.Repositories
                     .Single(r => r.Id == id);
         }
 
-        public StormContext StormContext
+        public IEnumerable<Room> GetAllAvailable()
         {
-            get { return Context as StormContext; }
+            return StormContext.Rooms
+                //.Include(x => x.ListOfPlayers)
+                .Where(x => x.IsDeleted == false);
         }
+
+        public StormContext StormContext => Context as StormContext;
     }
 }

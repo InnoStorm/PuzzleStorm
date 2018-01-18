@@ -6,7 +6,7 @@
         public virtual User UserForPlayer { get; set; }
         public int Score { get; set; }
         public bool IsReady { get; set; }
-        public Game CurrentGame { get; set; }
-        public Room CurrentRoom { get; set; }
+        public virtual Game CurrentGame { get; set; }
+        public virtual Room CurrentRoom { get; set; }
     }
 }

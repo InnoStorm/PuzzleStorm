@@ -1,4 +1,5 @@
-﻿using DataLayer.Core.Domain;
+﻿using System.Collections.Generic;
+using DataLayer.Core.Domain;
 
 namespace DataLayer.Core.Repositories
 {
@@ -7,5 +8,7 @@ namespace DataLayer.Core.Repositories
         Room GetRoomIncludeAll(int id);
         Room GetRoomWithProperties(int id);
         Room GetRoomWithPlayersAndProperties(int id);
+
+        IEnumerable<Room> GetAllAvailable();
     }
 }

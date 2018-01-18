@@ -7,5 +7,6 @@ namespace DataLayer.Core.Repositories
         User FindByUsername(string userName);
         bool UsernameExists(string username);
         User GetUserWithPlayer(string username);
+        void MakePlayerForUser(int id);
     }
 }
