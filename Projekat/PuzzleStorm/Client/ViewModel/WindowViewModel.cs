@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
+using System.Windows.Input;
 
 namespace Client {
     class WindowViewModel : BaseViewModel {
@@ -11,7 +13,13 @@ namespace Client {
 
         #region Properties
 
-        public ApplicationPage CurrentPage { get; set; } = ApplicationPage.GameOverPage;
+        public ApplicationPage CurrentPage { get; set; } = ApplicationPage.MainPage;
+
+        #endregion
+
+        #region Command
+
+        public ICommand CloseWindowCommand { get; set;  }
 
         #endregion
 
@@ -20,6 +28,16 @@ namespace Client {
         public WindowViewModel(Window window)
         {
             this.mWindow = window;
+
+            CloseWindowCommand = new RelayCommand(DisposeRabbitBus);
+        }
+
+        #endregion
+
+        #region Metods
+
+        private void DisposeRabbitBus() {   
+            RabbitBus.Instance.Bus.Dispose();
         }
 
         #endregion
