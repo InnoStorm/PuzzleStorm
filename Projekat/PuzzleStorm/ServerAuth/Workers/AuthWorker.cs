@@ -79,6 +79,7 @@ namespace ServerAuth.Workers
                     WorkerLog($"Successfull login for username: {request.Username};");
                     return new LoginResponse()
                     {
+                        UserId = user.Id,
                         AuthToken = request.Username,
                         Status = OperationStatus.Successfull,
                         Details = "Successfull login"
