@@ -7,5 +7,6 @@ namespace DTOLibrary.Requests
         public PuzzleDifficulty Level { get; set; }
         public int NumberOfRounds { get; set; }
         public int MaxPlayers { get; set; }
+        public int RoomId { get; set; }
     }
 }
