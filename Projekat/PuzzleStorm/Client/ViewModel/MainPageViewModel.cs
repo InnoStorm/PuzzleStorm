@@ -53,7 +53,7 @@ namespace Client {
         /// </summary>
         public void TriTackeButton()
         {
-            
+            ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new RoomsListPage();
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace Client {
 
             //neko brisanje pre log outa ?? 
 
-            ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new LoginPage();;
+            ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new LoginPage();
         }
 
         /// <summary>

@@ -48,6 +48,9 @@
     <Reference Include="EasyNetQ, Version=2.0.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\EasyNetQ.2.2.0\lib\net451\EasyNetQ.dll</HintPath>
     </Reference>
+    <Reference Include="FontAwesome.WPF, Version=4.7.0.37774, Culture=neutral, PublicKeyToken=0758b07a11a4f466, processorArchitecture=MSIL">
+      <HintPath>..\packages\FontAwesome.WPF.4.7.0.9\lib\net40\FontAwesome.WPF.dll</HintPath>
+    </Reference>
     <Reference Include="MaterialDesignColors, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialDesignColors.1.1.2\lib\net45\MaterialDesignColors.dll</HintPath>
     </Reference>
@@ -88,6 +91,24 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\GameOverItemControl.xaml.cs">
+      <DependentUpon>GameOverItemControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\GameScoreControl.xaml.cs">
+      <DependentUpon>GameScoreControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\GameScoreItemControl.xaml.cs">
+      <DependentUpon>GameScoreItemControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\GameWhoPlaysControl.xaml.cs">
+      <DependentUpon>GameWhoPlaysControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\GameWhoPlaysItemControl.xaml.cs">
+      <DependentUpon>GameWhoPlaysItemControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\LoadingPopup.xaml.cs">
+      <DependentUpon>LoadingPopup.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\LobbyJoinedControl.xaml.cs">
       <DependentUpon>LobbyJoinedControl.xaml</DependentUpon>
     </Compile>
@@ -103,13 +124,23 @@
     <Compile Include="Controls\SampleMessageDialog.xaml.cs">
       <DependentUpon>SampleMessageDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\SimpleMessage.xaml.cs">
+      <DependentUpon>SimpleMessage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DataModels\ApplicationPage.cs" />
+    <Compile Include="Helpers\Communication\RabbitBus.cs" />
     <Compile Include="Pages\Base\BasePage.cs" />
     <Compile Include="Pages\CreateAccount.xaml.cs">
       <DependentUpon>CreateAccount.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\CreateRoomPage.xaml.cs">
       <DependentUpon>CreateRoomPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\GameOverPage.xaml.cs">
+      <DependentUpon>GameOverPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\GamePage.xaml.cs">
+      <DependentUpon>GamePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\LobbyPage.xaml.cs">
       <DependentUpon>LobbyPage.xaml</DependentUpon>
@@ -120,18 +151,55 @@
     <Compile Include="Pages\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\RoomsListPage.xaml.cs">
+      <DependentUpon>RoomsListPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ValueConverters\ApplicationPageValueConverter.cs" />
     <Compile Include="ValueConverters\BaseValueConverter.cs" />
+    <Compile Include="ValueConverters\BoolToColorConverter.cs" />
+    <Compile Include="ValueConverters\OnTheMoveToVisibilityConverter.cs" />
     <Compile Include="ViewModel\Base\BaseViewModel.cs" />
     <Compile Include="ViewModel\Base\RelayCommand.cs" />
     <Compile Include="ViewModel\Base\RelayCommandWithParameter.cs" />
     <Compile Include="ViewModel\CreateAccViewModel.cs" />
     <Compile Include="ViewModel\CreateRoomViewModel.cs" />
+    <Compile Include="ViewModel\GameOverItemViewModel.cs" />
+    <Compile Include="ViewModel\GameOverPageViewModel.cs" />
+    <Compile Include="ViewModel\GamePageViewModel.cs" />
+    <Compile Include="ViewModel\GameScoreItemViewModel.cs" />
+    <Compile Include="ViewModel\GameWhoPlaysItemViewModel.cs" />
+    <Compile Include="ViewModel\LobbyJoinedPlayerViewModel.cs" />
     <Compile Include="ViewModel\LobbyPageViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\MainPageViewModel.cs" />
+    <Compile Include="ViewModel\RoomsListViewModel.cs" />
+    <Compile Include="ViewModel\RoomsPropsViewModel.cs" />
     <Compile Include="ViewModel\WindowViewModel.cs" />
+    <Page Include="Controls\GameOverItemControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\GameScoreControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\GameScoreItemControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\GameWhoPlaysControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\GameWhoPlaysItemControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\LoadingPopup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\LobbyJoinedControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -149,6 +217,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\SampleMessageDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\SimpleMessage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -172,6 +244,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\GameOverPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\GamePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\LobbyPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -181,6 +261,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\MainPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\RoomsListPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -239,6 +323,28 @@
       <Private>True</Private>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\PomocnaSlagalica\image_part_002.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\PomocnaSlagalica\image_part_001.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\PomocnaSlagalica\image_part_003.jpg" />
+    <Resource Include="Images\PomocnaSlagalica\image_part_004.jpg" />
+    <Resource Include="Images\PomocnaSlagalica\image_part_005.jpg" />
+    <Resource Include="Images\PomocnaSlagalica\image_part_006.jpg" />
+    <Resource Include="Images\PomocnaSlagalica\image_part_007.jpg" />
+    <Resource Include="Images\PomocnaSlagalica\image_part_008.jpg" />
+    <Resource Include="Images\PomocnaSlagalica\image_part_009.jpg" />
+    <Resource Include="Images\PomocnaSlagalica\image_part_010.jpg" />
+    <Resource Include="Images\PomocnaSlagalica\image_part_011.jpg" />
+    <Resource Include="Images\PomocnaSlagalica\image_part_012.jpg" />
+    <Resource Include="Images\PomocnaSlagalica\image_part_013.jpg" />
+    <Resource Include="Images\PomocnaSlagalica\image_part_014.jpg" />
+    <Resource Include="Images\PomocnaSlagalica\image_part_015.jpg" />
+    <Resource Include="Images\PomocnaSlagalica\image_part_016.jpg" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.2.2.1.0\build\net452\Fody.targets" Condition="Exists('..\packages\Fody.2.2.1.0\build\net452\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
@@ -252,4 +358,8 @@
   </PropertyGroup>
   <Import Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.Sql.UnitTesting.targets" Condition="$(VisualStudioVersion) != '15.0' And '$(SQLDBExtensionsRefPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.Sql.UnitTesting.targets" Condition="$(VisualStudioVersion) != '15.0' And '$(SQLDBExtensionsRefPath)' == ''" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
 </Project>
