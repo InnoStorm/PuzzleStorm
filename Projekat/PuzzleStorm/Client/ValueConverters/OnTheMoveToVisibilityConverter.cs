@@ -9,8 +9,8 @@ namespace Client {
         {
             if ((bool) value)
                 return System.Windows.Visibility.Visible;
-            else
-                return System.Windows.Visibility.Hidden;
+
+            return System.Windows.Visibility.Hidden;
         }
 
         public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {

@@ -9,7 +9,11 @@ namespace Client {
 
         private static Player instance = null;
 
-        public int Id { get; set; } = -1;
+        public int Id { get; set; }
+
+        public int RoomId { get; set; }
+
+        public bool Creator { get; set; } = true;
 
         private Player() {
         }

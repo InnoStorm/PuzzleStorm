@@ -97,7 +97,7 @@ namespace Client {
 
                     await DialogHost.Show(sampleMessageDialog);
 
-                    Player.Instance.Id = response.UserId;
+                    Player.Instance.Id = response.PlayerId;
 
                     ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new MainPage();
                 }

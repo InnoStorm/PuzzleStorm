@@ -18,8 +18,8 @@
             x:Name="Message"
             Grid.Row="0"
             Margin="0,6,0,0"
-            FontSize="18"
-            HorizontalAlignment="Center"/>
+            HorizontalAlignment="Center"
+            FontSize="18" />
         <Button
             Grid.Row="1"
             Margin="16,16,16,0"

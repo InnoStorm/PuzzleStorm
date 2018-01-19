@@ -114,6 +114,7 @@
             Grid.Row="4"
             Margin="0,0,10,10"
             HorizontalAlignment="Right"
+            Command="{Binding BackCommand}"
             Content="BACK"
             FontSize="20"
             FontWeight="Bold"

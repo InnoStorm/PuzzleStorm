@@ -13,7 +13,7 @@ namespace Client {
 
         #region Properties
 
-        public ApplicationPage CurrentPage { get; set; } = ApplicationPage.MainPage;
+        public ApplicationPage CurrentPage { get; set; } = ApplicationPage.Login;
 
         #endregion
 
@@ -37,7 +37,8 @@ namespace Client {
         #region Metods
 
         private void DisposeRabbitBus() {   
-            RabbitBus.Instance.Bus.Dispose();
+            if(RabbitBus.Instance.Bus != null && RabbitBus.Instance.Bus.IsConnected)
+                RabbitBus.Instance.Bus.Dispose();
         }
 
         #endregion

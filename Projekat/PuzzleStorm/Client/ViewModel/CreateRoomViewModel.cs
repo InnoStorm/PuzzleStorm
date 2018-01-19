@@ -147,6 +147,8 @@ namespace Client {
 
                     await DialogHost.Show(sampleMessageDialog);
 
+                    Player.Instance.RoomId = response.RoomId;
+
                     ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new LobbyPage();
                 }
                 else {

@@ -29,6 +29,10 @@ namespace Client {
 
                 case ApplicationPage.LobbyPage:
                     return new LobbyPage();
+
+                case ApplicationPage.CreateRoom:
+                    return new CreateRoomPage();
+
                 default:
                     Debugger.Break();
                     return null;

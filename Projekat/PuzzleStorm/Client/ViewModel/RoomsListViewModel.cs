@@ -1,10 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
+using DTOLibrary.Broadcasts;
+using System.Threading.Tasks;
+using DTOLibrary.Enums;
+using EasyNetQ;
 
 namespace Client {
 
     public class RoomsListViewModel : BaseViewModel {
+
+        #region Private
+
+        private ISubscriptionResult subResult;
+
+        #endregion
 
         #region Properties
 
@@ -20,45 +31,14 @@ namespace Client {
 
         #region Constuctors
 
-        public RoomsListViewModel() {
-            RoomsItemsList = new List<RoomsPropsViewModel>()
-            {
-                new RoomsPropsViewModel()
-                {
-                    Name = "Test1",
-                    By = "Ja",
-                    Difficulty = "16",
-                    MaxPlayers = "5",
-                    Rounds = "2"
-                },
+        public RoomsListViewModel()
+        {
 
-                new RoomsPropsViewModel()
-                {
-                    Name = "Test2",
-                    By = "Ti",
-                    Difficulty = "25",
-                    MaxPlayers = "4",
-                    Rounds = "2"
-                },
-                new RoomsPropsViewModel()
-                {
-                    Name = "Test3",
-                    By = "On",
-                    Difficulty = "36",
-                    MaxPlayers = "2",
-                    Rounds = "1"
-                },
-                new RoomsPropsViewModel()
-                {
-                    Name = "Test4",
-                    By = "Ono",
-                    Difficulty = "25",
-                    MaxPlayers = "5",
-                    Rounds = "3"
-                }
-            };
+            RoomsItemsList = ListRooms.Instance.RoomsItemsList;
 
             BackCommand = new RelayCommand(BackToMainPage);
+
+            Subscribe();
 
         }
 
@@ -68,7 +48,23 @@ namespace Client {
 
         public void BackToMainPage()
         {
+            subResult.Dispose();
+
             ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new MainPage();
+        }
+
+        private void Subscribe()
+        {
+            subResult = RabbitBus.Instance.Bus.SubscribeAsync<RoomsStateUpdate>("cl_" + Player.Instance.Id, 
+                    request =>
+                        Task.Factory.StartNew(() => {
+                            if (request.UpdateType == RoomUpdateType.Deleted)
+                            {
+                                RoomsItemsList.RemoveAll(x => x.RoomId == request.RoomId);
+                                ListRooms.Instance.RoomsItemsList = RoomsItemsList;
+                            }
+                        }),
+                    x => x.WithTopic("#"));
         }
 
         #endregion

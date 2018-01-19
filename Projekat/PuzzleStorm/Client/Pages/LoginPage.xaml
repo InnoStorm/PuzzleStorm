@@ -67,8 +67,9 @@
                                 materialDesign:ShadowAssist.ShadowDepth="Depth3"
                                 Command="{Binding LoginCommand}"
                                 CommandParameter="{Binding ElementName=PasswordText}"
-                                FontSize="16">
-                                LOG IN
+                                FontSize="16"
+                                IsDefault="True">
+                                LOG IN 
                             </Button>
                             <!--  Create acc dugme  -->
                             <Button

@@ -5,10 +5,10 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:Client"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DesignHeight="600"
-    d:DesignWidth="400"
     Width="350"
     Height="460"
+    d:DesignHeight="600"
+    d:DesignWidth="400"
     mc:Ignorable="d">
     <UserControl.Template>
         <ControlTemplate TargetType="UserControl">
@@ -73,10 +73,9 @@
                             <!--  UserName  -->
                             <Label
                                 Grid.Column="2"
+                                Content="{Binding By, FallbackValue=Username}"
                                 FontSize="18"
-                                FontWeight="Black"
-                                Content="{Binding By, FallbackValue=Username}">
-                            </Label>
+                                FontWeight="Black" />
                         </Grid>
 
                         <!--  Linija ispod by  -->
@@ -101,10 +100,9 @@
                             <!--  Difficulty No  -->
                             <Label
                                 Grid.Column="2"
+                                Content="{Binding Difficulty, FallbackValue=XX}"
                                 FontSize="18"
-                                FontWeight="Black"
-                                Content="{Binding Difficulty, FallbackValue=XX}">
-                            </Label>
+                                FontWeight="Black" />
                         </Grid>
 
                         <!--  Linija ispod Difficulty  -->
@@ -129,10 +127,9 @@
                             <!--  Max players No  -->
                             <Label
                                 Grid.Column="2"
+                                Content="{Binding MaxPlayers, FallbackValue=X}"
                                 FontSize="18"
-                                FontWeight="Black"
-                                Content="{Binding MaxPlayers, FallbackValue=X}">
-                            </Label>
+                                FontWeight="Black" />
                         </Grid>
 
                         <!--  Linija ispod Max  -->
@@ -157,10 +154,9 @@
                             <!--  Max players No  -->
                             <Label
                                 Grid.Column="2"
+                                Content="{Binding Rounds, FallbackValue=X}"
                                 FontSize="18"
-                                FontWeight="Black"
-                                Content="{Binding Rounds, FallbackValue=X}">
-                            </Label>
+                                FontWeight="Black" />
                         </Grid>
                     </Grid>
 
@@ -169,6 +165,7 @@
                         Grid.Row="3"
                         Margin="0,0,0,5"
                         HorizontalAlignment="Center"
+                        Command="{Binding JoinCommand}"
                         FontSize="22"
                         FontWeight="Bold"
                         Foreground="#464646"
