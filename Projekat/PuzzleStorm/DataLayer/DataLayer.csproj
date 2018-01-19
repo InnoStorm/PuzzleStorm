@@ -54,44 +54,32 @@
   <ItemGroup>
     <Compile Include="Core\Domain\Game.cs" />
     <Compile Include="Core\IUnitOfWork.cs" />
-    <Compile Include="Core\Domain\Piece.cs" />
+    <Compile Include="Core\Domain\PieceData.cs" />
     <Compile Include="Core\Domain\Player.cs" />
-    <Compile Include="Core\Domain\Puzzle.cs" />
+    <Compile Include="Core\Domain\PuzzleData.cs" />
     <Compile Include="Core\Domain\Room.cs" />
-    <Compile Include="Core\Domain\RoomProperties.cs" />
-    <Compile Include="Core\Domain\User.cs" />
     <Compile Include="Core\Repositories\IGameRepository.cs" />
-    <Compile Include="Core\Repositories\IPieceRepository.cs" />
+    <Compile Include="Core\Repositories\IPieceDataRepository.cs" />
     <Compile Include="Core\Repositories\IPlayerRepository.cs" />
-    <Compile Include="Core\Repositories\IPuzzleRepository.cs" />
+    <Compile Include="Core\Repositories\IPuzzleDataRepository.cs" />
     <Compile Include="Core\Repositories\IRepository.cs" />
-    <Compile Include="Core\Repositories\IRoomPropertiesRepository.cs" />
     <Compile Include="Core\Repositories\IRoomRepository.cs" />
-    <Compile Include="Core\Repositories\IUserRepository.cs" />
-    <Compile Include="Migrations\201801151448126_Added-RoomUser-flags.cs" />
-    <Compile Include="Migrations\201801151448126_Added-RoomUser-flags.Designer.cs">
-      <DependentUpon>201801151448126_Added-RoomUser-flags.cs</DependentUpon>
+    <Compile Include="Migrations\201801192307548_ChangedClasses.cs" />
+    <Compile Include="Migrations\201801192307548_ChangedClasses.Designer.cs">
+      <DependentUpon>201801192307548_ChangedClasses.cs</DependentUpon>
     </Compile>
     <Compile Include="Persistence\EntityTypeConfigurations\GameConfiguration.cs" />
-    <Compile Include="Persistence\EntityTypeConfigurations\PieceConfiguration.cs" />
+    <Compile Include="Persistence\EntityTypeConfigurations\PieceDataConfiguration.cs" />
     <Compile Include="Persistence\EntityTypeConfigurations\PlayerConfiguration.cs" />
-    <Compile Include="Persistence\EntityTypeConfigurations\PuzzleConfiguration.cs" />
+    <Compile Include="Persistence\EntityTypeConfigurations\PuzzleDataConfiguration.cs" />
     <Compile Include="Persistence\EntityTypeConfigurations\RoomConfiguration.cs" />
-    <Compile Include="Persistence\EntityTypeConfigurations\RoomPropertiesConfiguration.cs" />
-    <Compile Include="Persistence\EntityTypeConfigurations\UserConfiguration.cs" />
-    <Compile Include="Migrations\201801042356231_Complete.cs" />
-    <Compile Include="Migrations\201801042356231_Complete.Designer.cs">
-      <DependentUpon>201801042356231_Complete.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Persistence\Repositories\GameRepository.cs" />
-    <Compile Include="Persistence\Repositories\PieceRepository.cs" />
+    <Compile Include="Persistence\Repositories\PieceDataRepository.cs" />
     <Compile Include="Persistence\Repositories\PlayerRepository.cs" />
-    <Compile Include="Persistence\Repositories\PuzzleRepository.cs" />
+    <Compile Include="Persistence\Repositories\PuzzleDataRepository.cs" />
     <Compile Include="Persistence\Repositories\Repository.cs" />
-    <Compile Include="Persistence\Repositories\RoomPropertiesRepository.cs" />
     <Compile Include="Persistence\Repositories\RoomRepository.cs" />
-    <Compile Include="Persistence\Repositories\UserRepository.cs" />
     <Compile Include="Persistence\UnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Persistence\StormContext.cs" />
@@ -104,13 +92,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201801042356231_Complete.resx">
-      <DependentUpon>201801042356231_Complete.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201801151448126_Added-RoomUser-flags.resx">
-      <DependentUpon>201801151448126_Added-RoomUser-flags.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201801192307548_ChangedClasses.resx">
+      <DependentUpon>201801192307548_ChangedClasses.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

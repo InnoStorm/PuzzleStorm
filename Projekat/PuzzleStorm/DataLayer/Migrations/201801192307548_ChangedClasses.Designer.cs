@@ -7,13 +7,13 @@ namespace DataLayer.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class AddedRoomUserflags : IMigrationMetadata
+    public sealed partial class ChangedClasses : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(AddedRoomUserflags));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(ChangedClasses));
         
         string IMigrationMetadata.Id
         {
-            get { return "201801151448126_Added-RoomUser-flags"; }
+            get { return "201801192307548_ChangedClasses"; }
         }
         
         string IMigrationMetadata.Source

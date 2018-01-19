@@ -11,17 +11,7 @@ namespace DataLayer.Persistence.Repositories
         {
 
         }
-        
-        public Player GetPlayerWithUser(int id)
-        {
-            return StormContext.Players
-                .Include(p => p.UserForPlayer)
-                .Single(p => p.Id == id);
-        }
 
-        public StormContext StormContext
-        {
-            get { return Context as StormContext; }
-        }
+        public StormContext StormContext => Context as StormContext;
     }
 }

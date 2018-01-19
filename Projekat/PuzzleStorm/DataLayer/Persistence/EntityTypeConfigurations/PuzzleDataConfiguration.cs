@@ -3,15 +3,15 @@ using DataLayer.Core.Domain;
 
 namespace DataLayer.Persistence.EntityTypeConfigurations
 {
-    public class PuzzleConfiguration : EntityTypeConfiguration<Puzzle>
+    public class PuzzleDataConfiguration : EntityTypeConfiguration<PuzzleData>
     {
-        public PuzzleConfiguration()
+        public PuzzleDataConfiguration()
         {
+            HasMany(p => p.GamesWithThisPuzzle)
+                .WithRequired(g => g.PuzzleForGame);
+
             HasMany(p => p.ListOfPieces)
                 .WithRequired(p => p.ParentPuzzle);
-
-            HasRequired(p => p.GameOfPuzzle)
-                .WithRequiredPrincipal(g => g.PuzzleForGame);
         }
     }
 }

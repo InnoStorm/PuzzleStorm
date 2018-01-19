@@ -2,7 +2,7 @@
 
 namespace DataLayer.Core.Repositories
 {
-    public interface IPieceRepository : IRepository<Piece>
+    public interface IPuzzleDataRepository : IRepository<PuzzleData>
     {
 
     }

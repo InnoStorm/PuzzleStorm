@@ -7,9 +7,6 @@ namespace DataLayer.Persistence.EntityTypeConfigurations
     {
         public GameConfiguration()
         {
-            HasMany(g => g.ListOfPlayers)
-                .WithOptional(p => p.CurrentGame);
-
             
         }
     }

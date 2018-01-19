@@ -3,11 +3,11 @@ using DataLayer.Core.Repositories;
 
 namespace DataLayer.Persistence.Repositories
 {
-    public class GameRepository : Repository<Game>, IGameRepository
+    public class PieceDataRepository : Repository<PieceData>, IPieceDataRepository
     {
-        public GameRepository(StormContext context) : base(context)
+        public PieceDataRepository(StormContext context) : base(context)
         {
-                
+
         }
 
         public StormContext StormContext => Context as StormContext;

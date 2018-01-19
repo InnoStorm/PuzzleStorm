@@ -13,21 +13,17 @@ namespace DataLayer.Persistence
             _context = context;
 
             Games = new GameRepository(_context);
-            Pieces = new PieceRepository(_context);
+            Pieces = new PieceDataRepository(_context);
             Players = new PlayerRepository(_context);
-            Puzzles = new PuzzleRepository(_context);
-            RoomProperties = new RoomPropertiesRepository(_context);
+            Puzzles = new PuzzleDataRepository(_context);
             Rooms = new RoomRepository(_context);
-            Users = new UserRepository(_context);
         }
         
         public IGameRepository Games { get; private set; }
-        public IPieceRepository Pieces { get; private set; }
+        public IPieceDataRepository Pieces { get; private set; }
         public IPlayerRepository Players { get; private set; }
-        public IPuzzleRepository Puzzles { get; private set; }
-        public IRoomPropertiesRepository RoomProperties { get; private set; }
+        public IPuzzleDataRepository Puzzles { get; private set; }
         public IRoomRepository Rooms { get; private set; }
-        public IUserRepository Users { get; private set; }
 
         public int Complete()
         {

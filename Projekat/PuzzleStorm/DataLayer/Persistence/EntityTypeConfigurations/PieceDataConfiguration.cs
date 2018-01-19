@@ -3,9 +3,9 @@ using DataLayer.Core.Domain;
 
 namespace DataLayer.Persistence.EntityTypeConfigurations
 {
-    public class PieceConfiguration : EntityTypeConfiguration<Piece>
+    public class PieceDataConfiguration : EntityTypeConfiguration<PieceData>
     {
-        public PieceConfiguration()
+        public PieceDataConfiguration()
         {
             
         }

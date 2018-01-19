@@ -7,7 +7,11 @@ namespace DataLayer.Persistence.EntityTypeConfigurations
     {
         public PlayerConfiguration()
         {
-            
+            HasOptional(p => p.CurrentRoom)
+                .WithMany(r => r.ListOfPlayers);
+
+            HasOptional(p => p.CurrentRoom)
+                .WithRequired(r => r.Owner);
         }
     }
 }
