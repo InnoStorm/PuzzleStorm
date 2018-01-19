@@ -1,4 +1,4 @@
-//Execute multiple time
+--Execute multiple time
 
 USE [db_storm]
 GO

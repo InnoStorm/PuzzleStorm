@@ -15,27 +15,31 @@ namespace DEBUGConsole {
         private const string ConnectionString = "amqp://ygunknwy:pAncRrH8Gxk3ULDyy-Wju7NIqdBThwCJ@sheep.rmq.cloudamqp.com/ygunknwy";
 
         static void Main(string[] args) {
-
+            /*
             try 
             {
                 using (var bus = RabbitHutch.CreateBus(ConnectionString)) 
                 {
-                    Console.WriteLine("Press any key to start DEMO");
+                    Console.WriteLine("Started");
 
-                    List<GetAllRoomsRequest> requests = new List<GetAllRoomsRequest>();
+                    List<RoomCurrentStateRequest> requests = new List<RoomCurrentStateRequest>();
 
-                    requests.Add(new GetAllRoomsRequest() {
-                            RequesterId = 3566,
+                    requests.Add(new RoomCurrentStateRequest()
+                    {
+                        RequesterId = 3566,
+                        RoomId = 11
                     });
-
-
+                    
                     foreach (var request in requests)
                     {
-                        var response = bus.Request<GetAllRoomsRequest, GetAllRoomsResponse>(request);
+                        var response = bus.Request<RoomCurrentStateRequest, RoomCurrentStateResponse>(request);
 
-                        Console.WriteLine($"CreatedRoom => {response.List[0].CreatorUsername} Status: {response.Status}");
+                        foreach (Player player in response.Players)
+                        {
+                            Console.WriteLine($"CreatedRoom => {player.Username} Status: {response.Status}");
+                        }
                     }
-
+                    
                     Console.WriteLine("END DEMO");
                 }
             }
@@ -43,7 +47,36 @@ namespace DEBUGConsole {
                 Console.WriteLine(ex.Message);
                 Console.ReadKey();
             }
-            
+            */
+            try
+            {
+                using (var bus = RabbitHutch.CreateBus(ConnectionString))
+                {
+                    Console.WriteLine("Started");
+
+                    List<DeleteRoomRequest> requests = new List<DeleteRoomRequest>();
+
+                    requests.Add(new DeleteRoomRequest()
+                    {
+                        RoomId = 20
+                    });
+
+                    foreach (var request in requests)
+                    {
+                        var response = bus.Request<DeleteRoomRequest, DeleteRoomResponse>(request);
+                        
+                            Console.WriteLine($"DeletedRoom => {requests[0].RoomId} Status: {response.Status}");
+                    }
+
+                    Console.WriteLine("END DEMO");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.ReadKey();
+            }
+
         }
     }
 }
@@ -130,4 +163,20 @@ namespace DEBUGConsole {
 //}
 
 //Console.WriteLine("END DEMO");
+//}
+
+
+//List<GetAllRoomsRequest> requests = new List<GetAllRoomsRequest>();
+
+//requests.Add(new GetAllRoomsRequest()
+//{
+//RequesterId = 3566,
+//});
+
+
+//foreach (var request in requests)
+//{
+//var response = bus.Request<GetAllRoomsRequest, GetAllRoomsResponse>(request);
+
+//Console.WriteLine($"CreatedRoom => {response.List[0].CreatorUsername} Status: {response.Status}");
 //}

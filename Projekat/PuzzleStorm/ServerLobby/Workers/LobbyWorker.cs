@@ -15,6 +15,7 @@ using Server.Workers;
 using ServerLobby;
 using Server;
 using EasyNetQ;
+using EasyNetQ.Loggers;
 using Player = DataLayer.Core.Domain.Player;
 
 namespace ServerLobby.Workers
@@ -110,7 +111,6 @@ namespace ServerLobby.Workers
                             MaxPlayers = room.Properties.MaxPlayers,
                             NumberOfRounds = room.Properties.NumberOfRounds
                         });
-                        break;
                     }
 
                     WorkerLog($"Successfull fetch of allRooms. Requester: {request.RequesterId}");
@@ -139,10 +139,22 @@ namespace ServerLobby.Workers
                 {
                     var room = data.Rooms.Get(request.RoomId);
 
-                    room.IsDeleted = true;
+                    if (room == null)
+                        throw new Exception($"Room with id {request.RoomId} not found!");
+                    
+                    data.Players.RemoveRange(room.ListOfPlayers);
+                    
+                    if(room.ListOfPlayers != null)
+                        data.Puzzles.RemoveRange(room.ListOfPuzzles);
+
+                    if(room.CurrentGame != null)
+                        data.Games.Remove(room.CurrentGame);
+
+                    data.RoomProperties.Remove(room.Properties);
+                    data.Rooms.Remove(room);
                     data.Complete();
 
-                    var roomStateUpdate = GenerateRoomStateUpdate(room.Id, RoomUpdateType.Deleted);
+                    var roomStateUpdate = GenerateRoomStateUpdate(request.RoomId, RoomUpdateType.Deleted);
 
                     NotifyAll(roomStateUpdate);
 
@@ -173,6 +185,10 @@ namespace ServerLobby.Workers
                 {
                     var room = data.Rooms.Find(r => r.Id == request.RoomId).Single();
 
+                    if (room == null)
+                        throw new Exception($"Room with id {request.RoomId} not found!");
+
+
                     List<DTOLibrary.SubDTOs.Player> players = new List<DTOLibrary.SubDTOs.Player>();
 
                     foreach (Player p in room.ListOfPlayers)
@@ -191,6 +207,8 @@ namespace ServerLobby.Workers
                         Level = (PuzzleDifficulty)room.Properties.Level,
                         MaxPlayers = room.Properties.MaxPlayers,
                         NumberOfRounds = room.Properties.NumberOfRounds,
+                        Details = "Successfull request for room info",
+                        Status = OperationStatus.Successfull
                     };
                 }
             }
@@ -294,7 +312,7 @@ namespace ServerLobby.Workers
 
         private void NotifyAll(RoomsStateUpdate message)
         {
-            string routingKey = $"{message.UpdateType.ToString()}.{message.RoomId}";
+             string routingKey = $"{message.UpdateType.ToString()}.{message.RoomId}";
             Communicator.Publish<RoomsStateUpdate>(message, routingKey);
         }
 
@@ -304,6 +322,16 @@ namespace ServerLobby.Workers
             {
                 using (UnitOfWork data = CreateUnitOfWork())
                 {
+                    if (updateType == RoomUpdateType.Deleted)
+                        return new RoomsStateUpdate()
+                        {
+                            Status = OperationStatus.Successfull,
+                            RoomId = Id,
+                            UpdateType = RoomUpdateType.Deleted,
+                            Details = "Room is removed."
+                        };
+
+
                     var room = data.Rooms.Find(r => r.Id == Id).Single();
 
                     WorkerLog($"Successfully found info about room: {Id}.");
