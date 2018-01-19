@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using MaterialDesignThemes.Wpf;
 
@@ -25,6 +26,8 @@ namespace Client {
         public string MaxPlayers { get; set; }
 
         public string Rounds { get; set; }
+
+        public Visibility Visibility { get; set; }
 
         #endregion
 

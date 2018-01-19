@@ -9,6 +9,7 @@
     Height="460"
     d:DesignHeight="600"
     d:DesignWidth="400"
+    Visibility="{Binding Visibility, FallbackValue=Collapsed}"
     mc:Ignorable="d">
     <UserControl.Template>
         <ControlTemplate TargetType="UserControl">

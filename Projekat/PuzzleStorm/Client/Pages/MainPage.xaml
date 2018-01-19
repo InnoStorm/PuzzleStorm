@@ -67,18 +67,9 @@
                 </Grid.ColumnDefinitions>
 
                 <!--  Rooms Props  -->
-                <local:RoomPropsControl
-                    Grid.Column="0"
-                    DataContext="{Binding RoomsItemsList[0]}"
-                    Visibility="{Binding VisibilityForMainRooms[0], Converter={local:OnTheMoveToVisibilityConverter}}" />
-                <local:RoomPropsControl
-                    Grid.Column="1"
-                    DataContext="{Binding RoomsItemsList[1]}"
-                    Visibility="{Binding VisibilityForMainRooms[1], Converter={local:OnTheMoveToVisibilityConverter}}" />
-                <local:RoomPropsControl
-                    Grid.Column="2"
-                    DataContext="{Binding RoomsItemsList[2]}"
-                    Visibility="{Binding VisibilityForMainRooms[2], Converter={local:OnTheMoveToVisibilityConverter}}" />
+                <local:RoomPropsControl Grid.Column="0" DataContext="{Binding RoomsItemsList[0]}" />
+                <local:RoomPropsControl Grid.Column="1" DataContext="{Binding RoomsItemsList[1]}" />
+                <local:RoomPropsControl Grid.Column="2" DataContext="{Binding RoomsItemsList[2]}" />
 
             </Grid>
 

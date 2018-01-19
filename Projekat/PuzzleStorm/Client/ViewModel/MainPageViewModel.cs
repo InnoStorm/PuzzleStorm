@@ -27,8 +27,6 @@ namespace Client {
 
         public List<RoomsPropsViewModel> RoomsItemsList { get; set; }
 
-        public List<bool> VisibilityForMainRooms { get; set; }
-
         public bool NoRoomLabel { get; set; } = true;
 
         #endregion
@@ -66,15 +64,11 @@ namespace Client {
                 RoomsItemsList = new List<RoomsPropsViewModel>();
                 NoRoomLabel = true;
                 InitializingAsync();
-
-                VisibilityForMainRooms = new List<bool>() {false, false, false};
             }
             else
             {
                 RoomsItemsList = ListRooms.Instance.RoomsItemsList;
                 NoRoomLabel = false;
-
-                FillVisibilityForRooms();
             }
         }
 
@@ -134,7 +128,8 @@ namespace Client {
                                     By = room.CreatorUsername,
                                     Difficulty = CastDifficulty(room.Level),
                                     MaxPlayers = room.MaxPlayers.ToString(),
-                                    Rounds = room.NumberOfRounds.ToString()
+                                    Rounds = room.NumberOfRounds.ToString(),
+                                    Visibility = Visibility.Visible
                                 }
                             );
                         }
@@ -177,33 +172,6 @@ namespace Client {
         #endregion
 
         #region Metode
-
-        // da se refaktorise!
-        private void FillVisibilityForRooms() {
-
-            VisibilityForMainRooms = new List<bool>(3);
-
-            switch (RoomsItemsList.Count)
-            {
-                case 1:
-                    VisibilityForMainRooms.Add(true);
-                    VisibilityForMainRooms.Add(false);
-                    VisibilityForMainRooms.Add(false);
-                    break;
-
-                case 2:
-                    VisibilityForMainRooms.Add(true);
-                    VisibilityForMainRooms.Add(true);
-                    VisibilityForMainRooms.Add(false);
-                    break;
-
-                case 3:
-                    VisibilityForMainRooms.Add(true);
-                    VisibilityForMainRooms.Add(true);
-                    VisibilityForMainRooms.Add(true);
-                    break;
-            }
-        }
 
         #region TriTacke
 
