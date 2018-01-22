@@ -133,6 +133,9 @@
     <Compile Include="Controls\SimpleMessage.xaml.cs">
       <DependentUpon>SimpleMessage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\SimpleTextBoxDialog.xaml.cs">
+      <DependentUpon>SimpleTextBoxDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DataModels\ApplicationPage.cs" />
     <Compile Include="DataModels\ListRooms.cs" />
     <Compile Include="DataModels\Player.cs" />
@@ -229,6 +232,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\SimpleMessage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\SimpleTextBoxDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -8,10 +8,13 @@ namespace Client {
 
     public class RoomsPropsViewModel {
 
-        public RoomsPropsViewModel()
-        {
-            JoinCommand = new RelayCommand(async () => await JoinInRoomAsync());
+        #region Constructors
+
+        public RoomsPropsViewModel() {
+            JoinCommand = new RelayCommandWithParameter(async (paramater) => await JoinInRoomAsync(paramater));
         }
+
+        #endregion
 
         #region Properties
 
@@ -27,6 +30,8 @@ namespace Client {
 
         public string Rounds { get; set; }
 
+        public bool Locked { get; set; }
+
         public Visibility Visibility { get; set; }
 
         #endregion
@@ -39,12 +44,21 @@ namespace Client {
 
         #region Metods
 
-        private async Task JoinInRoomAsync() {
-            var sampleMessageDialog = new SampleMessageDialog {
-                Message = { Text = "Blabla" }
+        public async Task JoinInRoomAsync(object parametar)
+        {
+            var dialog = new SimpleTextBoxDialog()
+            {
+                Message = { Text = "ENTER PASSWORD" },
+                DialogButton = { Content = "JOIN" }
             };
 
-            await DialogHost.Show(sampleMessageDialog);
+            await DialogHost.Show(dialog, delegate(object sender, DialogClosingEventArgs args)
+            {
+                if (args.Parameter != null && !string.IsNullOrWhiteSpace((string) args.Parameter))
+                {
+                    
+                }
+            });
         }
 
         #endregion

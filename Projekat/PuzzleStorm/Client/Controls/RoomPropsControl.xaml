@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:Client"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Width="350"
     Height="460"
@@ -30,6 +31,7 @@
 
                     <!--  Naslov sobe  -->
                     <Label
+                        x:Name="RoomNamePlusId"
                         Grid.Row="0"
                         Margin="0,10"
                         HorizontalAlignment="Center"
@@ -161,18 +163,30 @@
                         </Grid>
                     </Grid>
 
-                    <!--  Join dugme  -->
-                    <Button
-                        Grid.Row="3"
-                        Margin="0,0,0,5"
-                        HorizontalAlignment="Center"
-                        Command="{Binding JoinCommand}"
-                        FontSize="22"
-                        FontWeight="Bold"
-                        Foreground="#464646"
-                        Style="{StaticResource MaterialDesignFlatButton}">
-                        JOIN
-                    </Button>
+                    <Grid Grid.Row="3" HorizontalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <!--  Join dugme  -->
+                        <Button
+                            Margin="0,0,0,5"
+                            Padding="2"
+                            HorizontalAlignment="Center"
+                            Command="{Binding JoinCommand}"
+                            CommandParameter="{Binding ElementName=RoomNamePlusId}"
+                            Content="JOIN"
+                            FontSize="22"
+                            FontWeight="Bold"
+                            Foreground="#464646"
+                            Style="{StaticResource MaterialDesignFlatButton}" />
+
+                        <materialDesign:PackIcon
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            Kind="Lock"
+                            Visibility="{Binding Locked, Converter={local:OnTheMoveToVisibilityConverter}}" />
+                    </Grid>
 
                 </Grid>
             </Border>
