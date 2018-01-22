@@ -84,6 +84,10 @@
       <Project>{31e54061-6f97-4738-b805-3a6622ffcf14}</Project>
       <Name>Server</Name>
     </ProjectReference>
+    <ProjectReference Include="..\StormCommonData\StormCommonData.csproj">
+      <Project>{74F9A2FC-687C-4C7B-A051-93EF8EC4F144}</Project>
+      <Name>StormCommonData</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

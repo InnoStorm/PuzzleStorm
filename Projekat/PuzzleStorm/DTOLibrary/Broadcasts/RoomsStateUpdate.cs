@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DTOLibrary.Enums;
 using DTOLibrary.SubDTOs;
 using EasyNetQ;
+using StormCommonData.Enums;
 
 namespace DTOLibrary.Broadcasts
 {

@@ -69,13 +69,13 @@ namespace ServerLobby
                      }
                  }));
 
-            Communicator.RespondAsync<DeleteRoomRequest, DeleteRoomResponse>(request =>
+            Communicator.RespondAsync<CancelRoomRequest, CancelRoomResponse>(request =>
                  Task.Factory.StartNew(() =>
                  {
                      var worker = _lobbyWorkerPool.Take();
                      try
                      {
-                         return worker.DeleteRoom(request);
+                         return worker.CancelRoom(request);
                      }
                      finally
                      {

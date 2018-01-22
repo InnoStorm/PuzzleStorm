@@ -5,6 +5,6 @@ namespace DataLayer.Core.Repositories
 {
     public interface IRoomRepository : IRepository<Room>
     {
-
+        IEnumerable<Room> GetAllAvailable();
     }
 }

@@ -53,10 +53,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Domain\Game.cs" />
+    <Compile Include="Core\Domain\PuzzleData.cs" />
     <Compile Include="Core\IUnitOfWork.cs" />
     <Compile Include="Core\Domain\PieceData.cs" />
     <Compile Include="Core\Domain\Player.cs" />
-    <Compile Include="Core\Domain\PuzzleData.cs" />
     <Compile Include="Core\Domain\Room.cs" />
     <Compile Include="Core\Repositories\IGameRepository.cs" />
     <Compile Include="Core\Repositories\IPieceDataRepository.cs" />
@@ -64,9 +64,9 @@
     <Compile Include="Core\Repositories\IPuzzleDataRepository.cs" />
     <Compile Include="Core\Repositories\IRepository.cs" />
     <Compile Include="Core\Repositories\IRoomRepository.cs" />
-    <Compile Include="Migrations\201801192307548_ChangedClasses.cs" />
-    <Compile Include="Migrations\201801192307548_ChangedClasses.Designer.cs">
-      <DependentUpon>201801192307548_ChangedClasses.cs</DependentUpon>
+    <Compile Include="Migrations\201801212136426_RefactoredClasses.cs" />
+    <Compile Include="Migrations\201801212136426_RefactoredClasses.Designer.cs">
+      <DependentUpon>201801212136426_RefactoredClasses.cs</DependentUpon>
     </Compile>
     <Compile Include="Persistence\EntityTypeConfigurations\GameConfiguration.cs" />
     <Compile Include="Persistence\EntityTypeConfigurations\PieceDataConfiguration.cs" />
@@ -92,8 +92,14 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201801192307548_ChangedClasses.resx">
-      <DependentUpon>201801192307548_ChangedClasses.cs</DependentUpon>
+    <ProjectReference Include="..\StormCommonData\StormCommonData.csproj">
+      <Project>{74f9a2fc-687c-4c7b-a051-93ef8ec4f144}</Project>
+      <Name>StormCommonData</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201801212136426_RefactoredClasses.resx">
+      <DependentUpon>201801212136426_RefactoredClasses.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

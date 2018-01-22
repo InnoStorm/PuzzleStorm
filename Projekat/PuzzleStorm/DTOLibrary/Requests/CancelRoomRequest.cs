@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DTOLibrary.Requests
 {
-    public class DeleteRoomRequest : PostLoginRequest
+    public class CancelRoomRequest : PostLoginRequest
     {
         public int RoomId { get; set; }
     }

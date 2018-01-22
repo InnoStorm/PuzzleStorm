@@ -9,9 +9,20 @@ namespace DataLayer.Persistence.Repositories
     {
         public PlayerRepository(StormContext context) : base(context)
         {
-
+            
         }
 
         public StormContext StormContext => Context as StormContext;
+
+        public Player Get(string username)
+        {
+            return SingleOrDefault(x => x.Username == username);
+        }
+
+        public bool IsUsernameAvailable(string username)
+        {
+            return !StormContext.Players.Any(x => x.Username == username);
+        }
+
     }
 }

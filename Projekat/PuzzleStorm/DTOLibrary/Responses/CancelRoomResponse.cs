@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DTOLibrary.Responses
 {
-    public class DeleteRoomResponse : Response
+    public class CancelRoomResponse : Response
     {
 
     }

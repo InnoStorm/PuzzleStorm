@@ -10,5 +10,10 @@ namespace DTOLibrary.Responses
     public class GetAllRoomsResponse : Response
     {
         public List<RoomInfo> List { get; set; }
+
+        public GetAllRoomsResponse()
+        {
+            List = new List<RoomInfo>();
+        }
     }
 }

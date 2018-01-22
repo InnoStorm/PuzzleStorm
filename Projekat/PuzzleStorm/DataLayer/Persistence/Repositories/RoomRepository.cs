@@ -3,6 +3,7 @@ using System.Linq;
 using DataLayer.Core.Domain;
 using DataLayer.Core.Repositories;
 using System.Data.Entity;
+using StormCommonData.Enums;
 
 namespace DataLayer.Persistence.Repositories
 {
@@ -14,5 +15,10 @@ namespace DataLayer.Persistence.Repositories
         }
         
         public StormContext StormContext => Context as StormContext;
+
+        public IEnumerable<Room> GetAllAvailable()
+        {
+            return Find(x => x.State == RoomState.Available);
+        }
     }
 }

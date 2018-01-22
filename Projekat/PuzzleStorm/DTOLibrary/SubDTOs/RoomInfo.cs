@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DTOLibrary.Enums;
+using StormCommonData.Enums;
 
 namespace DTOLibrary.SubDTOs
 {
@@ -11,7 +11,7 @@ namespace DTOLibrary.SubDTOs
     {
         public int RoomId { get; set; }
         public string CreatorUsername { get; set; }
-        public PuzzleDifficulty Level { get; set; }
+        public PuzzleDifficulty Difficulty { get; set; }
         public int MaxPlayers { get; set; }
         public int NumberOfRounds { set; get; }
     }

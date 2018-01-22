@@ -15,7 +15,7 @@ namespace DataLayer.Persistence
         public StormContext()
             : base("DefaultConnection")
         {
-
+            Database.Log = DebugOutputString => System.Diagnostics.Debug.WriteLine(DebugOutputString);
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

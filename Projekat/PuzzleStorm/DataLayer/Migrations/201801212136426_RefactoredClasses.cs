@@ -3,7 +3,7 @@ namespace DataLayer.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class ChangedClasses : DbMigration
+    public partial class RefactoredClasses : DbMigration
     {
         public override void Up()
         {
@@ -53,8 +53,7 @@ namespace DataLayer.Migrations
                         Difficulty = c.Int(nullable: false),
                         IsPublic = c.Boolean(nullable: false),
                         Password = c.String(),
-                        IsDeleted = c.Boolean(nullable: false),
-                        IsStarted = c.Boolean(nullable: false),
+                        State = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Players", t => t.Id)

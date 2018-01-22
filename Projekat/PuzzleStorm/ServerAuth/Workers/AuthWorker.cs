@@ -9,6 +9,7 @@ using DataLayer.Persistence;
 using DTOLibrary.Enums;
 using DTOLibrary.Requests;
 using DTOLibrary.Responses;
+using Server;
 using Server.Workers;
 
 namespace ServerAuth.Workers
@@ -19,27 +20,25 @@ namespace ServerAuth.Workers
         {
             try
             {
+                StormValidator.ValidateRequest(request);
+                
                 using (UnitOfWork data = CreateUnitOfWork())
                 {
-                    if (data.Users.UsernameExists(request.Username))
-                        throw new Exception("Username is already in use!");
-                    if (request.Password == string.Empty)
-                        throw new Exception("Password can not be empty!");
+                    if (!data.Players.IsUsernameAvailable(request.Username))
+                        throw new Exception("Username is not available!");
 
-                    var newUser = new User
+                    var newPlayer = new Player()
                     {
                         Username = request.Username,
                         Password = request.Password,
-                        Email = request.Email
+                        Email = request.Email,
+
                     };
-
-                    data.Users.Add(newUser);
+                    
+                    data.Players.Add(newPlayer);
                     data.Complete();
-
-                    data.Users.MakePlayerForUser(newUser.Id);
-                    data.Complete();
-
-                    WorkerLog($"Successfull registration for username: { request.Username}");
+                    
+                    WorkerLog($"[SUCCESS] Registration for: { request.Username}");
 
                     return new RegistrationResponse()
                     {
@@ -51,7 +50,7 @@ namespace ServerAuth.Workers
             }
             catch (Exception ex)
             {
-                WorkerLog($"Failed registration for username: {request.Username}; Reason: {ex.Message}");
+                WorkerLog($"[FAILED] Registration for: {request.Username}; Reason: {ExceptionStack(ex)}", LogMessageType.Error);
 
                 return new RegistrationResponse()
                 {
@@ -66,24 +65,32 @@ namespace ServerAuth.Workers
         {
             try
             {
+                StormValidator.ValidateRequest(request);
+
                 using (var data = new UnitOfWork(new StormContext()))
                 {
-                    if (!data.Users.UsernameExists(request.Username))
-                        throw new Exception("Username not found!");
+                    var player = data.Players.Get(request.Username);
 
+                    if (player == null)
+                        throw new Exception($"Player with username {request.Username} not found!");
+                    
+                    if (player.Password != request.Password)
+                        throw new Exception("Wrong password");
 
-                    User user = data.Users.FindByUsername(request.Username);
-                    if (user.Password != request.Password)
-                        throw new Exception("Password does not match!");
+                    player.IsLogged = true;
+                    player.AuthToken = Guid.NewGuid().ToString();
+                    player.CurrentRoom = null;
+                    player.IsReady = false;
+                    player.Score = 0;
 
-                    user.IsLogged = true;
                     data.Complete();
 
-                    WorkerLog($"Successfull login for username: {request.Username};");
+                    WorkerLog($"[SUCCESS] Login for username: {request.Username}");
+
                     return new LoginResponse()
                     {
-                        PlayerId = user.PlayerForUser.Id,
-                        AuthToken = request.Username,
+                        PlayerId = player.Id,
+                        AuthToken = player.AuthToken,
                         Status = OperationStatus.Successfull,
                         Details = "Successfull login"
                     };
@@ -91,7 +98,7 @@ namespace ServerAuth.Workers
             }
             catch (Exception ex)
             {
-                WorkerLog($"Failed login for username: {request.Username}; Reason: {ex.Message}");
+                WorkerLog($"[FAILED] Login for username: {request.Username}; Reason: {ExceptionStack(ex)}", LogMessageType.Error);
                 return new LoginResponse()
                 {
                     AuthToken = "",
@@ -105,28 +112,35 @@ namespace ServerAuth.Workers
         {
             try
             {
+                StormValidator.ValidateRequest(request);
+
                 using (UnitOfWork data = CreateUnitOfWork())
                 {
-                    Player player = data.Players.Find(x => x.Id == request.RequesterId).Single();
+                    Player player = data.Players.Get(request.RequesterId);
+
                     if (player == null)
-                        throw new Exception("User not found!");
+                        throw new Exception("User not found! Can not signout!");
 
+                    player.AuthToken = "";
+                    player.CurrentRoom = null;
+                    player.IsLogged = false;
+                    player.IsReady = false;
+                    player.Score = 0;
 
-                    player.UserForPlayer.IsLogged = false;
                     data.Complete();
 
-                    WorkerLog($"Successfull signout for username: { player.UserForPlayer.Username}");
+                    WorkerLog($"[SUCCESS] Signout for username: { player.Username}");
 
                     return new SignOutResponse()
                     {
                         Status = OperationStatus.Successfull,
-                        Details = "Successful Signout!"
+                        Details = "Successful Signout."
                     };
                 }
             }
             catch (Exception ex)
             {
-                WorkerLog($"Failed Signout; Reason: {ex.Message}");
+                WorkerLog($"[FAILED] Signout. Reason: {ExceptionStack(ex)}.", LogMessageType.Error);
 
                 return new SignOutResponse()
                 {
@@ -135,5 +149,6 @@ namespace ServerAuth.Workers
                 };
             }
         }
+        
     }
 }
