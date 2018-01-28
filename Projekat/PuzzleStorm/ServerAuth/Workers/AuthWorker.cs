@@ -3,26 +3,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using DataLayer.Core.Domain;
 using DataLayer.Persistence;
 using DTOLibrary.Enums;
 using DTOLibrary.Requests;
 using DTOLibrary.Responses;
+using EasyNetQ;
 using Server;
 using Server.Workers;
+using StormCommonData.Enums;
+using StormCommonData;
 
 namespace ServerAuth.Workers
 {
     class AuthWorker : Worker
     {
+        public AuthWorker(IBus communicator) : base(communicator)
+        {
+        }
+
         public RegistrationResponse Register(RegistrationRequest request)
         {
             try
             {
                 StormValidator.ValidateRequest(request);
-                
-                using (UnitOfWork data = CreateUnitOfWork())
+
+                using (UnitOfWork data = WorkersUnitOfWork)
                 {
                     if (!data.Players.IsUsernameAvailable(request.Username))
                         throw new Exception("Username is not available!");
@@ -34,11 +42,11 @@ namespace ServerAuth.Workers
                         Email = request.Email,
 
                     };
-                    
+
                     data.Players.Add(newPlayer);
                     data.Complete();
-                    
-                    WorkerLog($"[SUCCESS] Registration for: { request.Username}");
+
+                    Log($"[SUCCESS] Registration for: {request.Username}");
 
                     return new RegistrationResponse()
                     {
@@ -50,7 +58,8 @@ namespace ServerAuth.Workers
             }
             catch (Exception ex)
             {
-                WorkerLog($"[FAILED] Registration for: {request.Username}; Reason: {ExceptionStack(ex)}", LogMessageType.Error);
+                Log($"[FAILED] Registration for: {request.Username}; Reason: {StormUtils.FlattenException(ex)}",
+                    LogMessageType.Error);
 
                 return new RegistrationResponse()
                 {
@@ -85,7 +94,7 @@ namespace ServerAuth.Workers
 
                     data.Complete();
 
-                    WorkerLog($"[SUCCESS] Login for username: {request.Username}");
+                    Log($"[SUCCESS] Login for username: {request.Username}");
 
                     return new LoginResponse()
                     {
@@ -98,7 +107,7 @@ namespace ServerAuth.Workers
             }
             catch (Exception ex)
             {
-                WorkerLog($"[FAILED] Login for username: {request.Username}; Reason: {ExceptionStack(ex)}", LogMessageType.Error);
+                Log($"[FAILED] Login for username: {request.Username}; Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
                 return new LoginResponse()
                 {
                     AuthToken = "",
@@ -114,7 +123,7 @@ namespace ServerAuth.Workers
             {
                 StormValidator.ValidateRequest(request);
 
-                using (UnitOfWork data = CreateUnitOfWork())
+                using (UnitOfWork data = WorkersUnitOfWork)
                 {
                     Player player = data.Players.Get(request.RequesterId);
 
@@ -129,7 +138,7 @@ namespace ServerAuth.Workers
 
                     data.Complete();
 
-                    WorkerLog($"[SUCCESS] Signout for username: { player.Username}");
+                    Log($"[SUCCESS] Signout for username: { player.Username}");
 
                     return new SignOutResponse()
                     {
@@ -140,7 +149,7 @@ namespace ServerAuth.Workers
             }
             catch (Exception ex)
             {
-                WorkerLog($"[FAILED] Signout. Reason: {ExceptionStack(ex)}.", LogMessageType.Error);
+                Log($"[FAILED] Signout. Reason: {StormUtils.FlattenException(ex)}.", LogMessageType.Error);
 
                 return new SignOutResponse()
                 {
@@ -149,6 +158,5 @@ namespace ServerAuth.Workers
                 };
             }
         }
-        
     }
 }

@@ -14,22 +14,25 @@ using DTOLibrary.SubDTOs;
 using Server.Workers;
 using Server;
 using EasyNetQ;
+using StormCommonData;
 using StormCommonData.Enums;
 using Player = DataLayer.Core.Domain.Player;
 
 namespace ServerLobby.Workers
 {
-    public class LobbyWorker : Worker
+    class LobbyWorker : Worker
     {
-        public IBus Communicator { get; set; }
-        
+        public LobbyWorker(IBus communicator) : base(communicator)
+        {
+        }
+
         public CreateRoomResponse CreateNewRoom(CreateRoomRequest request)
         {
             try
             {
                 StormValidator.ValidateRequest(request);
 
-                using (UnitOfWork data = CreateUnitOfWork())
+                using (UnitOfWork data = WorkersUnitOfWork)
                 {
                     var creator = data.Players.Get(request.RequesterId);
                     if (creator == null)
@@ -55,7 +58,7 @@ namespace ServerLobby.Workers
                     var updateMessage = GenerateRoomStateUpdate(newRoom, RoomUpdateType.Created);
                     NotifyAll(updateMessage);
 
-                    WorkerLog($"[SUCCESS] Created new room with ID: {newRoom.Id}.");
+                    Log($"[SUCCESS] Created new room with ID: {newRoom.Id}.");
 
                     return new CreateRoomResponse()
                     {
@@ -67,7 +70,7 @@ namespace ServerLobby.Workers
             }
             catch (Exception ex)
             {
-                WorkerLog($"[FAILED] Creating room. Reason: {ExceptionStack(ex)}", LogMessageType.Error);
+                Log($"[FAILED] Creating room. Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
 
                 return new CreateRoomResponse()
                 {
@@ -83,7 +86,7 @@ namespace ServerLobby.Workers
             {
                 StormValidator.ValidateRequest(request);
 
-                using (var data = CreateUnitOfWork())
+                using (var data = WorkersUnitOfWork)
                 {
                     var availableRooms = data.Rooms.GetAllAvailable().ToList();
 
@@ -106,14 +109,14 @@ namespace ServerLobby.Workers
                         });
                     }
 
-                    WorkerLog($"[SUCCESS] Request for list of all available rooms. Requester: {request.RequesterId}");
+                    Log($"[SUCCESS] Request for list of all available rooms. Requester: {request.RequesterId}");
 
                     return response;
                 }
             }
             catch (Exception ex)
             {
-                WorkerLog($"[FAILED] Request for list all available rooms. Reason: {ExceptionStack(ex)}", LogMessageType.Error);
+                Log($"[FAILED] Request for list all available rooms. Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
 
                 return new GetAllRoomsResponse()
                 {
@@ -130,14 +133,15 @@ namespace ServerLobby.Workers
             {
                 StormValidator.ValidateRequest(request);
 
-                using (UnitOfWork data = CreateUnitOfWork())
+                using (UnitOfWork data = WorkersUnitOfWork)
                 {
                     var room = data.Rooms.Get(request.RoomId);
 
                     if (room == null)
                         throw new Exception($"Room with id {request.RoomId} not found!");
 
-                    room.ListOfPlayers = null;
+                    room.ListOfPlayers.Clear();
+                    data.Complete();
                     data.Rooms.Remove(room);
                     data.Complete();
                     
@@ -145,7 +149,7 @@ namespace ServerLobby.Workers
 
                     
                     NotifyAll(roomStateUpdate);
-                    WorkerLog($"[SUCCESS] Cancel room ID: {request.RoomId} by {request.RequesterId}");
+                    Log($"[SUCCESS] Cancel room ID: {request.RoomId} by {request.RequesterId}");
 
                     return new CancelRoomResponse()
                     {
@@ -156,7 +160,7 @@ namespace ServerLobby.Workers
             }
             catch (Exception ex)
             {
-                WorkerLog($"[FAILED] Deleting room {request.RoomId}, Reason: {ExceptionStack(ex)}", LogMessageType.Error);
+                Log($"[FAILED] Deleting room {request.RoomId}, Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
 
                 return new CancelRoomResponse()
                 {
@@ -172,7 +176,7 @@ namespace ServerLobby.Workers
             {
                 StormValidator.ValidateRequest(request);
 
-                using (UnitOfWork data = CreateUnitOfWork())
+                using (UnitOfWork data = WorkersUnitOfWork)
                 {
                     var room = data.Rooms.Get(request.RoomId);
                     if (room == null)
@@ -199,14 +203,14 @@ namespace ServerLobby.Workers
                         response.Players.Add(playerDTO);
                     }
                     
-                    WorkerLog($"[SUCCESS] Current state for room: { request.RoomId }");
+                    Log($"[SUCCESS] Current state for room: { request.RoomId }");
 
                     return response;
                 }
             }
             catch (Exception ex)
             {
-                WorkerLog($"[FAILED] Current state for room: { request.RoomId }; Reason: {ExceptionStack(ex)}", LogMessageType.Error);
+                Log($"[FAILED] Current state for room: { request.RoomId }; Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
 
                 return new RoomCurrentStateResponse()
                 {
@@ -222,7 +226,7 @@ namespace ServerLobby.Workers
             {
                 StormValidator.ValidateRequest(request);
 
-                using (UnitOfWork data = CreateUnitOfWork())
+                using (UnitOfWork data = WorkersUnitOfWork)
                 {
                     var room = data.Rooms.Get(request.RoomId);
                     if (room == null)
@@ -250,7 +254,7 @@ namespace ServerLobby.Workers
                     joiner.Score = 0;
                     data.Complete();
                     
-                    WorkerLog($"[SUCCESS] Player {request.RoomId} joined in room {request.RoomId}");
+                    Log($"[SUCCESS] Player {request.RoomId} joined in room {request.RoomId}");
                     return new JoinRoomResponse()
                     {
                         Status = OperationStatus.Successfull,
@@ -260,7 +264,7 @@ namespace ServerLobby.Workers
             }
             catch (Exception ex)
             {
-                WorkerLog($"[FAILED] Player {request.RoomId} failed to join in {request.RoomId}, Reason: {ExceptionStack(ex)}", LogMessageType.Error);
+                Log($"[FAILED] Player {request.RoomId} failed to join in {request.RoomId}, Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
 
                 return new JoinRoomResponse()
                 {
@@ -276,7 +280,7 @@ namespace ServerLobby.Workers
             {
                 StormValidator.ValidateRequest(request);
 
-                using (UnitOfWork data = CreateUnitOfWork())
+                using (UnitOfWork data = WorkersUnitOfWork)
                 {
                     var room = data.Rooms.Get(request.RoomId);
                     if (room == null)
@@ -294,7 +298,7 @@ namespace ServerLobby.Workers
 
                     var updateMessage = GenerateRoomStateUpdate(room, RoomUpdateType.Modified);
 
-                    WorkerLog($"[SUCCESS] Room properties changed for room {request.RoomId}");
+                    Log($"[SUCCESS] Room properties changed for room {request.RoomId}");
                     NotifyAll(updateMessage);                   
 
                     return new ChangeRoomPropertiesResponse()
@@ -306,7 +310,7 @@ namespace ServerLobby.Workers
             }
             catch (Exception ex)
             {
-                WorkerLog($"[FAILED] Chaning properties for room {request.RoomId}, Reason: {ExceptionStack(ex)}", LogMessageType.Error);
+                Log($"[FAILED] Chaning properties for room {request.RoomId}, Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
 
                 return new ChangeRoomPropertiesResponse()
                 {
@@ -316,7 +320,6 @@ namespace ServerLobby.Workers
             }
         }
 
-        
         #region Utils
 
         private void NotifyAll(RoomsStateUpdate message)
@@ -355,6 +358,6 @@ namespace ServerLobby.Workers
             };
         }
 
-        #endregion
+        #endregion        
     }
 }

@@ -2,61 +2,50 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using DataLayer.Persistence;
+using EasyNetQ;
+using StormCommonData.Enums;
+using StormCommonData.EventArgs;
 
 
 namespace Server.Workers
 {
     public abstract class Worker
     {
-        protected enum LogMessageType
+        #region Constructors
+
+        protected Worker(IBus communicator)
         {
-            Normal,
-            Warning,
-            Error
+            Communicator = communicator;
         }
+        
+        #endregion
+        
+        #region Events
+
+        public EventHandler<LogMessageArgs> NewWorkerLogMessage;
+
+        protected virtual void OnNewLogMessage(LogMessageArgs msg)
+            => NewWorkerLogMessage?.Invoke(this, msg);
+
+        #endregion
+
+        #region Properties
 
         public int Id { get; set; }
 
-        protected UnitOfWork CreateUnitOfWork()
+        protected readonly IBus Communicator;
+        
+        protected UnitOfWork WorkersUnitOfWork => new UnitOfWork(new StormContext());
+
+        #endregion
+
+        protected void Log(string message, LogMessageType type = LogMessageType.Info)
         {
-            return new UnitOfWork(new StormContext());
-        }
-
-        protected void WorkerLog(string message, LogMessageType type = LogMessageType.Normal)
-        {
-            switch (type)
-            {
-                case LogMessageType.Normal:
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    break;
-                case LogMessageType.Warning:
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    break;
-                case LogMessageType.Error:
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
-            }
-            Console.WriteLine($"[{DateTime.Now}][WORKER {Id}] {message}");
-
-            Console.ResetColor();
-        }
-
-        protected string ExceptionStack(Exception ex)
-        {
-            string result = string.Empty;
-
-            Exception e = ex;
-            while (e != null)
-            {
-                result += e.Message + Environment.NewLine;
-                e = e.InnerException;
-            }
-
-            return result;
+            OnNewLogMessage(new LogMessageArgs(
+                message: $@"[{DateTime.Now}][WORKER {Id}] {message}",
+                type: type
+                ));
         }
     }
 }

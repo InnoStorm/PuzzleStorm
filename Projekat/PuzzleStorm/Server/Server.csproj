@@ -69,7 +69,6 @@
     <Compile Include="Workers\Worker.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -80,6 +79,10 @@
     <ProjectReference Include="..\DTOLibrary\DTOLibrary.csproj">
       <Project>{495FB5C5-301C-438D-9DDB-6BAA4CE0BEDD}</Project>
       <Name>DTOLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\StormCommonData\StormCommonData.csproj">
+      <Project>{74f9a2fc-687c-4c7b-a051-93ef8ec4f144}</Project>
+      <Name>StormCommonData</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

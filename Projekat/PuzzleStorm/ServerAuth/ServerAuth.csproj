@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{9285A36F-FD3A-4711-BDFF-507F29118A90}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <RootNamespace>ServerAuth</RootNamespace>
     <AssemblyName>ServerAuth</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
@@ -30,6 +30,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EasyNetQ, Version=2.0.4.0, Culture=neutral, processorArchitecture=MSIL">
@@ -68,7 +71,6 @@
     <Compile Include="Workers\AuthWorker.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -83,6 +85,10 @@
     <ProjectReference Include="..\Server\Server.csproj">
       <Project>{31E54061-6F97-4738-B805-3A6622FFCF14}</Project>
       <Name>Server</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\StormCommonData\StormCommonData.csproj">
+      <Project>{74F9A2FC-687C-4C7B-A051-93EF8EC4F144}</Project>
+      <Name>StormCommonData</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
