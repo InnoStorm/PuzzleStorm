@@ -1,4 +1,6 @@
-﻿namespace DataLayer.Core.Domain
+﻿using System.Collections.Generic;
+
+namespace DataLayer.Core.Domain
 {
     public class Player
     {
@@ -11,5 +13,11 @@
         public int Score { get; set; }
         public bool IsReady { get; set; }
         public virtual Room CurrentRoom { get; set; }
+        public virtual IList<Room> OwnedRooms { get; set; }
+
+        public Player()
+        {
+            OwnedRooms = new List<Room>();
+        }
     }
 }

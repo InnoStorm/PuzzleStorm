@@ -3,7 +3,7 @@ namespace DataLayer.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class RefactoredClasses : DbMigration
+    public partial class AddedOwnedRooms : DbMigration
     {
         public override void Up()
         {
@@ -47,17 +47,18 @@ namespace DataLayer.Migrations
                 "dbo.Rooms",
                 c => new
                     {
-                        Id = c.Int(nullable: false),
+                        Id = c.Int(nullable: false, identity: true),
                         NumberOfRounds = c.Int(nullable: false),
                         MaxPlayers = c.Int(nullable: false),
                         Difficulty = c.Int(nullable: false),
                         IsPublic = c.Boolean(nullable: false),
                         Password = c.String(),
                         State = c.Int(nullable: false),
+                        Owner_Id = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.Players", t => t.Id)
-                .Index(t => t.Id);
+                .ForeignKey("dbo.Players", t => t.Owner_Id, cascadeDelete: true)
+                .Index(t => t.Owner_Id);
             
             CreateTable(
                 "dbo.Players",
@@ -71,23 +72,23 @@ namespace DataLayer.Migrations
                         AuthToken = c.String(),
                         Score = c.Int(nullable: false),
                         IsReady = c.Boolean(nullable: false),
-                        Room_Id = c.Int(),
+                        CurrentRoom_Id = c.Int(),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.Rooms", t => t.Room_Id)
-                .Index(t => t.Room_Id);
+                .ForeignKey("dbo.Rooms", t => t.CurrentRoom_Id)
+                .Index(t => t.CurrentRoom_Id);
             
         }
         
         public override void Down()
         {
-            DropForeignKey("dbo.Players", "Room_Id", "dbo.Rooms");
-            DropForeignKey("dbo.Rooms", "Id", "dbo.Players");
             DropForeignKey("dbo.Games", "Id", "dbo.Rooms");
+            DropForeignKey("dbo.Players", "CurrentRoom_Id", "dbo.Rooms");
+            DropForeignKey("dbo.Rooms", "Owner_Id", "dbo.Players");
             DropForeignKey("dbo.PieceDatas", "ParentPuzzle_Id", "dbo.PuzzleDatas");
             DropForeignKey("dbo.Games", "PuzzleForGame_Id", "dbo.PuzzleDatas");
-            DropIndex("dbo.Players", new[] { "Room_Id" });
-            DropIndex("dbo.Rooms", new[] { "Id" });
+            DropIndex("dbo.Players", new[] { "CurrentRoom_Id" });
+            DropIndex("dbo.Rooms", new[] { "Owner_Id" });
             DropIndex("dbo.PieceDatas", new[] { "ParentPuzzle_Id" });
             DropIndex("dbo.Games", new[] { "PuzzleForGame_Id" });
             DropIndex("dbo.Games", new[] { "Id" });

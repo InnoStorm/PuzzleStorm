@@ -7,7 +7,8 @@ namespace DataLayer.Persistence.EntityTypeConfigurations
     {
         public GameConfiguration()
         {
-            
+            HasRequired(g => g.RoomForThisGame)
+                .WithOptional(r => r.CurrentGame);
         }
     }
 }

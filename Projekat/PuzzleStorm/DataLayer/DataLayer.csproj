@@ -64,9 +64,9 @@
     <Compile Include="Core\Repositories\IPuzzleDataRepository.cs" />
     <Compile Include="Core\Repositories\IRepository.cs" />
     <Compile Include="Core\Repositories\IRoomRepository.cs" />
-    <Compile Include="Migrations\201801212136426_RefactoredClasses.cs" />
-    <Compile Include="Migrations\201801212136426_RefactoredClasses.Designer.cs">
-      <DependentUpon>201801212136426_RefactoredClasses.cs</DependentUpon>
+    <Compile Include="Migrations\201801281909254_AddedOwnedRooms.cs" />
+    <Compile Include="Migrations\201801281909254_AddedOwnedRooms.Designer.cs">
+      <DependentUpon>201801281909254_AddedOwnedRooms.cs</DependentUpon>
     </Compile>
     <Compile Include="Persistence\EntityTypeConfigurations\GameConfiguration.cs" />
     <Compile Include="Persistence\EntityTypeConfigurations\PieceDataConfiguration.cs" />
@@ -98,8 +98,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201801212136426_RefactoredClasses.resx">
-      <DependentUpon>201801212136426_RefactoredClasses.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201801281909254_AddedOwnedRooms.resx">
+      <DependentUpon>201801281909254_AddedOwnedRooms.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

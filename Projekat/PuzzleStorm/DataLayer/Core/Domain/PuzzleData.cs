@@ -13,6 +13,7 @@ namespace DataLayer.Core.Domain
         public PuzzleData()
         {
             ListOfPieces = new List<PieceData>();
+            GamesWithThisPuzzle = new List<Game>();
         }
     }
 }

@@ -7,13 +7,13 @@ namespace DataLayer.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class RefactoredClasses : IMigrationMetadata
+    public sealed partial class AddedOwnedRooms : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(RefactoredClasses));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(AddedOwnedRooms));
         
         string IMigrationMetadata.Id
         {
-            get { return "201801212136426_RefactoredClasses"; }
+            get { return "201801281909254_AddedOwnedRooms"; }
         }
         
         string IMigrationMetadata.Source
