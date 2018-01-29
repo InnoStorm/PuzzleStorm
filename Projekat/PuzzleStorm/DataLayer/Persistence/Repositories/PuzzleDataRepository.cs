@@ -1,5 +1,6 @@
 ﻿using DataLayer.Core.Domain;
 using DataLayer.Core.Repositories;
+using StormCommonData.Enums;
 
 namespace DataLayer.Persistence.Repositories
 {
@@ -11,5 +12,10 @@ namespace DataLayer.Persistence.Repositories
         }
 
         public StormContext StormContext => Context as StormContext;
+
+        public PuzzleData GetPuzzle(int numberOfPieces)
+        {
+            return SingleOrDefault(x => x.NumberOfPieces == numberOfPieces);
+        }
     }
 }

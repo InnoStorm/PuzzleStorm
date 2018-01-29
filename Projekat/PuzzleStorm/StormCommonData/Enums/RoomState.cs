@@ -7,6 +7,7 @@ namespace StormCommonData.Enums
     public enum RoomState
     {
         Available,
+        Full,
         Playing,
         Finished,
         Error

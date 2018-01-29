@@ -104,5 +104,20 @@ namespace Server
             if (request.NumberOfRounds < 1)
                 throw new Exception("Number of rounds must be >= 2!");
         }
+
+        public static void ValidateRequest(ChangeStatusRequest request)
+        {
+            ValidateRequesterIdFormat(request);
+        }
+
+        public static void ValidateRequest(LeaveRoomRequest request)
+        {
+            ValidateRequesterIdFormat(request);
+        }
+
+        public static void ValidateRequest(StartRoomRequest request)
+        {
+            ValidateRequesterIdFormat(request);
+        }
     }
 }

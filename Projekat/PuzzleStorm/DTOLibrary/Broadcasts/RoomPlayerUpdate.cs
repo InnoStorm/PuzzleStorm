@@ -11,9 +11,10 @@ using EasyNetQ;
 namespace DTOLibrary.Broadcasts
 {
     [Queue(queueName: "RoomPlayerUpdateQueue", ExchangeName = "InRoomUpdatesExchange")]
-    public class RoomPlayerUpdate : PostLoginRequest
+    public class RoomPlayerUpdate : BroadcastMessage
     {
         public RoomPlayerUpdateType UpdateType { get; set; }
-        public Player Player { get; set; }
+        public int PlayerId { get; set; }
+        public int RoomId { get; set; }
     }
 }

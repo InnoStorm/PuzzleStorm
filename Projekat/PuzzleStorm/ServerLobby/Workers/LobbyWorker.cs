@@ -253,6 +253,18 @@ namespace ServerLobby.Workers
                     joiner.IsReady = false;
                     joiner.Score = 0;
                     data.Complete();
+
+                    if (room.ListOfPlayers.Count == room.MaxPlayers)
+                    {
+                        room.State = RoomState.Full;
+                        data.Complete();
+
+                        var updateMessageFilledRoom = GenerateRoomStateUpdate(room, RoomUpdateType.Filled);
+                        NotifyAll(updateMessageFilledRoom);
+                    }
+                        
+                    var updateMessage = GenerateRoomPlayerUpdate(room.Id, joiner.Id, RoomPlayerUpdateType.Joined);
+                    NotifyChangesInRoom(updateMessage);
                     
                     Log($"[SUCCESS] Player {request.RoomId} joined in room {request.RoomId}");
                     return new JoinRoomResponse()
@@ -320,12 +332,187 @@ namespace ServerLobby.Workers
             }
         }
 
+        public ChangeStatusResponse ChangeStatus(ChangeStatusRequest request)
+        {
+            try
+            {
+                StormValidator.ValidateRequest(request);
+
+                using (UnitOfWork data = WorkersUnitOfWork)
+                {
+                    var player = data.Players.Get(request.RequesterId);
+                    if (player == null)
+                        throw new Exception($"Player with ID {request.RequesterId} not found!");
+
+                    player.IsReady = request.IAmReady;
+                    data.Complete();
+
+                    var updateMessage = GenerateRoomPlayerUpdate(player.CurrentRoom.Id, player.Id, RoomPlayerUpdateType.ChangedStatus);
+
+                    Log($"[SUCCESS] Status changed for player {request.RequesterId}");
+                    NotifyChangesInRoom(updateMessage);
+
+                    return new ChangeStatusResponse()
+                    {
+                        Status = OperationStatus.Successfull,
+                        Details = $"Successfully changed status for player with Id {request.RequesterId}."
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                Log($"[FAILED] Changing status for player {request.RequesterId}, Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
+
+                return new ChangeStatusResponse()
+                {
+                    Status = OperationStatus.Failed,
+                    Details = ex.Message
+                };
+            }
+        }
+
+        public LeaveRoomResponse LeaveRoom(LeaveRoomRequest request)
+        {
+            try
+            {
+                StormValidator.ValidateRequest(request);
+
+                using (UnitOfWork data = WorkersUnitOfWork)
+                {
+                    var player = data.Players.Get(request.RequesterId);
+                    if (player == null)
+                        throw new Exception($"Player with ID {request.RequesterId} not found!");
+
+                    player.Score = 0;
+                    player.IsReady = false;
+                    player.CurrentRoom = null;
+                    data.Complete();
+
+                    if (player.CurrentRoom.State == RoomState.Full)
+                    {
+                        player.CurrentRoom.State = RoomState.Available;
+                        data.Complete();
+
+                        var updateMessageRoomBecameAvailable = GenerateRoomStateUpdate(player.CurrentRoom, RoomUpdateType.BecameAvailable);
+                        NotifyAll(updateMessageRoomBecameAvailable);
+                    }
+
+                    var updateMessage = GenerateRoomPlayerUpdate(request.RoomId, player.Id, RoomPlayerUpdateType.LeftRoom);
+                    NotifyChangesInRoom(updateMessage);
+
+                    Log($"[SUCCESS] Player {request.RequesterId} successfully left room {request.RoomId}");
+                    NotifyChangesInRoom(updateMessage);
+
+                    return new LeaveRoomResponse()
+                    {
+                        Status = OperationStatus.Successfull,
+                        Details = $"Player {request.RequesterId} successfully left room {request.RoomId}."
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                Log($"[FAILED] Changing status for player {request.RequesterId}, Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
+
+                return new LeaveRoomResponse()
+                {
+                    Status = OperationStatus.Failed,
+                    Details = ex.Message
+                };
+            }
+        }
+
+        private int ConvertDifficultyToInt(PuzzleDifficulty diff)
+        {
+            switch (diff)
+            {
+                case PuzzleDifficulty.Easy:
+                    return 16;
+                case PuzzleDifficulty.Medium:
+                    return 25;
+                case PuzzleDifficulty.Hard:
+                    return 36;
+                default:
+                    return 0;
+            }
+
+        }
+
+        public StartRoomResponse StartRoom(StartRoomRequest request)
+        {
+            try
+            {
+                StormValidator.ValidateRequest(request);
+
+                using (UnitOfWork data = WorkersUnitOfWork)
+                {
+                    var room = data.Rooms.Get(request.RoomId);
+                    if (room == null)
+                        throw new Exception($"Room with ID {request.RoomId} not found!");
+
+                    var puzzle = data.Puzzles.GetPuzzle(ConvertDifficultyToInt(room.Difficulty)); //za sad vraca prvu odgovarajucu puzzlu koju nadje u bazi
+                    var game = new Game
+                    {
+                        PuzzleForGame = puzzle,
+                    };
+                    data.Games.Add(game);
+                    data.Complete();
+
+                    room.CurrentGame = game;
+                    room.State = RoomState.Playing;
+                    data.Complete();
+
+                    var updateMessage = GenerateRoomStateUpdate(room, RoomUpdateType.Started);
+                    NotifyAll(updateMessage);
+
+                    Log($"[SUCCESS] Player {request.RequesterId} successfully started room {request.RoomId}");
+
+                    return new StartRoomResponse()
+                    {
+                        GameId = game.Id,
+                        PuzzleId = puzzle.Id,
+                        Status = OperationStatus.Successfull,
+                        Details = $"Player {request.RequesterId} successfully left room {request.RoomId}"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                Log($"[FAILED] Changing status for player {request.RequesterId}, Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
+
+                return new StartRoomResponse()
+                {
+                    Status = OperationStatus.Failed,
+                    Details = ex.Message
+                };
+            }
+        }
+
         #region Utils
 
         private void NotifyAll(RoomsStateUpdate message)
         {
              string routingKey = $"{message.UpdateType.ToString()}.{message.RoomId}";
              Communicator.Publish<RoomsStateUpdate>(message, routingKey);
+        }
+
+        private void NotifyChangesInRoom(RoomPlayerUpdate message)
+        {
+            // npr. InRoom.4.Joined.20
+            string routingKey = $"InRoom.{message.RoomId}.{message.UpdateType.ToString()}.{message.PlayerId}";
+            Communicator.Publish<RoomPlayerUpdate>(message, routingKey);
+        }
+
+        private RoomPlayerUpdate GenerateRoomPlayerUpdate(int roomId, int playerId, RoomPlayerUpdateType updateType)
+        {
+            return new RoomPlayerUpdate
+            {
+                Status = OperationStatus.Successfull,
+                Details = "Room is updated.",
+                UpdateType = updateType,
+                PlayerId = playerId,
+                RoomId = roomId
+            };
         }
 
         private RoomsStateUpdate GenerateRoomStateUpdate(Room room, RoomUpdateType updateType)

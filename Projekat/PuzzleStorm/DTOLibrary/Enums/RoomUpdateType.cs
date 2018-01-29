@@ -11,6 +11,8 @@ namespace DTOLibrary.Enums
         Created,
         Modified,
         Deleted,
-        Started
+        Started,
+        Filled,
+        BecameAvailable
     }
 }
