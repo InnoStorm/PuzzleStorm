@@ -12,71 +12,65 @@ using DTOLibrary.Responses;
 using DTOLibrary.Broadcasts;
 using DTOLibrary.SubDTOs;
 using Server.Workers;
-using ServerLobby;
 using Server;
 using EasyNetQ;
-using EasyNetQ.Loggers;
+using StormCommonData;
+using StormCommonData.Enums;
 using Player = DataLayer.Core.Domain.Player;
 
 namespace ServerLobby.Workers
 {
-    public class LobbyWorker : Worker
+    class LobbyWorker : Worker
     {
-        public IBus Communicator { get; set; }
-
+        public LobbyWorker(IBus communicator) : base(communicator)
+        {
+        }
 
         public CreateRoomResponse CreateNewRoom(CreateRoomRequest request)
         {
             try
             {
-                using (UnitOfWork data = CreateUnitOfWork())
+                StormValidator.ValidateRequest(request);
+
+                using (UnitOfWork data = WorkersUnitOfWork)
                 {
-                    var props = new RoomProperties()
+                    var creator = data.Players.Get(request.RequesterId);
+                    if (creator == null)
+                        throw new Exception($"Can't find player/creator with ID {request.RequesterId}");
+
+                    var newRoom = new Room
                     {
-                        Level = (Difficulty)request.Level,
-                        MaxPlayers = request.MaxPlayers,
-                        NumberOfRounds = request.NumberOfRounds,                     
-                    };
-
-                    data.RoomProperties.Add(props);
-                    data.Complete();
-
-                    var thisPlayer = data.Players.Get(request.RequesterId);
-
-                    if (thisPlayer == null)
-                        throw new Exception($"User with {request.RequesterId} id not found!");
-
-                    List<Player> players = new List<Player>();
-                    players.Add(thisPlayer);
-
-                    var room = new Room()
-                    {
-                        Properties = props,
-                        IsPublic = request.Password != null,
+                        Difficulty = request.Difficulty,
+                        IsPublic = request.Password == string.Empty,
                         Password = request.Password,
-                        ListOfPlayers = players
+                        CurrentGame = null,
+                        State = RoomState.Available,
+                        NumberOfRounds = request.NumberOfRounds,
+                        Owner = creator,
+                        MaxPlayers = request.MaxPlayers,
+                        
                     };
 
-                    data.Rooms.Add(room);
+                    newRoom.ListOfPlayers.Add(creator);
+                    data.Rooms.Add(newRoom);
                     data.Complete();
 
-                    var roomStateUpdate = GenerateRoomStateUpdate(room.Id, RoomUpdateType.Created);
+                    var updateMessage = GenerateRoomStateUpdate(newRoom, RoomUpdateType.Created);
+                    NotifyAll(updateMessage);
 
-                    NotifyAll(roomStateUpdate);
-
-                    WorkerLog($"Successfully added new room with Id {room.Id}.");
+                    Log($"[SUCCESS] Created new room with ID: {newRoom.Id}.");
 
                     return new CreateRoomResponse()
                     {
-                        RoomId = room.Id,
+                        RoomId = newRoom.Id,
                         Status = OperationStatus.Successfull,
-                        Details = $"Successfully added new room with Id {room.Id}."
+                        Details = $"Successfully added new room with Id {newRoom.Id}."
                     };
                 }
             }
             catch (Exception ex)
             {
-                WorkerLog($"Failed to add new room, Reason: {ex.Message}");
+                Log($"[FAILED] Creating room. Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
 
                 return new CreateRoomResponse()
                 {
@@ -90,37 +84,39 @@ namespace ServerLobby.Workers
         {
             try
             {
-                using (var data = CreateUnitOfWork())
+                StormValidator.ValidateRequest(request);
+
+                using (var data = WorkersUnitOfWork)
                 {
-                    var rooms = data.Rooms.GetAllAvailable().ToList();
+                    var availableRooms = data.Rooms.GetAllAvailable().ToList();
 
                     GetAllRoomsResponse response = new GetAllRoomsResponse
                     {
                         Status = OperationStatus.Successfull,
                         Details = "Successfull",
-                        List = new List<RoomInfo>(rooms.Count)
+                        List = new List<RoomInfo>(availableRooms.Count)
                     };
 
-                    foreach (Room room in rooms)
+                    foreach (Room room in availableRooms)
                     {
                         response.List.Add(new RoomInfo()
                         {
                             RoomId = room.Id,
-                            CreatorUsername = room.ListOfPlayers[0].UserForPlayer.Username,
-                            Level = (PuzzleDifficulty)room.Properties.Level,
-                            MaxPlayers = room.Properties.MaxPlayers,
-                            NumberOfRounds = room.Properties.NumberOfRounds
+                            CreatorUsername = room.Owner.Username,
+                            Difficulty = room.Difficulty,
+                            MaxPlayers = room.MaxPlayers,
+                            NumberOfRounds = room.NumberOfRounds
                         });
                     }
 
-                    WorkerLog($"Successfull fetch of allRooms. Requester: {request.RequesterId}");
+                    Log($"[SUCCESS] Request for list of all available rooms. Requester: {request.RequesterId}");
 
                     return response;
                 }
             }
             catch (Exception ex)
             {
-                WorkerLog($"Failed to find all rooms. Reason: {ex.Message}");
+                Log($"[FAILED] Request for list all available rooms. Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
 
                 return new GetAllRoomsResponse()
                 {
@@ -131,34 +127,31 @@ namespace ServerLobby.Workers
             }
         }
 
-        public DeleteRoomResponse DeleteRoom(DeleteRoomRequest request)
+        public CancelRoomResponse CancelRoom(CancelRoomRequest request)
         {
             try
             {
-                using (UnitOfWork data = CreateUnitOfWork())
+                StormValidator.ValidateRequest(request);
+
+                using (UnitOfWork data = WorkersUnitOfWork)
                 {
                     var room = data.Rooms.Get(request.RoomId);
 
                     if (room == null)
                         throw new Exception($"Room with id {request.RoomId} not found!");
-                    
-                    data.Players.RemoveRange(room.ListOfPlayers);
-                    
-                    if(room.ListOfPlayers != null)
-                        data.Puzzles.RemoveRange(room.ListOfPuzzles);
 
-                    if(room.CurrentGame != null)
-                        data.Games.Remove(room.CurrentGame);
-
-                    data.RoomProperties.Remove(room.Properties);
+                    room.ListOfPlayers.Clear();
+                    data.Complete();
                     data.Rooms.Remove(room);
                     data.Complete();
+                    
+                    var roomStateUpdate = GenerateRoomStateUpdate(room, RoomUpdateType.Deleted);
 
-                    var roomStateUpdate = GenerateRoomStateUpdate(request.RoomId, RoomUpdateType.Deleted);
-
+                    
                     NotifyAll(roomStateUpdate);
+                    Log($"[SUCCESS] Cancel room ID: {request.RoomId} by {request.RequesterId}");
 
-                    return new DeleteRoomResponse()
+                    return new CancelRoomResponse()
                     {
                         Status = OperationStatus.Successfull,
                         Details = $"Successfully deleted room with Id {request.RoomId}."
@@ -167,9 +160,9 @@ namespace ServerLobby.Workers
             }
             catch (Exception ex)
             {
-                WorkerLog($"Failed to delete room, Reason: {ex.Message}");
+                Log($"[FAILED] Deleting room {request.RoomId}, Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
 
-                return new DeleteRoomResponse()
+                return new CancelRoomResponse()
                 {
                     Status = OperationStatus.Failed,
                     Details = ex.Message
@@ -181,40 +174,43 @@ namespace ServerLobby.Workers
         {
             try
             {
-                using (UnitOfWork data = CreateUnitOfWork())
-                {
-                    var room = data.Rooms.Find(r => r.Id == request.RoomId).Single();
+                StormValidator.ValidateRequest(request);
 
+                using (UnitOfWork data = WorkersUnitOfWork)
+                {
+                    var room = data.Rooms.Get(request.RoomId);
                     if (room == null)
                         throw new Exception($"Room with id {request.RoomId} not found!");
 
-
-                    List<DTOLibrary.SubDTOs.Player> players = new List<DTOLibrary.SubDTOs.Player>();
-
-                    foreach (Player p in room.ListOfPlayers)
-                        players.Add(new DTOLibrary.SubDTOs.Player()
-                        {
-                            IsReady = p.IsReady,
-                            PlayerId = p.Id,
-                            Username = p.UserForPlayer.Username
-                        });
-
-                    WorkerLog($"Successfull info about room: { request.RoomId }");
-
-                    return new RoomCurrentStateResponse()
+                    var response = new RoomCurrentStateResponse()
                     {
-                        Players = players,
-                        Level = (PuzzleDifficulty)room.Properties.Level,
-                        MaxPlayers = room.Properties.MaxPlayers,
-                        NumberOfRounds = room.Properties.NumberOfRounds,
-                        Details = "Successfull request for room info",
+                        Difficulty = room.Difficulty,
+                        MaxPlayers = room.MaxPlayers,
+                        NumberOfRounds = room.MaxPlayers,
+                        Details = "Successful",
                         Status = OperationStatus.Successfull
                     };
+
+                    foreach (Player player in room.ListOfPlayers)
+                    {
+                        var playerDTO = new DTOLibrary.SubDTOs.Player()
+                        {
+                            PlayerId = player.Id,
+                            Username = player.Username,
+                            IsReady = player.IsReady,
+                        };
+
+                        response.Players.Add(playerDTO);
+                    }
+                    
+                    Log($"[SUCCESS] Current state for room: { request.RoomId }");
+
+                    return response;
                 }
             }
             catch (Exception ex)
             {
-                WorkerLog($"Failed to find info about adding room: {request.RoomId}; Reason: {ex.Message}");
+                Log($"[FAILED] Current state for room: { request.RoomId }; Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
 
                 return new RoomCurrentStateResponse()
                 {
@@ -228,29 +224,37 @@ namespace ServerLobby.Workers
         {
             try
             {
-                using (UnitOfWork data = CreateUnitOfWork())
+                StormValidator.ValidateRequest(request);
+
+                using (UnitOfWork data = WorkersUnitOfWork)
                 {
-                    var room = data.Rooms.GetRoomWithPlayersAndProperties(request.RoomId);
+                    var room = data.Rooms.Get(request.RoomId);
+                    if (room == null)
+                        throw new Exception($"Room with ID {request.RoomId} not found!");
 
-                    if (!room.IsPublic && request.Password != room.Password)
-                        return new JoinRoomResponse()
-                        {
-                            Status = OperationStatus.Failed,
-                            Details = "Wrong password."
-                        };
+                    var joiner = data.Players.Get(request.RequesterId);
+                    if (joiner == null)
+                        throw new Exception($"Cannot find user with {request.RequesterId}!");
 
-                    if (room.Properties.MaxPlayers == room.ListOfPlayers.Count)
-                        return new JoinRoomResponse()
-                        {
-                            Status = OperationStatus.Failed,
-                            Details = "This room is already full."
-                        };
+                    if (room.State != RoomState.Available)
+                        throw new Exception($"Room is not joinable.");
 
-                    var players = room.ListOfPlayers;
-                    var thisPlayer = data.Players.Get(request.RequesterId);
-                    players.Add(thisPlayer);
+                    if (room.ListOfPlayers.Count >= room.MaxPlayers)
+                        throw new Exception($"Room is full. Cannot join.");
+
+                    if (!room.IsPublic && room.Password != request.Password)
+                        throw new Exception($"Wrong password!");
+
+                    if (room.Owner == joiner || room.ListOfPlayers.Contains(joiner))
+                        throw new Exception("You are already in room!");
+
+
+                    room.ListOfPlayers.Add(joiner);
+                    joiner.IsReady = false;
+                    joiner.Score = 0;
                     data.Complete();
-
+                    
+                    Log($"[SUCCESS] Player {request.RoomId} joined in room {request.RoomId}");
                     return new JoinRoomResponse()
                     {
                         Status = OperationStatus.Successfull,
@@ -260,7 +264,7 @@ namespace ServerLobby.Workers
             }
             catch (Exception ex)
             {
-                WorkerLog($"Failed to join room, Reason: {ex.Message}");
+                Log($"[FAILED] Player {request.RoomId} failed to join in {request.RoomId}, Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
 
                 return new JoinRoomResponse()
                 {
@@ -274,19 +278,28 @@ namespace ServerLobby.Workers
         {
             try
             {
-                using (UnitOfWork data = CreateUnitOfWork())
+                StormValidator.ValidateRequest(request);
+
+                using (UnitOfWork data = WorkersUnitOfWork)
                 {
-                    var props = data.RoomProperties.GetPropertiesOfRoom(request.RoomId);
+                    var room = data.Rooms.Get(request.RoomId);
+                    if (room == null)
+                        throw new Exception($"Room with ID {request.RoomId} not found!");
 
-                    props.Level = (Difficulty)request.Level;
-                    props.MaxPlayers = request.MaxPlayers;
-                    props.NumberOfRounds = request.MaxPlayers;
-                    
+                    if (room.ListOfPlayers.Count > request.MaxPlayers)
+                        throw new Exception($"Current number of joined players is greater than new MaxPlayers value!");
+
+
+                    room.Difficulty = request.Difficulty;
+                    room.MaxPlayers = request.MaxPlayers;
+                    room.NumberOfRounds = request.NumberOfRounds;
+
                     data.Complete();
-                    
-                    var roomStateUpdate = GenerateRoomStateUpdate(request.RoomId, RoomUpdateType.Modified);
 
-                    NotifyAll(roomStateUpdate);                   
+                    var updateMessage = GenerateRoomStateUpdate(room, RoomUpdateType.Modified);
+
+                    Log($"[SUCCESS] Room properties changed for room {request.RoomId}");
+                    NotifyAll(updateMessage);                   
 
                     return new ChangeRoomPropertiesResponse()
                     {
@@ -297,7 +310,7 @@ namespace ServerLobby.Workers
             }
             catch (Exception ex)
             {
-                WorkerLog($"Failed to change properties for room, Reason: {ex.Message}");
+                Log($"[FAILED] Chaning properties for room {request.RoomId}, Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
 
                 return new ChangeRoomPropertiesResponse()
                 {
@@ -307,70 +320,44 @@ namespace ServerLobby.Workers
             }
         }
 
-        
         #region Utils
 
         private void NotifyAll(RoomsStateUpdate message)
         {
              string routingKey = $"{message.UpdateType.ToString()}.{message.RoomId}";
-            Communicator.Publish<RoomsStateUpdate>(message, routingKey);
+             Communicator.Publish<RoomsStateUpdate>(message, routingKey);
         }
 
-        private RoomsStateUpdate GenerateRoomStateUpdate(int Id, RoomUpdateType updateType)
+        private RoomsStateUpdate GenerateRoomStateUpdate(Room room, RoomUpdateType updateType)
         {
-            try
-            {
-                using (UnitOfWork data = CreateUnitOfWork())
-                {
-                    if (updateType == RoomUpdateType.Deleted)
-                        return new RoomsStateUpdate()
-                        {
-                            Status = OperationStatus.Successfull,
-                            RoomId = Id,
-                            UpdateType = RoomUpdateType.Deleted,
-                            Details = "Room is removed."
-                        };
-
-
-                    var room = data.Rooms.Find(r => r.Id == Id).Single();
-
-                    WorkerLog($"Successfully found info about room: {Id}.");
-
-                    DTOLibrary.SubDTOs.Player player = new DTOLibrary.SubDTOs.Player();
-
-                    Player pl = room.ListOfPlayers.First();
-
-                    player.IsReady = pl.IsReady;
-                    player.PlayerId = pl.Id;
-                    player.Username = pl.UserForPlayer.Username;
-
-                    return new RoomsStateUpdate()
-                    {
-                        Creator = player,
-                        IsPublic = room.IsPublic,
-                        Level = (PuzzleDifficulty)room.Properties.Level,
-                        MaxPlayers = room.Properties.MaxPlayers,
-                        NumberOfRounds = room.Properties.MaxPlayers,
-                        RoomId = room.Id,
-                        Status = OperationStatus.Successfull,
-                        Details = "Successful getting info about room " + room.Id,
-                        UpdateType = updateType
-                    };
-                }
-            }
-            catch (Exception ex)
-            {
-                WorkerLog($"Failed to update info about room: {Id}; Reason: {ex.Message}");
-
+            if (updateType == RoomUpdateType.Deleted)
                 return new RoomsStateUpdate()
                 {
-                    Status = OperationStatus.Failed,
-                    Details = ex.Message
+                    Status = OperationStatus.Successfull,
+                    RoomId = room.Id,
+                    UpdateType = RoomUpdateType.Deleted,
+                    Details = "Room is removed."
                 };
-            }
-        }
-        
-        #endregion
 
+            return new RoomsStateUpdate()
+            {
+                Creator = new DTOLibrary.SubDTOs.Player()
+                {
+                    Username = room.Owner.Username,
+                    IsReady = room.Owner.IsReady,
+                    PlayerId = room.Owner.Id
+                },
+                IsPublic = room.IsPublic,
+                Level = room.Difficulty,
+                MaxPlayers = room.MaxPlayers,
+                NumberOfRounds = room.MaxPlayers,
+                RoomId = room.Id,
+                Status = OperationStatus.Successfull,
+                Details = "Successful getting info about room " + room.Id,
+                UpdateType = updateType
+            };
+        }
+
+        #endregion        
     }
 }

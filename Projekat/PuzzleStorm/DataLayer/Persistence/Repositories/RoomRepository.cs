@@ -3,6 +3,7 @@ using System.Linq;
 using DataLayer.Core.Domain;
 using DataLayer.Core.Repositories;
 using System.Data.Entity;
+using StormCommonData.Enums;
 
 namespace DataLayer.Persistence.Repositories
 {
@@ -12,39 +13,12 @@ namespace DataLayer.Persistence.Repositories
         {
 
         }
-
-        public Room GetRoomIncludeAll(int id)
-        {
-            return StormContext.Rooms
-                    .Include(r => r.Properties)
-                    .Include(r => r.CurrentGame)
-                    .Include(r => r.ListOfPlayers)
-                    .Include(r => r.ListOfPuzzles)
-                    .Single(r => r.Id == id);
-        }
         
-        public Room GetRoomWithProperties(int id)
-        {
-            return StormContext.Rooms
-                    .Include(r => r.Properties)
-                    .Single(r => r.Id == id);
-        }
-
-        public Room GetRoomWithPlayersAndProperties(int id)
-        {
-            return StormContext.Rooms
-                    .Include(r => r.ListOfPlayers)
-                    .Include(r => r.Properties)
-                    .Single(r => r.Id == id);
-        }
+        public StormContext StormContext => Context as StormContext;
 
         public IEnumerable<Room> GetAllAvailable()
         {
-            return StormContext.Rooms
-                //.Include(x => x.ListOfPlayers)
-                .Where(x => x.IsDeleted == false);
+            return Find(x => x.State == RoomState.Available);
         }
-
-        public StormContext StormContext => Context as StormContext;
     }
 }

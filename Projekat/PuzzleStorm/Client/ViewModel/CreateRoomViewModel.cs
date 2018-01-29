@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using DTOLibrary.Enums;
 using DTOLibrary.Requests;
 using DTOLibrary.Responses;
+using StormCommonData.Enums;
 
 namespace Client {
     public class CreateRoomViewModel : BaseViewModel {
@@ -111,15 +112,15 @@ namespace Client {
             switch (Difficulty)
             {
                 case 16:
-                    request.Level = PuzzleDifficulty.Begginer;
+                    request.Difficulty = PuzzleDifficulty.Easy;
                     break;
 
                 case 25:
-                    request.Level = PuzzleDifficulty.Intermediate;
+                    request.Difficulty = PuzzleDifficulty.Medium;
                     break;
 
                 case 36:
-                    request.Level = PuzzleDifficulty.Advanced;
+                    request.Difficulty = PuzzleDifficulty.Hard;
                     break;
             }
 

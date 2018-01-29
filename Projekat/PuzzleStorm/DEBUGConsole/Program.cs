@@ -1,182 +1,245 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DTOLibrary.Enums;
 using DTOLibrary.Requests;
 using DTOLibrary.Responses;
 using DTOLibrary.SubDTOs;
 using EasyNetQ;
+using StormCommonData.Enums;
 
-namespace DEBUGConsole {
+namespace DEBUGConsole
+{
     class Program
     {
-        private const string ConnectionString = "amqp://ygunknwy:pAncRrH8Gxk3ULDyy-Wju7NIqdBThwCJ@sheep.rmq.cloudamqp.com/ygunknwy";
+        private const string ConnectionString =
+            "host=sheep.rmq.cloudamqp.com;" +
+            "virtualHost=ygunknwy;" +
+            "username=ygunknwy;" +
+            "password=pAncRrH8Gxk3ULDyy-Wju7NIqdBThwCJ;" +
+            "timeout=0";
 
-        static void Main(string[] args) {
-            /*
-            try 
-            {
-                using (var bus = RabbitHutch.CreateBus(ConnectionString)) 
-                {
-                    Console.WriteLine("Started");
+        private static IBus rabbit;
 
-                    List<RoomCurrentStateRequest> requests = new List<RoomCurrentStateRequest>();
-
-                    requests.Add(new RoomCurrentStateRequest()
-                    {
-                        RequesterId = 3566,
-                        RoomId = 11
-                    });
-                    
-                    foreach (var request in requests)
-                    {
-                        var response = bus.Request<RoomCurrentStateRequest, RoomCurrentStateResponse>(request);
-
-                        foreach (Player player in response.Players)
-                        {
-                            Console.WriteLine($"CreatedRoom => {player.Username} Status: {response.Status}");
-                        }
-                    }
-                    
-                    Console.WriteLine("END DEMO");
-                }
-            }
-            catch (Exception ex) {
-                Console.WriteLine(ex.Message);
-                Console.ReadKey();
-            }
-            */
+        static void Main(string[] args)
+        {
             try
             {
-                using (var bus = RabbitHutch.CreateBus(ConnectionString))
+                rabbit = RabbitHutch.CreateBus(ConnectionString);
+
+                bool loop = true;
+
+                while (loop)
                 {
-                    Console.WriteLine("Started");
+                    Console.Clear();
+                    Console.WriteLine("Choose option:");
+                    Console.WriteLine(
+                        $"1. Invalid Registration()" + Environment.NewLine +
+                        $"2. Valid Registration()" + Environment.NewLine +
+                        $"3. Invalid Login()" + Environment.NewLine +
+                        $"4. Valid Login()" + Environment.NewLine +
+                        $"5. Invalid Signout()" + Environment.NewLine +
+                        $"6. Valid Signout()" + Environment.NewLine +
+                        $"7. Test Function()" + Environment.NewLine +
+                        Environment.NewLine +
+                        $"0. Exit");
 
-                    List<DeleteRoomRequest> requests = new List<DeleteRoomRequest>();
+                    string input = Console.ReadLine();
+                    Console.WriteLine("Executing...");
 
-                    requests.Add(new DeleteRoomRequest()
+                    switch (input)
                     {
-                        RoomId = 20
-                    });
+                        case "0":
+                            loop = false;
+                            break;
+                        case "1":
+                            RegistrationInvalid();
+                            break;
+                        case "2":
+                            RegistrationValid();
+                            break;
+                        case "3":
+                            LoginInvalid();
+                            break;
+                        case "4":
+                            LoginValid();
+                            break;
+                        case "5":
+                            SignOutInvalid();
+                            break;
+                        case "6":
+                            SignOutValid();
+                            break;
+                        case "7":
+                            TestFunction();
+                            break;
 
-                    foreach (var request in requests)
-                    {
-                        var response = bus.Request<DeleteRoomRequest, DeleteRoomResponse>(request);
-                        
-                            Console.WriteLine($"DeletedRoom => {requests[0].RoomId} Status: {response.Status}");
+                        default:
+                            break;
                     }
-
-                    Console.WriteLine("END DEMO");
-                }
+                }               
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                Console.ReadKey();
+                Console.WriteLine($"Greska: {ex.Message}");
+                Console.WriteLine($"Vise: {ex.InnerException?.Message}");
             }
+            finally
+            {
+                rabbit.Dispose();
+            }
+        }
+
+        private static void SignOutValid()
+        {
+            object response;
+
+            response = rabbit.Request<SignOutRequest, SignOutResponse>(new SignOutRequest()
+            {
+                RequesterId = 1
+            });
+        }
+
+        private static void SignOutInvalid()
+        {
+            object response;
+
+            response = rabbit.Request<SignOutRequest, SignOutResponse>(new SignOutRequest()
+            {
+                RequesterId = -1
+            });
+        }
+
+        private static void LoginValid()
+        {
+            object response;
+
+            response = rabbit.Request<LoginRequest, LoginResponse>(new LoginRequest()
+            {
+                Username = "dacha204",
+                Password = "666"
+            });
+        }
+
+        private static void LoginInvalid()
+        {
+            object response;
+
+            response = rabbit.Request<LoginRequest, LoginResponse>(new LoginRequest()
+            {
+                Username = "",
+                Password = "666"
+            });
+
+            response = rabbit.Request<LoginRequest, LoginResponse>(new LoginRequest()
+            {
+                Username = "dacha204",
+                Password = ""
+            });
+
+            response = rabbit.Request<LoginRequest, LoginResponse>(new LoginRequest()
+            {
+                Username = "dacha204",
+                Password = "666112"
+            });
+        }
+
+        private static void RegistrationValid()
+        {
+            object
+            response = rabbit.Request<RegistrationRequest, RegistrationResponse>(new RegistrationRequest()
+            {
+                Username = "dacha204",
+                Email = "dacha@mail.com",
+                Password = "666"
+            });
+        }
+
+        private static void RegistrationInvalid()
+        {
+            object response;
+
+            response = rabbit.Request<RegistrationRequest, RegistrationResponse>(new RegistrationRequest()
+            {
+                Username = "testUser1",
+                Email = "no-reply@mail.ru",
+                Password = "666"
+            });
+
+            response = rabbit.Request<RegistrationRequest, RegistrationResponse>(new RegistrationRequest()
+            {
+                Username = "testUser1",
+                Email = "no-reply@mail.ru",
+                Password = "666"
+            });
+
+            response = rabbit.Request<RegistrationRequest, RegistrationResponse>(new RegistrationRequest()
+            {
+                Username = "testUser2",
+                Email = "no-reply@mail.ru",
+                Password = ""
+            });
+
+            response = rabbit.Request<RegistrationRequest, RegistrationResponse>(new RegistrationRequest()
+            {
+                Username = "",
+                Email = "no-reply@mail.ru",
+                Password = "666"
+            });
+
+            response = rabbit.Request<RegistrationRequest, RegistrationResponse>(new RegistrationRequest()
+            {
+                Username = "user name",
+                Email = "no-reply@mail.ru",
+                Password = "666"
+            });
+
+        }
+
+        private static void TestFunction()
+        {
+            object response;
+            Console.WriteLine("Creating room...");
+            response = rabbit.Request<CreateRoomRequest, CreateRoomResponse>(new CreateRoomRequest()
+            {
+                RequesterId = 2,
+                MaxPlayers = 10,
+                Password = "666",
+                Difficulty = PuzzleDifficulty.Easy,
+                NumberOfRounds = 10
+            });
+
+            int soba = ((CreateRoomResponse) response).RoomId;
+
+            Console.WriteLine("Joining room...");
+            response = rabbit.Request<JoinRoomRequest, JoinRoomResponse>(new JoinRoomRequest()
+            {
+                RoomId = soba,
+                Password = "666",
+                RequesterId = 1,
+            });
+
+            Console.WriteLine("Listing room...");
+            response = rabbit.Request<GetAllRoomsRequest, GetAllRoomsResponse>(new GetAllRoomsRequest()
+            {
+               RequesterId = 2
+            });
+
+            Console.WriteLine("Changing room prop...");
+            response = rabbit.Request<ChangeRoomPropertiesRequest, ChangeRoomPropertiesResponse>(new ChangeRoomPropertiesRequest()
+            {
+                RequesterId = 2,
+                RoomId = soba,
+                MaxPlayers = 22,
+                Difficulty = PuzzleDifficulty.Hard,
+                NumberOfRounds = 204,
+            });
+
+            Console.WriteLine("Leaving room...");
+            response = rabbit.Request<CancelRoomRequest, CancelRoomResponse>(new CancelRoomRequest()
+            {
+                RequesterId = 2,
+                RoomId = soba
+            });
 
         }
     }
 }
-
-
-
-
-//// room current state request
-//try
-//{
-//    using (var bus = RabbitHutch.CreateBus(ConnectionString))
-//    {
-//        Console.WriteLine("Started");
-//        Console.ReadLine();
-
-//        var request = new GetAllRoomsRequest()
-//        {
-//            RequesterId = 0
-//        };
-
-//        var response = bus.Request<GetAllRoomsRequest, GetAllRoomsResponse>(request);
-
-//        Console.WriteLine("Usernames:");
-//        foreach (var roomInfo in response.List)
-//        {
-//            Console.WriteLine(roomInfo.CreatorUsername);
-//        }
-
-//        Console.WriteLine("End.");
-//    }
-//}
-//catch (Exception ex)
-//{
-//    Console.WriteLine(ex.Message);
-//    Console.ReadKey();
-//}
-
-//using (var bus = RabbitHutch.CreateBus(ConnectionString)) 
-//{
-//Console.WriteLine("Press any key to start DEMO");
-
-//List<RegistrationRequest> requests = new List<RegistrationRequest>();
-
-//requests.Add(new RegistrationRequest()
-//{
-//    Email = "example@mail.com",
-//    Username = "marijaaa",
-//    Password = "666"
-//});
-
-//requests.Add(new RegistrationRequest()
-//{
-//    Email = "example@mail.com",
-//    Username = "savchaa",
-//    Password = "666"
-//});
-
-//requests.Add(new RegistrationRequest()
-//{
-//    Email = "example@mail.com",
-//    Username = $"stefan",
-//    Password = "666"
-//});
-
-//requests.Add(new RegistrationRequest()
-//{
-//    Email = "example@mail.com",
-//    Username = $"dacha204",
-//    Password = "666"
-//});
-
-//requests.Add(new RegistrationRequest()
-//{
-//    Email = "example@mail.com",
-//    Username = $"fifolino",
-//    Password = "666"
-//});
-
-//foreach (var request in requests)
-//{
-//    var response = bus.Request<RegistrationRequest, RegistrationResponse>(request);
-
-//    Console.WriteLine($"Registred => Username:{response.Username} Status: {response.Status}");
-//}
-
-//Console.WriteLine("END DEMO");
-//}
-
-
-//List<GetAllRoomsRequest> requests = new List<GetAllRoomsRequest>();
-
-//requests.Add(new GetAllRoomsRequest()
-//{
-//RequesterId = 3566,
-//});
-
-
-//foreach (var request in requests)
-//{
-//var response = bus.Request<GetAllRoomsRequest, GetAllRoomsResponse>(request);
-
-//Console.WriteLine($"CreatedRoom => {response.List[0].CreatorUsername} Status: {response.Status}");
-//}

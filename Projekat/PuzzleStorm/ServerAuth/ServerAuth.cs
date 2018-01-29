@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -15,9 +16,17 @@ using Server;
 
 namespace ServerAuth
 {
-    public class ServerAuth : StormServer
+    public class ServerAuth : StormServer<ServerAuth>
     {
-        #region Worker Pools
+        #region Singleton
+
+        private ServerAuth()
+        {
+        }
+        
+        #endregion
+        
+        #region WorkerPools
 
         private BlockingCollection<AuthWorker> _authWorkerPool;
 
@@ -27,19 +36,29 @@ namespace ServerAuth
 
         protected override void StartupInit()
         {
+            base.StartupInit();
+
             InitWorkerPool();
             BindWorkerMethods();
         }
 
         private void InitWorkerPool()
         {
+            Log("Initializing auth worker pool...");
+
             _authWorkerPool = new BlockingCollection<AuthWorker>();
             for (int i = 0; i < Config.DefaultWorkerPoolSize; i++)
-                _authWorkerPool.Add(new AuthWorker() { Id = i });
+                _authWorkerPool.Add(new AuthWorker(Communicator)
+                {
+                    Id = i,
+                    NewWorkerLogMessage = OnNewWorkerLogMessage,  
+                });
         }
 
         private void BindWorkerMethods()
         {
+            Log("Binding workers...");
+
             Communicator.RespondAsync<RegistrationRequest, RegistrationResponse>(request =>
                 Task.Factory.StartNew(() =>
                 {
@@ -85,19 +104,15 @@ namespace ServerAuth
 
         #endregion
 
-        #region ShutdownProcess
+        #region Disposable
 
-        protected override void ShutdownCleanUp()
+        public override void Dispose()
         {
-            _authWorkerPool.Dispose();
+            _authWorkerPool?.Dispose();
+            
+            base.Dispose();
         }
 
         #endregion
-
-        static void Main(string[] args)
-        {
-            ServerInstance = new ServerAuth();
-            ServerInstance.Start();
-        }
     }
 }

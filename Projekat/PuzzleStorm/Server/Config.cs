@@ -10,7 +10,7 @@ namespace Server
     public class Config
     {
         public static string ConnectionString => ConfigurationManager.ConnectionStrings["RabbitMQConnection"].ConnectionString;
-        public static int DefaultWorkerPoolSize => 10;
+        public static int DefaultWorkerPoolSize => 1;
 
     }
 }

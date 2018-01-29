@@ -9,6 +9,7 @@ using DTOLibrary.Requests;
 using DTOLibrary.Responses;
 using DTOLibrary.SubDTOs;
 using MaterialDesignThemes.Wpf;
+using StormCommonData.Enums;
 
 namespace Client {
 
@@ -126,7 +127,7 @@ namespace Client {
                                     RoomId = room.RoomId,
                                     Name = "Room #" + room.RoomId,
                                     By = room.CreatorUsername,
-                                    Difficulty = CastDifficulty(room.Level),
+                                    Difficulty = CastDifficulty(room.Difficulty),
                                     MaxPlayers = room.MaxPlayers.ToString(),
                                     Rounds = room.NumberOfRounds.ToString(),
                                     Visibility = Visibility.Visible
@@ -156,11 +157,11 @@ namespace Client {
         private string CastDifficulty(PuzzleDifficulty level) {
             switch (level)
             {
-                case PuzzleDifficulty.Begginer:
+                case PuzzleDifficulty.Easy:
                     return 16.ToString();
-                case PuzzleDifficulty.Intermediate:
+                case PuzzleDifficulty.Medium:
                     return 25.ToString();
-                case PuzzleDifficulty.Advanced:
+                case PuzzleDifficulty.Hard:
                     return 36.ToString();
                 default:
                     return "X";

@@ -47,20 +47,18 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.IO.Compression" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Broadcasts\BroadcastMessage.cs" />
     <Compile Include="Broadcasts\RoomsStateUpdate.cs" />
     <Compile Include="Broadcasts\RoomPlayerUpdate.cs" />
     <Compile Include="Enums\OperationStatus.cs" />
-    <Compile Include="Enums\PuzzleDifficulty.cs" />
     <Compile Include="Enums\RoomPlayerUpdateType.cs" />
     <Compile Include="Enums\RoomUpdateType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Requests\ChangeRoomPropertiesRequest.cs" />
     <Compile Include="Requests\CreateRoomRequest.cs" />
-    <Compile Include="Requests\DeleteRoomRequest.cs" />
+    <Compile Include="Requests\CancelRoomRequest.cs" />
     <Compile Include="Requests\GetAllRoomsRequest.cs" />
     <Compile Include="Requests\JoinRoomRequest.cs" />
     <Compile Include="Requests\LoginRequest.cs" />
@@ -72,7 +70,7 @@
     <Compile Include="Requests\SignOutRequest.cs" />
     <Compile Include="Responses\ChangeRoomPropertiesResponse.cs" />
     <Compile Include="Responses\CreateRoomResponse.cs" />
-    <Compile Include="Responses\DeleteRoomResponse.cs" />
+    <Compile Include="Responses\CancelRoomResponse.cs" />
     <Compile Include="Responses\GetAllRoomsResponse.cs" />
     <Compile Include="Responses\JoinRoomResponse.cs" />
     <Compile Include="Responses\LoginResponse.cs" />
@@ -84,9 +82,9 @@
     <Compile Include="SubDTOs\RoomInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DataLayer\DataLayer.csproj">
-      <Project>{5E62366A-C52F-43C2-9A38-F49705C89166}</Project>
-      <Name>DataLayer</Name>
+    <ProjectReference Include="..\StormCommonData\StormCommonData.csproj">
+      <Project>{74f9a2fc-687c-4c7b-a051-93ef8ec4f144}</Project>
+      <Name>StormCommonData</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -9,12 +9,6 @@ namespace DataLayer.Persistence.EntityTypeConfigurations
         {
             HasMany(r => r.ListOfPlayers)
                 .WithOptional(p => p.CurrentRoom);
-
-            HasMany(r => r.ListOfPuzzles)
-                .WithOptional(p => p.RoomOfPuzzle);
-
-            HasOptional(r => r.CurrentGame)
-                .WithRequired(g => g.RoomForThisGame);
         }
     }
 }
