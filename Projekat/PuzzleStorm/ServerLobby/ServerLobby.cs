@@ -140,7 +140,48 @@ namespace ServerLobby
                         _lobbyWorkerPool.Add(worker);
                     }
                 }));
-                
+
+            Communicator.RespondAsync<ChangeStatusRequest, ChangeStatusResponse>(request =>
+                Task.Factory.StartNew(() =>
+                {
+                    var worker = _lobbyWorkerPool.Take();
+                    try
+                    {
+                        return worker.ChangeStatus(request);
+                    }
+                    finally
+                    {
+                        _lobbyWorkerPool.Add(worker);
+                    }
+                }));
+
+            Communicator.RespondAsync<LeaveRoomRequest, LeaveRoomResponse>(request =>
+                Task.Factory.StartNew(() =>
+                {
+                    var worker = _lobbyWorkerPool.Take();
+                    try
+                    {
+                        return worker.LeaveRoom(request);
+                    }
+                    finally
+                    {
+                        _lobbyWorkerPool.Add(worker);
+                    }
+                }));
+
+            Communicator.RespondAsync<StartRoomRequest, StartRoomResponse>(request =>
+                Task.Factory.StartNew(() =>
+                {
+                    var worker = _lobbyWorkerPool.Take();
+                    try
+                    {
+                        return worker.StartRoom(request);
+                    }
+                    finally
+                    {
+                        _lobbyWorkerPool.Add(worker);
+                    }
+                }));
         }
 
         #endregion
