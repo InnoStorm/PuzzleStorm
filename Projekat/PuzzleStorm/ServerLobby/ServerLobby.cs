@@ -182,6 +182,20 @@ namespace ServerLobby
                         _lobbyWorkerPool.Add(worker);
                     }
                 }));
+
+            Communicator.RespondAsync<AddPuzzlesRequest, AddPuzzlesResponse>(request =>
+                Task.Factory.StartNew(() =>
+                {
+                    var worker = _lobbyWorkerPool.Take();
+                    try
+                    {
+                        return worker.AddPuzzlesToDatabase(request);
+                    }
+                    finally
+                    {
+                        _lobbyWorkerPool.Add(worker);
+                    }
+                }));
         }
 
         #endregion

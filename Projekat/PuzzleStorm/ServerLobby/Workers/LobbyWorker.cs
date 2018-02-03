@@ -17,6 +17,7 @@ using EasyNetQ;
 using StormCommonData;
 using StormCommonData.Enums;
 using Player = DataLayer.Core.Domain.Player;
+using System.IO;
 
 namespace ServerLobby.Workers
 {
@@ -544,6 +545,73 @@ namespace ServerLobby.Workers
                 UpdateType = updateType
             };
         }
+
+        public AddPuzzlesResponse AddPuzzlesToDatabase(AddPuzzlesRequest request)
+        {
+            try
+            {
+                using (UnitOfWork data = WorkersUnitOfWork)
+                {
+                    for (int i = 1; i <= 5; ++i)
+                    {
+                        for (int j = 4; j <= 6; ++j)
+                        {
+                            string folderForPuzzle = @"..\..\..\Images\" + i;
+                            string nameOfPicture = Directory.GetFiles(folderForPuzzle)[0].Contains("ini") ? Directory.GetFiles(folderForPuzzle)[1] : Directory.GetFiles(folderForPuzzle)[0];
+
+                            PuzzleData puzzle = new PuzzleData()
+                            {
+                                PicturePath = nameOfPicture,
+                                NumberOfPieces = j * j
+                            };
+
+                            data.Puzzles.Add(puzzle);
+                            data.Complete();
+
+                            Log($"[SUCCESS] Successfully created puzzle with Id {puzzle.Id}");
+
+                            string folderForParts = folderForPuzzle + "\\" + j * j;
+                            string[] namesOfParts = Directory.GetFiles(folderForParts);
+                            var listOfNames = new List<string>(namesOfParts);
+
+                            if (listOfNames.ElementAt(0).Contains("ini"))
+                                listOfNames.RemoveAt(0);
+
+                            for (int k = 0; k < listOfNames.Count; ++k)
+                            {
+                                PieceData piece = new PieceData()
+                                {
+                                    PartPath = listOfNames[k],
+                                    SeqNumber = k + 1,
+                                    ParentPuzzle = puzzle
+                                };
+
+                                data.Pieces.Add(piece);
+                                data.Complete();
+                            }
+
+                            Log($"[SUCCESS] Successfully added pieces for puzzle with Id {puzzle.Id}");
+                        }
+                    }
+                    
+                    return new AddPuzzlesResponse()
+                    {
+                        Status = OperationStatus.Successfull,
+                        Details = "Successfull."
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                Log($"[FAILED] Problem: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
+
+                return new AddPuzzlesResponse()
+                {
+                    Status = OperationStatus.Failed,
+                    Details = ex.Message
+                };
+            }
+            }
 
         #endregion        
     }

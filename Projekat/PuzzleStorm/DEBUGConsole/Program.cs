@@ -39,6 +39,7 @@ namespace DEBUGConsole
                         $"5. Invalid Signout()" + Environment.NewLine +
                         $"6. Valid Signout()" + Environment.NewLine +
                         $"7. Test Function()" + Environment.NewLine +
+                        $"8. Add puzzles to database()" + Environment.NewLine +
                         Environment.NewLine +
                         $"0. Exit");
 
@@ -70,6 +71,9 @@ namespace DEBUGConsole
                             break;
                         case "7":
                             TestFunction();
+                            break;
+                        case "8":
+                            AddPuzzlesToDatabase();
                             break;
 
                         default:
@@ -240,6 +244,11 @@ namespace DEBUGConsole
                 RoomId = soba
             });
 
+        }
+
+        private static void AddPuzzlesToDatabase()
+        {
+            object response = rabbit.Request<AddPuzzlesRequest, AddPuzzlesResponse>(new AddPuzzlesRequest());
         }
     }
 }
