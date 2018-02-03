@@ -15,7 +15,7 @@ namespace DataLayer.Persistence.Repositories
 
         public PuzzleData GetPuzzle(int numberOfPieces)
         {
-            return SingleOrDefault(x => x.NumberOfPieces == numberOfPieces);
+            return FirstOrDefault(x => x.NumberOfPieces == numberOfPieces);
         }
     }
 }

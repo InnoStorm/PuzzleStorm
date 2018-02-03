@@ -40,6 +40,8 @@ namespace DEBUGConsole
                         $"6. Valid Signout()" + Environment.NewLine +
                         $"7. Test Function()" + Environment.NewLine +
                         $"8. Add puzzles to database()" + Environment.NewLine +
+                        $"10. Start room()" + Environment.NewLine +
+
                         Environment.NewLine +
                         $"0. Exit");
 
@@ -74,6 +76,12 @@ namespace DEBUGConsole
                             break;
                         case "8":
                             AddPuzzlesToDatabase();
+                            break;
+                        case "9":
+                            ChangeStatusForPlayer();
+                            break;
+                        case "10":
+                            StartRoom();
                             break;
 
                         default:
@@ -249,6 +257,24 @@ namespace DEBUGConsole
         private static void AddPuzzlesToDatabase()
         {
             object response = rabbit.Request<AddPuzzlesRequest, AddPuzzlesResponse>(new AddPuzzlesRequest());
+        }
+
+        private static void ChangeStatusForPlayer()
+        {
+            object response = rabbit.Request<ChangeStatusRequest, ChangeStatusResponse>(new ChangeStatusRequest()
+            {
+                RequesterId = 2,
+                IAmReady = false
+            });
+        }
+
+        private static void StartRoom()
+        {
+            object response = rabbit.Request<StartRoomRequest, StartRoomResponse>(new StartRoomRequest()
+            {
+                RequesterId = 2,
+                RoomId = 7
+            });
         }
     }
 }

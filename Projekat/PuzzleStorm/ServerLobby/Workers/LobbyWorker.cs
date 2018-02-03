@@ -455,11 +455,11 @@ namespace ServerLobby.Workers
                     var game = new Game
                     {
                         PuzzleForGame = puzzle,
+                        RoomForThisGame = room
                     };
                     data.Games.Add(game);
                     data.Complete();
-
-                    room.CurrentGame = game;
+                    
                     room.State = RoomState.Playing;
                     data.Complete();
 
@@ -473,13 +473,13 @@ namespace ServerLobby.Workers
                         GameId = game.Id,
                         PuzzleId = puzzle.Id,
                         Status = OperationStatus.Successfull,
-                        Details = $"Player {request.RequesterId} successfully left room {request.RoomId}"
+                        Details = $"Room {request.RoomId} successfully started."
                     };
                 }
             }
             catch (Exception ex)
             {
-                Log($"[FAILED] Changing status for player {request.RequesterId}, Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
+                Log($"[FAILED] Starting room {request.RoomId}, Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
 
                 return new StartRoomResponse()
                 {
