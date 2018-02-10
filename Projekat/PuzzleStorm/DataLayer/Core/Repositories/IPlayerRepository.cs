@@ -4,6 +4,7 @@ namespace DataLayer.Core.Repositories
 {
     public interface IPlayerRepository : IRepository<Player>
     {
-        Player GetPlayerWithUser(int id);
+        Player Get(string username);
+        bool IsUsernameAvailable(string username);
     }
 }

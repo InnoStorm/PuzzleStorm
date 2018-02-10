@@ -2,127 +2,127 @@
 using System.Runtime.InteropServices;
 using System.Threading;
 using EasyNetQ;
+using EasyNetQ.Loggers;
+using StormCommonData;
+using StormCommonData.Enums;
+using StormCommonData.EventArgs;
+using StormCommonData.Interfaces;
 
-namespace Server {
+namespace Server
+{
 
-    public abstract class StormServer
+    public abstract class StormServer<TServerImpl> : IDisposable, IStormServer
+        where TServerImpl : StormServer<TServerImpl>
     {
-        #region CleanExit
 
-        [DllImport("Kernel32")]
-        private static extern bool SetConsoleCtrlHandler(EventHandler handler, bool add);
+        #region Singleton
+        private static readonly Lazy<TServerImpl> _instance = new Lazy<TServerImpl>(CreateInstanceOfServer);
 
-        private delegate bool EventHandler(CtrlType sig);
-
-        static EventHandler _handler;
-
-        enum CtrlType
+        private static TServerImpl CreateInstanceOfServer()
         {
-            CTRL_C_EVENT = 0,
-            CTRL_BREAK_EVENT = 1,
-            CTRL_CLOSE_EVENT = 2,
-            CTRL_LOGOFF_EVENT = 5,
-            CTRL_SHUTDOWN_EVENT = 6
+            return Activator.CreateInstance(typeof(TServerImpl), true) as TServerImpl;
         }
 
-        private static bool Handler(CtrlType sig)
-        {
-            switch (sig)
-            {
-                case CtrlType.CTRL_C_EVENT:
-                case CtrlType.CTRL_LOGOFF_EVENT:
-                case CtrlType.CTRL_SHUTDOWN_EVENT:
-                case CtrlType.CTRL_CLOSE_EVENT:
-                case CtrlType.CTRL_BREAK_EVENT:
-                    ServerInstance.Shutdown();
-                    return false;
-                default:
-                    return false;
-            }
-        }
+        public static TServerImpl Instance => _instance.Value;
 
-        protected static StormServer ServerInstance { get; set; }
+        protected StormServer(){}
 
-        protected StormServer()
-        {
-            ServerInstance = this;
-        }
         #endregion
-        
+
+        #region Properties
+
         protected IBus Communicator;
 
-        public bool ServerRunning { get; protected set; }
+        public bool IsRunning { get; protected set; }
 
+        #endregion
 
-        protected virtual void Startup()
-        {
-            Log("Starting server...");
+        #region Startup / Shutdown
 
-            //CleanExit event handler
-            _handler += new EventHandler(Handler);
-            SetConsoleCtrlHandler(_handler, true);
-
-            Log("Connecting to RabbitMQ system...");
-            Communicator = RabbitHutch.CreateBus(Config.ConnectionString);
-            Log("Connected");
-
-            StartupInit();
-
-            ServerRunning = true;
-        }
-
-        protected abstract void StartupInit();
-
-
-        private void MainLoop()
-        {
-            Log("Server is running...");
-            Log("Press CTRL + C to shutdown " + Environment.NewLine);
-
-            while (ServerRunning)
-            {
-                Thread.Sleep(100);
-            }
-
-            Thread.Sleep(750);
-        }
-
-
-        private void Shutdown()
-        {
-            if (!ServerRunning) return;
-
-            Log("Shuting down server...");
-
-            ShutdownCleanUp();
-            Communicator?.Dispose();
-
-            ServerRunning = false;
-
-            Log("Server is down");
-        }
-
-        protected abstract void ShutdownCleanUp();
-       
-        
         public void Start()
         {
-            if (ServerRunning) return;
+            if (IsRunning)
+            {
+                Log("Trying to start server that is already started.", LogMessageType.Warning);
+                return;
+            }
 
-            Startup();
-            MainLoop();
+            Log("Starting server...");
+            
+            StartupInit();
+
+            IsRunning = true;
+
+            Log("Server is running...");
+        }
+
+        protected virtual void StartupInit()
+        {
+            Log("Connecting to RabbitMQ system...");
+
+            Communicator = RabbitHutch.CreateBus(Config.ConnectionString);
+
+            Log("Connected");
         }
 
         public void Stop()
         {
-            if (!ServerRunning) return;
+            if (!IsRunning)
+            {
+                Log("Trying to shutdown server that is already shutdown.", LogMessageType.Warning);
+                return;
+            }
 
-            Shutdown();
+            Log("Shutting down...");
+
+            ShutdownCleanup();
+            
+            IsRunning = false;
+            Log("Server is down");
         }
 
-        protected void Log(string message)
+        protected virtual void ShutdownCleanup()
         {
-            Console.WriteLine($"[{DateTime.Now}] {message}");
+            Dispose();
         }
+        
+        #endregion
+
+        #region AbstractMethods
+
+        #endregion
+
+        #region Disposable
+
+        public virtual void Dispose()
+        {
+            Communicator?.Dispose();
+        }
+
+        #endregion
+
+        #region Events
+
+        public event EventHandler<LogMessageArgs> NewLogMessage;
+
+        protected virtual void OnNewLogMessage(LogMessageArgs msg)
+            => NewLogMessage?.Invoke(this, msg);
+
+        protected void OnNewWorkerLogMessage(object sender, LogMessageArgs msg)
+            => OnNewLogMessage(msg);
+
+        #endregion
+
+        #region Utilities
+
+        protected virtual void Log(string message, LogMessageType type = LogMessageType.Info)
+        {
+            OnNewLogMessage(new LogMessageArgs(
+                message: $@"[{DateTime.Now}] {message}",
+                type: type
+            ));
+        }
+
+        #endregion
     }
 }

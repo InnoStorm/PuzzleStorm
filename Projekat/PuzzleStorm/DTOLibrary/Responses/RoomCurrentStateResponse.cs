@@ -3,16 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DTOLibrary.Enums;
 using DTOLibrary.SubDTOs;
+using StormCommonData.Enums;
 
 namespace DTOLibrary.Responses
 {
     public class RoomCurrentStateResponse : Response
     {
-        public PuzzleDifficulty Level { get; set; }
+        public PuzzleDifficulty Difficulty { get; set; }
         public int NumberOfRounds { get; set; }
         public int MaxPlayers { get; set; }
         public List<Player> Players { get; set; }
+
+        public RoomCurrentStateResponse()
+        {
+            Players = new List<Player>();
+        }
     }
 }

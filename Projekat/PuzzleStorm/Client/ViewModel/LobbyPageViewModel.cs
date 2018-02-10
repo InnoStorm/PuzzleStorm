@@ -82,15 +82,15 @@ namespace Client
 
         #region DeleteRoom
 
-        private DeleteRoomResponse DeleteRoomTask(DeleteRoomRequest request)
+        private CancelRoomResponse DeleteRoomTask(CancelRoomRequest request)
         {
             try
             {
-                return RabbitBus.Instance.Bus.Request<DeleteRoomRequest, DeleteRoomResponse>(request);
+                return RabbitBus.Instance.Bus.Request<CancelRoomRequest, CancelRoomResponse>(request);
             }
             catch (Exception ex)
             {
-                return new DeleteRoomResponse()
+                return new CancelRoomResponse()
                 {
                     Status = OperationStatus.Exception,
                     Details = ex.Message
@@ -101,13 +101,13 @@ namespace Client
         private async Task DeleteRoomAsync()
         {
 
-            DeleteRoomRequest request = new DeleteRoomRequest()
+            CancelRoomRequest request = new CancelRoomRequest()
             {
                 RequesterId = Player.Instance.Id,
                 RoomId = Player.Instance.RoomId
             };
 
-            Task<DeleteRoomResponse> task = new Task<DeleteRoomResponse>(() => DeleteRoomTask(request));
+            Task<CancelRoomResponse> task = new Task<CancelRoomResponse>(() => DeleteRoomTask(request));
             task.Start();
 
             //UI
@@ -116,7 +116,7 @@ namespace Client
                 Message = {Text = "Deleting a room.."}
             };
 
-            DeleteRoomResponse response = null;
+            CancelRoomResponse response = null;
 
             await DialogHost.Show(popup, async delegate(object sender, DialogOpenedEventArgs args)
             {

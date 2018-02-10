@@ -16,8 +16,14 @@ using DTOLibrary.Broadcasts;
 
 namespace ServerLobby
 {
-    class ServerLobby : StormServer
+    public class ServerLobby : StormServer<ServerLobby>
     {
+        #region Singleton
+
+        private ServerLobby() { }
+
+        #endregion
+
         #region Worker Pools
 
         private BlockingCollection<LobbyWorker> _lobbyWorkerPool;
@@ -28,19 +34,29 @@ namespace ServerLobby
 
         protected override void StartupInit()
         {
+            base.StartupInit();
+
             InitWorkerPool();
             BindWorkerMethods();
         }
 
         private void InitWorkerPool()
         {
+            Log("Initializing lobby worker pool...");
+
             _lobbyWorkerPool = new BlockingCollection<LobbyWorker>();
             for (int i = 0; i < Config.DefaultWorkerPoolSize; i++)
-                _lobbyWorkerPool.Add(new LobbyWorker() { Id = i, Communicator = Communicator });
+                _lobbyWorkerPool.Add(new LobbyWorker(Communicator)
+                {
+                    Id = i,
+                    NewWorkerLogMessage = OnNewWorkerLogMessage
+                });
         }
 
         private void BindWorkerMethods()
         {
+            Log("Binding workers...");
+
             Communicator.RespondAsync<RoomCurrentStateRequest, RoomCurrentStateResponse>(request =>
                  Task.Factory.StartNew(() =>
                  {
@@ -69,13 +85,13 @@ namespace ServerLobby
                      }
                  }));
 
-            Communicator.RespondAsync<DeleteRoomRequest, DeleteRoomResponse>(request =>
+            Communicator.RespondAsync<CancelRoomRequest, CancelRoomResponse>(request =>
                  Task.Factory.StartNew(() =>
                  {
                      var worker = _lobbyWorkerPool.Take();
                      try
                      {
-                         return worker.DeleteRoom(request);
+                         return worker.CancelRoom(request);
                      }
                      finally
                      {
@@ -124,26 +140,75 @@ namespace ServerLobby
                         _lobbyWorkerPool.Add(worker);
                     }
                 }));
-                
+
+            Communicator.RespondAsync<ChangeStatusRequest, ChangeStatusResponse>(request =>
+                Task.Factory.StartNew(() =>
+                {
+                    var worker = _lobbyWorkerPool.Take();
+                    try
+                    {
+                        return worker.ChangeStatus(request);
+                    }
+                    finally
+                    {
+                        _lobbyWorkerPool.Add(worker);
+                    }
+                }));
+
+            Communicator.RespondAsync<LeaveRoomRequest, LeaveRoomResponse>(request =>
+                Task.Factory.StartNew(() =>
+                {
+                    var worker = _lobbyWorkerPool.Take();
+                    try
+                    {
+                        return worker.LeaveRoom(request);
+                    }
+                    finally
+                    {
+                        _lobbyWorkerPool.Add(worker);
+                    }
+                }));
+
+            Communicator.RespondAsync<StartRoomRequest, StartRoomResponse>(request =>
+                Task.Factory.StartNew(() =>
+                {
+                    var worker = _lobbyWorkerPool.Take();
+                    try
+                    {
+                        return worker.StartRoom(request);
+                    }
+                    finally
+                    {
+                        _lobbyWorkerPool.Add(worker);
+                    }
+                }));
+
+            Communicator.RespondAsync<AddPuzzlesRequest, AddPuzzlesResponse>(request =>
+                Task.Factory.StartNew(() =>
+                {
+                    var worker = _lobbyWorkerPool.Take();
+                    try
+                    {
+                        return worker.AddPuzzlesToDatabase(request);
+                    }
+                    finally
+                    {
+                        _lobbyWorkerPool.Add(worker);
+                    }
+                }));
         }
 
         #endregion
 
-        #region ShutdownProcess
+        #region Disposable
 
-        protected override void ShutdownCleanUp()
+        public override void Dispose()
         {
-            _lobbyWorkerPool.Dispose();
+            _lobbyWorkerPool?.Dispose();
+
+            base.Dispose();
         }
 
         #endregion
-
-        static void Main(string[] args)
-        {
-            ServerInstance = new ServerLobby();
-            ServerInstance.Start();
-        }
-
-
     }
 }

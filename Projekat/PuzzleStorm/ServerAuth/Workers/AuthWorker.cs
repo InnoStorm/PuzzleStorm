@@ -3,43 +3,50 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using DataLayer.Core.Domain;
 using DataLayer.Persistence;
 using DTOLibrary.Enums;
 using DTOLibrary.Requests;
 using DTOLibrary.Responses;
+using EasyNetQ;
+using Server;
 using Server.Workers;
+using StormCommonData.Enums;
+using StormCommonData;
 
 namespace ServerAuth.Workers
 {
     class AuthWorker : Worker
     {
+        public AuthWorker(IBus communicator) : base(communicator)
+        {
+        }
+
         public RegistrationResponse Register(RegistrationRequest request)
         {
             try
             {
-                using (UnitOfWork data = CreateUnitOfWork())
-                {
-                    if (data.Users.UsernameExists(request.Username))
-                        throw new Exception("Username is already in use!");
-                    if (request.Password == string.Empty)
-                        throw new Exception("Password can not be empty!");
+                StormValidator.ValidateRequest(request);
 
-                    var newUser = new User
+                using (UnitOfWork data = WorkersUnitOfWork)
+                {
+                    if (!data.Players.IsUsernameAvailable(request.Username))
+                        throw new Exception("Username is not available!");
+
+                    var newPlayer = new Player()
                     {
                         Username = request.Username,
                         Password = request.Password,
-                        Email = request.Email
+                        Email = request.Email,
+
                     };
 
-                    data.Users.Add(newUser);
+                    data.Players.Add(newPlayer);
                     data.Complete();
 
-                    data.Users.MakePlayerForUser(newUser.Id);
-                    data.Complete();
-
-                    WorkerLog($"Successfull registration for username: { request.Username}");
+                    Log($"[SUCCESS] Registration for: {request.Username}");
 
                     return new RegistrationResponse()
                     {
@@ -51,7 +58,8 @@ namespace ServerAuth.Workers
             }
             catch (Exception ex)
             {
-                WorkerLog($"Failed registration for username: {request.Username}; Reason: {ex.Message}");
+                Log($"[FAILED] Registration for: {request.Username}; Reason: {StormUtils.FlattenException(ex)}",
+                    LogMessageType.Error);
 
                 return new RegistrationResponse()
                 {
@@ -66,24 +74,32 @@ namespace ServerAuth.Workers
         {
             try
             {
+                StormValidator.ValidateRequest(request);
+
                 using (var data = new UnitOfWork(new StormContext()))
                 {
-                    if (!data.Users.UsernameExists(request.Username))
-                        throw new Exception("Username not found!");
+                    var player = data.Players.Get(request.Username);
 
+                    if (player == null)
+                        throw new Exception($"Player with username {request.Username} not found!");
+                    
+                    if (player.Password != request.Password)
+                        throw new Exception("Wrong password");
 
-                    User user = data.Users.FindByUsername(request.Username);
-                    if (user.Password != request.Password)
-                        throw new Exception("Password does not match!");
+                    player.IsLogged = true;
+                    player.AuthToken = Guid.NewGuid().ToString();
+                    player.CurrentRoom = null;
+                    player.IsReady = false;
+                    player.Score = 0;
 
-                    user.IsLogged = true;
                     data.Complete();
 
-                    WorkerLog($"Successfull login for username: {request.Username};");
+                    Log($"[SUCCESS] Login for username: {request.Username}");
+
                     return new LoginResponse()
                     {
-                        PlayerId = user.PlayerForUser.Id,
-                        AuthToken = request.Username,
+                        PlayerId = player.Id,
+                        AuthToken = player.AuthToken,
                         Status = OperationStatus.Successfull,
                         Details = "Successfull login"
                     };
@@ -91,7 +107,7 @@ namespace ServerAuth.Workers
             }
             catch (Exception ex)
             {
-                WorkerLog($"Failed login for username: {request.Username}; Reason: {ex.Message}");
+                Log($"[FAILED] Login for username: {request.Username}; Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
                 return new LoginResponse()
                 {
                     AuthToken = "",
@@ -105,28 +121,35 @@ namespace ServerAuth.Workers
         {
             try
             {
-                using (UnitOfWork data = CreateUnitOfWork())
+                StormValidator.ValidateRequest(request);
+
+                using (UnitOfWork data = WorkersUnitOfWork)
                 {
-                    Player player = data.Players.Find(x => x.Id == request.RequesterId).Single();
+                    Player player = data.Players.Get(request.RequesterId);
+
                     if (player == null)
-                        throw new Exception("User not found!");
+                        throw new Exception("User not found! Can not signout!");
 
+                    player.AuthToken = "";
+                    player.CurrentRoom = null;
+                    player.IsLogged = false;
+                    player.IsReady = false;
+                    player.Score = 0;
 
-                    player.UserForPlayer.IsLogged = false;
                     data.Complete();
 
-                    WorkerLog($"Successfull signout for username: { player.UserForPlayer.Username}");
+                    Log($"[SUCCESS] Signout for username: { player.Username}");
 
                     return new SignOutResponse()
                     {
                         Status = OperationStatus.Successfull,
-                        Details = "Successful Signout!"
+                        Details = "Successful Signout."
                     };
                 }
             }
             catch (Exception ex)
             {
-                WorkerLog($"Failed Signout; Reason: {ex.Message}");
+                Log($"[FAILED] Signout. Reason: {StormUtils.FlattenException(ex)}.", LogMessageType.Error);
 
                 return new SignOutResponse()
                 {

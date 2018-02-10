@@ -10,13 +10,6 @@ namespace DataLayer.Persistence.Repositories
                 
         }
 
-
-
-
-
-        public StormContext StormContext
-        {
-            get { return Context as StormContext; }
-        }
+        public StormContext StormContext => Context as StormContext;
     }
 }
