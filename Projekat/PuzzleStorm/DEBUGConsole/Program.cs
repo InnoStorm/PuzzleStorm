@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using Communicator;
+using DTOLibrary.Broadcasts;
 using DTOLibrary.Requests;
 using DTOLibrary.Responses;
 using DTOLibrary.SubDTOs;
 using EasyNetQ;
 using StormCommonData.Enums;
+using StormCommonData.Events;
 
 namespace DEBUGConsole
 {
@@ -19,85 +22,107 @@ namespace DEBUGConsole
 
         private static IBus rabbit;
 
+        //static void Main(string[] args)
+        //{
+        //    try
+        //    {
+        //        rabbit = RabbitHutch.CreateBus(ConnectionString);
+
+        //        bool loop = true;
+
+        //        while (loop)
+        //        {
+        //            Console.Clear();
+        //            Console.WriteLine("Choose option:");
+        //            Console.WriteLine(
+        //                $"1. Invalid Registration()" + Environment.NewLine +
+        //                $"2. Valid Registration()" + Environment.NewLine +
+        //                $"3. Invalid Login()" + Environment.NewLine +
+        //                $"4. Valid Login()" + Environment.NewLine +
+        //                $"5. Invalid Signout()" + Environment.NewLine +
+        //                $"6. Valid Signout()" + Environment.NewLine +
+        //                $"7. Test Function()" + Environment.NewLine +
+        //                $"8. Add puzzles to database()" + Environment.NewLine +
+        //                $"10. Start room()" + Environment.NewLine +
+
+        //                Environment.NewLine +
+        //                $"0. Exit");
+
+        //            string input = Console.ReadLine();
+        //            Console.WriteLine("Executing...");
+
+        //            switch (input)
+        //            {
+        //                case "0":
+        //                    loop = false;
+        //                    break;
+        //                case "1":
+        //                    RegistrationInvalid();
+        //                    break;
+        //                case "2":
+        //                    RegistrationValid();
+        //                    break;
+        //                case "3":
+        //                    LoginInvalid();
+        //                    break;
+        //                case "4":
+        //                    LoginValid();
+        //                    break;
+        //                case "5":
+        //                    SignOutInvalid();
+        //                    break;
+        //                case "6":
+        //                    SignOutValid();
+        //                    break;
+        //                case "7":
+        //                    TestFunction();
+        //                    break;
+        //                case "8":
+        //                    AddPuzzlesToDatabase();
+        //                    break;
+        //                case "9":
+        //                    ChangeStatusForPlayer();
+        //                    break;
+        //                case "10":
+        //                    StartRoom();
+        //                    break;
+
+        //                default:
+        //                    break;
+        //            }
+        //        }               
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine($"Greska: {ex.Message}");
+        //        Console.WriteLine($"Vise: {ex.InnerException?.Message}");
+        //    }
+        //    finally
+        //    {
+        //        rabbit.Dispose();
+        //    }
+        //}
+
         static void Main(string[] args)
         {
-            try
+            using (var api = Communicator.API.Instance)
             {
-                rabbit = RabbitHutch.CreateBus(ConnectionString);
+                api.RequesterId = 3;
+                var subscription = api.SubscribeRoomChanges(RoomChangesHandler, "Room.#");
+                
+                Console.WriteLine("Subscribed...");
+                Console.ReadKey();
 
-                bool loop = true;
+                api.Unsubscribe(subscription);
 
-                while (loop)
-                {
-                    Console.Clear();
-                    Console.WriteLine("Choose option:");
-                    Console.WriteLine(
-                        $"1. Invalid Registration()" + Environment.NewLine +
-                        $"2. Valid Registration()" + Environment.NewLine +
-                        $"3. Invalid Login()" + Environment.NewLine +
-                        $"4. Valid Login()" + Environment.NewLine +
-                        $"5. Invalid Signout()" + Environment.NewLine +
-                        $"6. Valid Signout()" + Environment.NewLine +
-                        $"7. Test Function()" + Environment.NewLine +
-                        $"8. Add puzzles to database()" + Environment.NewLine +
-                        $"10. Start room()" + Environment.NewLine +
-
-                        Environment.NewLine +
-                        $"0. Exit");
-
-                    string input = Console.ReadLine();
-                    Console.WriteLine("Executing...");
-
-                    switch (input)
-                    {
-                        case "0":
-                            loop = false;
-                            break;
-                        case "1":
-                            RegistrationInvalid();
-                            break;
-                        case "2":
-                            RegistrationValid();
-                            break;
-                        case "3":
-                            LoginInvalid();
-                            break;
-                        case "4":
-                            LoginValid();
-                            break;
-                        case "5":
-                            SignOutInvalid();
-                            break;
-                        case "6":
-                            SignOutValid();
-                            break;
-                        case "7":
-                            TestFunction();
-                            break;
-                        case "8":
-                            AddPuzzlesToDatabase();
-                            break;
-                        case "9":
-                            ChangeStatusForPlayer();
-                            break;
-                        case "10":
-                            StartRoom();
-                            break;
-
-                        default:
-                            break;
-                    }
-                }               
+                Console.WriteLine("Unsubscribed..");
+                Console.ReadKey();
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Greska: {ex.Message}");
-                Console.WriteLine($"Vise: {ex.InnerException?.Message}");
-            }
-            finally
-            {
-                rabbit.Dispose();
-            }
+        }
+
+        private static void RoomChangesHandler(object sender, PuzzleStormEventArgs<RoomsStateUpdate> e)
+        {
+            Console.WriteLine("New Update: " + e.Data.UpdateType);
         }
 
         private static void SignOutValid()

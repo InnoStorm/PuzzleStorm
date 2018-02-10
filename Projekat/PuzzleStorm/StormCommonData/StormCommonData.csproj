@@ -45,6 +45,7 @@
     <Compile Include="Enums\PuzzleDifficulty.cs" />
     <Compile Include="Enums\RoomState.cs" />
     <Compile Include="Events\LogMessageArgs.cs" />
+    <Compile Include="Events\PuzzleStormEventArgs.cs" />
     <Compile Include="Interfaces\IStormServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StormUtils.cs" />

@@ -63,7 +63,7 @@ namespace ServerLobby
                      var worker = _lobbyWorkerPool.Take();
                      try
                      {
-                         return worker.GiveInfoAboutRoom(request);
+                         return worker.GetRoomState(request);
                      }
                      finally
                      {
@@ -105,7 +105,7 @@ namespace ServerLobby
                      var worker = _lobbyWorkerPool.Take();
                      try
                      {
-                         return worker.JoinRoom(request);
+                         return worker.PlayerJoinRoom(request);
                      }
                      finally
                      {
@@ -133,7 +133,7 @@ namespace ServerLobby
                     var worker = _lobbyWorkerPool.Take();
                     try
                     {
-                        return worker.GetAllRooms(request);
+                        return worker.GetAvailableRooms(request);
                     }
                     finally
                     {
@@ -147,7 +147,7 @@ namespace ServerLobby
                     var worker = _lobbyWorkerPool.Take();
                     try
                     {
-                        return worker.ChangeStatus(request);
+                        return worker.PlayerChangeStatus(request);
                     }
                     finally
                     {
@@ -161,7 +161,7 @@ namespace ServerLobby
                     var worker = _lobbyWorkerPool.Take();
                     try
                     {
-                        return worker.LeaveRoom(request);
+                        return worker.PlayerLeaveRoom(request);
                     }
                     finally
                     {
