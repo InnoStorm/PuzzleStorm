@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2002
+VisualStudioVersion = 15.0.26228.9
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{A1234379-1BBF-4E24-AF33-3E40B9216073}"
 EndProject
@@ -21,9 +21,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerAuth", "ServerAuth\Se
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerLobby", "ServerLobby\ServerLobby.csproj", "{F851AD00-226D-46D3-9977-21BD0E50D3FC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StormCommonData", "StormCommonData\StormCommonData.csproj", "{74F9A2FC-687C-4C7B-A051-93EF8EC4F144}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerAdminPanel", "ServerAdminPanel\ServerAdminPanel.csproj", "{C167FDDB-463F-48BE-BEAB-C011C34BE4E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StormCommonData", "StormCommonData\StormCommonData.csproj", "{A13319C1-DBA7-42C8-B5D2-6D96B3316B01}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -67,14 +67,14 @@ Global
 		{F851AD00-226D-46D3-9977-21BD0E50D3FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F851AD00-226D-46D3-9977-21BD0E50D3FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F851AD00-226D-46D3-9977-21BD0E50D3FC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{74F9A2FC-687C-4C7B-A051-93EF8EC4F144}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{74F9A2FC-687C-4C7B-A051-93EF8EC4F144}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{74F9A2FC-687C-4C7B-A051-93EF8EC4F144}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{74F9A2FC-687C-4C7B-A051-93EF8EC4F144}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C167FDDB-463F-48BE-BEAB-C011C34BE4E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C167FDDB-463F-48BE-BEAB-C011C34BE4E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C167FDDB-463F-48BE-BEAB-C011C34BE4E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C167FDDB-463F-48BE-BEAB-C011C34BE4E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A13319C1-DBA7-42C8-B5D2-6D96B3316B01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A13319C1-DBA7-42C8-B5D2-6D96B3316B01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A13319C1-DBA7-42C8-B5D2-6D96B3316B01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A13319C1-DBA7-42C8-B5D2-6D96B3316B01}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
