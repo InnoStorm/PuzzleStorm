@@ -106,7 +106,8 @@ namespace ServerLobby.Workers
                             CreatorUsername = room.Owner.Username,
                             Difficulty = room.Difficulty,
                             MaxPlayers = room.MaxPlayers,
-                            NumberOfRounds = room.NumberOfRounds
+                            NumberOfRounds = room.NumberOfRounds,
+                            IsPublic = room.IsPublic
                         });
                     }
 

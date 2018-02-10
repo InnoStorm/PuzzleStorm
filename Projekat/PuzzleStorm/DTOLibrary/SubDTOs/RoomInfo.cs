@@ -14,5 +14,6 @@ namespace DTOLibrary.SubDTOs
         public PuzzleDifficulty Difficulty { get; set; }
         public int MaxPlayers { get; set; }
         public int NumberOfRounds { set; get; }
+        public bool IsPublic { get; set; }
     }
 }
