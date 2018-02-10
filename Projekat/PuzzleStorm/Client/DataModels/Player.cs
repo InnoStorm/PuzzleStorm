@@ -13,7 +13,7 @@ namespace Client {
 
         public int RoomId { get; set; }
 
-        public bool Creator { get; set; } = true;
+        public bool Creator { get; set; } = false; // kad napravi sobu setuje mu se na true
 
         private Player() {
         }

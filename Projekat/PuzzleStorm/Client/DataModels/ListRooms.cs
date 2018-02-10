@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
 
 namespace Client {
@@ -7,24 +8,13 @@ namespace Client {
 
         private static ListRooms instance = null;
 
-        public List<RoomsPropsViewModel> RoomsItemsList { get; set; }
+        //public List<RoomsPropsViewModel> RoomsItemsList { get; set; }
+        public ObservableCollection<RoomsPropsViewModel> RoomsItemsList { get; set; }
 
         private ListRooms()
         {
-            RoomsItemsList = new List<RoomsPropsViewModel>()
-            {
-                new RoomsPropsViewModel()
-                {
-                    By = "Dusan",
-                    Visibility = Visibility.Visible,
-                    Difficulty = "25",
-                    Rounds = "5",
-                    MaxPlayers = "5",
-                    Name = "Room #23",
-                    RoomId = 23,
-                    Locked = false
-                }
-            };
+            //RoomsItemsList = new List<RoomsPropsViewModel>();
+            RoomsItemsList = new ObservableCollection<RoomsPropsViewModel>();
         }
 
         public static ListRooms Instance {

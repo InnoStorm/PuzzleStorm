@@ -13,7 +13,7 @@ namespace Client {
 
         #region Properties
 
-        public ApplicationPage CurrentPage { get; set; } = ApplicationPage.LobbyPage;
+        public ApplicationPage CurrentPage { get; set; } = ApplicationPage.Login;
 
         #endregion
 

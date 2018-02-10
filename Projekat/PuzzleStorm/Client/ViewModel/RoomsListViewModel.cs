@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using DTOLibrary.Broadcasts;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 using DTOLibrary.Enums;
 using EasyNetQ;
 
@@ -19,7 +22,7 @@ namespace Client {
 
         #region Properties
 
-        public List<RoomsPropsViewModel> RoomsItemsList { get; set; }
+        public ObservableCollection<RoomsPropsViewModel> RoomsItemsList { get; set; }
 
         #endregion
 
@@ -60,8 +63,37 @@ namespace Client {
                         Task.Factory.StartNew(() => {
                             if (request.UpdateType == RoomUpdateType.Deleted)
                             {
-                                RoomsItemsList.RemoveAll(x => x.RoomId == request.RoomId);
-                                ListRooms.Instance.RoomsItemsList = RoomsItemsList;
+                                //var rem = RoomsItemsList.Where(x => x.RoomId == request.RoomId);
+                                //RoomsItemsList.Remove(rem);
+
+                                Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() => {
+
+                                    RoomsPropsViewModel rem = null;
+
+                                    foreach (var v in RoomsItemsList)
+                                    {
+                                        if (v.RoomId == request.RoomId)
+                                            rem = v;
+                                    }
+
+                                    if (rem != null)
+                                        RoomsItemsList.Remove(rem);
+
+                                    ListRooms.Instance.RoomsItemsList = RoomsItemsList;
+                                }));
+                            }
+                            else if (request.UpdateType == RoomUpdateType.Created)
+                            {
+                                Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                                {
+                                    RoomsItemsList.Add(new RoomsPropsViewModel()
+                                    {
+                                        By = request.Creator.Username,
+                                        RoomId = request.RoomId
+                                    });
+
+                                    ListRooms.Instance.RoomsItemsList = RoomsItemsList;
+                                }));
                             }
                         }),
                     x => x.WithTopic("#"));

@@ -91,11 +91,11 @@ namespace Client {
             if (response.Status != OperationStatus.Exception)
             {
                 if (response.Status == OperationStatus.Successfull) {
-                    var sampleMessageDialog = new SampleMessageDialog {
-                        Message = { Text = "Login Successfull!" }
-                    };
+                    //var sampleMessageDialog = new SampleMessageDialog {
+                    //    Message = { Text = "Login Successfull!" }
+                    //};
 
-                    await DialogHost.Show(sampleMessageDialog);
+                    //await DialogHost.Show(sampleMessageDialog);
 
                     Player.Instance.Id = response.PlayerId;
 

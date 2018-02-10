@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -14,9 +15,11 @@ namespace Client
     {
         #region Properties
 
-        public List<LobbyJoinedPlayerViewModel> JoinedPlayersItems { get; set; }
+        //public List<LobbyJoinedPlayerViewModel> JoinedPlayersItems { get; set; }
 
         public RoomsPropsViewModel RoomStatus { get; set; }
+
+        public ObservableCollection<LobbyJoinedPlayerViewModel> JoinedPlayersItems { get; set; }
 
         #endregion
 
@@ -41,8 +44,9 @@ namespace Client
             if (Player.Instance.Creator)
                 BackCommand = new RelayCommand(async () => await DeleteRoomAsync());
             else
-                BackCommand = new RelayCommand(async () => await DisconnectFromRoom());
+                BackCommand = new RelayCommand(async () => await DisconnectFromRoomAsync());
 
+            /*
             JoinedPlayersItems = new List<LobbyJoinedPlayerViewModel>()
             {
                 new LobbyJoinedPlayerViewModel()
@@ -61,6 +65,11 @@ namespace Client
                     Ready = false
                 }
             };
+            */
+
+            JoinedPlayersItems = new ObservableCollection<LobbyJoinedPlayerViewModel>();
+            InitPlayersAsync();
+
         }
 
         #endregion
@@ -71,7 +80,7 @@ namespace Client
         //Create button f-ja
         public void StartReadyGame()
         {
-
+            this.JoinedPlayersItems[0] = new LobbyJoinedPlayerViewModel() { Username = JoinedPlayersItems[0].Username, Ready = true};
         }
 
         private void ChangeButton() {
@@ -79,6 +88,82 @@ namespace Client
 
 
         }
+
+        #region InitPlayers
+
+        private RoomCurrentStateResponse TakePlayersTask(RoomCurrentStateRequest request) {
+
+            try {
+                return RabbitBus.Instance.Bus.Request<RoomCurrentStateRequest, RoomCurrentStateResponse>(request);
+            }
+            catch (Exception ex) {
+                return new RoomCurrentStateResponse() {
+                    Status = OperationStatus.Exception,
+                    Details = ex.Message
+                };
+            }
+        }
+
+        private async Task InitPlayersAsync()
+        {
+            RoomCurrentStateRequest request = new RoomCurrentStateRequest()
+            {
+                RequesterId = Player.Instance.Id,
+                RoomId = Player.Instance.RoomId
+            };
+
+            Task<RoomCurrentStateResponse> task = new Task<RoomCurrentStateResponse>(() => TakePlayersTask(request));
+            task.Start();
+
+            //UI LOADING 
+            var popup = new LoadingPopup() {
+                Message = { Text = "Initializing.." }
+            };
+
+            RoomCurrentStateResponse response = null;
+
+            await DialogHost.Show(popup, async delegate (object sender, DialogOpenedEventArgs args) {
+                response = await task;
+                args.Session.Close(false);
+            });
+            //
+
+            if (response.Status != OperationStatus.Exception)
+            {
+                if (response.Status == OperationStatus.Successfull)
+                {
+                    foreach (DTOLibrary.SubDTOs.Player player in response.Players)
+                    {
+                        JoinedPlayersItems.Add(
+                            new LobbyJoinedPlayerViewModel()
+                            {
+                                Username = player.Username,
+                                Ready = player.IsReady
+                            }
+                        );
+                    }
+                }
+                else
+                {
+                    var sampleMessageDialog = new SampleMessageDialog {
+                        Message = { Text = "Error!\n" + response.Details }
+                    };
+
+                    await DialogHost.Show(sampleMessageDialog);
+                }
+            }
+            else //DOSO EXCEPTION
+            {
+                var sampleMessageDialog = new SampleMessageDialog
+                {
+                    Message = {Text = "Exception: " + response.Details}
+                };
+
+                await DialogHost.Show(sampleMessageDialog);
+            }
+        }
+
+        #endregion
 
         #region DeleteRoom
 
@@ -161,8 +246,60 @@ namespace Client
 
         #region Disconnect
 
-        private Task DisconnectFromRoom() {
-            throw new NotImplementedException();
+        private LeaveRoomResponse LeaveTask(LeaveRoomRequest request) {
+            try {
+                return RabbitBus.Instance.Bus.Request<LeaveRoomRequest, LeaveRoomResponse>(request);
+            }
+            catch (Exception ex) {
+                return new LeaveRoomResponse() {
+                    Status = OperationStatus.Exception,
+                    Details = ex.Message
+                };
+            }
+        }
+
+        private async Task DisconnectFromRoomAsync() {
+
+            LeaveRoomRequest request = new LeaveRoomRequest() {
+                RequesterId = Player.Instance.Id,
+                RoomId = Player.Instance.RoomId
+            };
+
+            Task<LeaveRoomResponse> task = new Task<LeaveRoomResponse>(() => LeaveTask(request));
+            task.Start();
+
+            //UI LOADING 
+            var popup = new LoadingPopup() {
+                Message = { Text = "Leaving.. :(" }
+            };
+
+            LeaveRoomResponse response = null;
+
+            await DialogHost.Show(popup, async delegate (object sender, DialogOpenedEventArgs args) {
+                response = await task;
+                args.Session.Close(false);
+            });
+            //
+
+            if (response.Status != OperationStatus.Exception) {
+                if (response.Status == OperationStatus.Successfull)
+                    ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new MainPage();
+
+                else {
+                    var sampleMessageDialog = new SampleMessageDialog {
+                        Message = { Text = "Login error!\n" + response.Details }
+                    };
+                    await DialogHost.Show(sampleMessageDialog);
+                }
+            }
+            else //DOSO EXCEPTION
+            {
+                var sampleMessageDialog = new SampleMessageDialog {
+                    Message = { Text = "Exception: " + response.Details }
+                };
+
+                await DialogHost.Show(sampleMessageDialog);
+            }
         }
 
         #endregion

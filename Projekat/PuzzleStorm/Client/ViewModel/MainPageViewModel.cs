@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
+using DTOLibrary.Broadcasts;
 using DTOLibrary.Enums;
 using DTOLibrary.Requests;
 using DTOLibrary.Responses;
@@ -26,7 +29,7 @@ namespace Client {
 
         #region Properties
 
-        public List<RoomsPropsViewModel> RoomsItemsList { get; set; }
+        public ObservableCollection<RoomsPropsViewModel> RoomsItemsList { get; set; }
 
         public bool NoRoomLabel { get; set; } = true;
 
@@ -60,17 +63,16 @@ namespace Client {
 
             CreateNewRoomCommand = new RelayCommand(CreateNewRoom);
 
+            RoomsItemsList = new ObservableCollection<RoomsPropsViewModel>();
+
             if (ListRooms.Instance.RoomsItemsList.Count == 0)
-            {
-                RoomsItemsList = new List<RoomsPropsViewModel>();
-                NoRoomLabel = true;
                 InitializingAsync();
-            }
             else
-            {
                 RoomsItemsList = ListRooms.Instance.RoomsItemsList;
-                NoRoomLabel = false;
-            }
+
+            NoRoomLabel = false;
+
+            Subscribe();
         }
 
         private async Task InitializingAsync() {
@@ -130,7 +132,8 @@ namespace Client {
                                     Difficulty = CastDifficulty(room.Difficulty),
                                     MaxPlayers = room.MaxPlayers.ToString(),
                                     Rounds = room.NumberOfRounds.ToString(),
-                                    Visibility = Visibility.Visible
+                                    Visibility = Visibility.Visible,
+                                    Locked = !room.IsPublic
                                 }
                             );
                         }
@@ -141,7 +144,11 @@ namespace Client {
 
                 }
                 else {
-                    
+                    var sampleMessageDialog = new SampleMessageDialog {
+                        Message = { Text = "Error!\n" + response.Details }
+                    };
+
+                    await DialogHost.Show(sampleMessageDialog);
                 }
             }
             else //DOSO EXCEPTION
@@ -173,6 +180,43 @@ namespace Client {
         #endregion
 
         #region Metode
+
+        private void Subscribe() {
+            var subResult = RabbitBus.Instance.Bus.SubscribeAsync<RoomsStateUpdate>("cl_" + Player.Instance.Id,
+                    request =>
+                        Task.Factory.StartNew(() => {
+                            if (request.UpdateType == RoomUpdateType.Deleted) {
+                                //var rem = RoomsItemsList.Where(x => x.RoomId == request.RoomId);
+                                //RoomsItemsList.Remove(rem);
+
+                                Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() => {
+
+                                    RoomsPropsViewModel rem = null;
+
+                                    foreach (var v in RoomsItemsList) {
+                                        if (v.RoomId == request.RoomId)
+                                            rem = v;
+                                    }
+
+                                    if (rem != null)
+                                        RoomsItemsList.Remove(rem);
+
+                                    ListRooms.Instance.RoomsItemsList = RoomsItemsList;
+                                }));
+                            }
+                            else if (request.UpdateType == RoomUpdateType.Created) {
+                                Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() => {
+                                    RoomsItemsList.Add(new RoomsPropsViewModel() {
+                                        By = request.Creator.Username,
+                                        RoomId = request.RoomId
+                                    });
+
+                                    ListRooms.Instance.RoomsItemsList = RoomsItemsList;
+                                }));
+                            }
+                        }),
+                    x => x.WithTopic("#"));
+        }
 
         #region TriTacke
 

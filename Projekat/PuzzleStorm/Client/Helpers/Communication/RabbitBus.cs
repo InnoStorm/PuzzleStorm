@@ -5,8 +5,15 @@ namespace Client {
 
     public sealed class RabbitBus
     {
+        private const string ConnectionString =
+            "host=sheep.rmq.cloudamqp.com;" +
+            "virtualHost=ygunknwy;" +
+            "username=ygunknwy;" +
+            "password=pAncRrH8Gxk3ULDyy-Wju7NIqdBThwCJ;" +
+            "timeout=0";
+
         private static readonly Lazy<RabbitBus> BusInstance
-                            = new Lazy<RabbitBus>(() => new RabbitBus("amqp://ygunknwy:pAncRrH8Gxk3ULDyy-Wju7NIqdBThwCJ@sheep.rmq.cloudamqp.com/ygunknwy"));
+                            = new Lazy<RabbitBus>(() => new RabbitBus(ConnectionString));
         public IBus Bus { get; set; } 
 
         public static RabbitBus Instance => BusInstance.Value;
