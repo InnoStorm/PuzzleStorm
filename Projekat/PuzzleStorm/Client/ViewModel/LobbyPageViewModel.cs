@@ -26,6 +26,8 @@ namespace Client
 
         public ICommand BackCommand { get; set; }
 
+        public ICommand ChangeCommand { get; set; }
+
         #endregion
 
         #region Constuctors
@@ -33,6 +35,8 @@ namespace Client
         public LobbyPageViewModel()
         {
             StartReadyCommand = new RelayCommand(StartReadyGame);
+
+            ChangeCommand = new RelayCommand(ChangeButton);
 
             if (Player.Instance.Creator)
                 BackCommand = new RelayCommand(async () => await DeleteRoomAsync());
@@ -67,6 +71,12 @@ namespace Client
         //Create button f-ja
         public void StartReadyGame()
         {
+
+        }
+
+        private void ChangeButton() {
+            
+
 
         }
 

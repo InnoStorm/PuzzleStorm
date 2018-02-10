@@ -97,6 +97,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\ChangeSettingsControl.xaml.cs">
+      <DependentUpon>ChangeSettingsControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\GameOverItemControl.xaml.cs">
       <DependentUpon>GameOverItemControl.xaml</DependentUpon>
     </Compile>
@@ -187,6 +190,10 @@
     <Compile Include="ViewModel\RoomsListViewModel.cs" />
     <Compile Include="ViewModel\RoomsPropsViewModel.cs" />
     <Compile Include="ViewModel\WindowViewModel.cs" />
+    <Page Include="Controls\ChangeSettingsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\GameOverItemControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
