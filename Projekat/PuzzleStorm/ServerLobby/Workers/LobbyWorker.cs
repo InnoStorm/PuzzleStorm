@@ -27,6 +27,8 @@ namespace ServerLobby.Workers
         {
         }
 
+
+
         public CreateRoomResponse CreateNewRoom(CreateRoomRequest request)
         {
             try
@@ -81,50 +83,52 @@ namespace ServerLobby.Workers
             }
         }
 
-        public GetAllRoomsResponse GetAllRooms(GetAllRoomsRequest request)
+        public StartRoomResponse StartRoom(StartRoomRequest request)
         {
             try
             {
                 StormValidator.ValidateRequest(request);
 
-                using (var data = WorkersUnitOfWork)
+                using (UnitOfWork data = WorkersUnitOfWork)
                 {
-                    var availableRooms = data.Rooms.GetAllAvailable().ToList();
+                    var room = data.Rooms.Get(request.RoomId);
+                    if (room == null)
+                        throw new Exception($"Room with ID {request.RoomId} not found!");
 
-                    GetAllRoomsResponse response = new GetAllRoomsResponse
+                    var puzzle = data.Puzzles.GetPuzzle(ConvertDifficultyToInt(room.Difficulty)); //za sad vraca prvu odgovarajucu puzzlu koju nadje u bazi
+                    var game = new Game
                     {
-                        Status = OperationStatus.Successfull,
-                        Details = "Successfull",
-                        List = new List<RoomInfo>(availableRooms.Count)
+                        PuzzleForGame = puzzle,
+                        RoomForThisGame = room
                     };
+                    data.Games.Add(game);
+                    data.Complete();
 
-                    foreach (Room room in availableRooms)
+                    room.State = RoomState.Playing;
+                    data.Complete();
+
+                    var updateMessage = GenerateRoomStateUpdate(room, RoomUpdateType.Started);
+                    NotifyAll(updateMessage);
+
+                    Log($"[SUCCESS] Player {request.RequesterId} successfully started room {request.RoomId}");
+
+                    return new StartRoomResponse()
                     {
-                        response.List.Add(new RoomInfo()
-                        {
-                            RoomId = room.Id,
-                            CreatorUsername = room.Owner.Username,
-                            Difficulty = room.Difficulty,
-                            MaxPlayers = room.MaxPlayers,
-                            NumberOfRounds = room.NumberOfRounds,
-                            IsPublic = room.IsPublic
-                        });
-                    }
-
-                    Log($"[SUCCESS] Request for list of all available rooms. Requester: {request.RequesterId}");
-
-                    return response;
+                        GameId = game.Id,
+                        PuzzleId = puzzle.Id,
+                        Status = OperationStatus.Successfull,
+                        Details = $"Room {request.RoomId} successfully started."
+                    };
                 }
             }
             catch (Exception ex)
             {
-                Log($"[FAILED] Request for list all available rooms. Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
+                Log($"[FAILED] Starting room {request.RoomId}, Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
 
-                return new GetAllRoomsResponse()
+                return new StartRoomResponse()
                 {
                     Status = OperationStatus.Failed,
-                    Details = ex.Message,
-                    List = null
+                    Details = ex.Message
                 };
             }
         }
@@ -148,9 +152,8 @@ namespace ServerLobby.Workers
                     data.Complete();
                     
                     var roomStateUpdate = GenerateRoomStateUpdate(room, RoomUpdateType.Deleted);
-
-                    
                     NotifyAll(roomStateUpdate);
+
                     Log($"[SUCCESS] Cancel room ID: {request.RoomId} by {request.RequesterId}");
 
                     return new CancelRoomResponse()
@@ -165,122 +168,6 @@ namespace ServerLobby.Workers
                 Log($"[FAILED] Deleting room {request.RoomId}, Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
 
                 return new CancelRoomResponse()
-                {
-                    Status = OperationStatus.Failed,
-                    Details = ex.Message
-                };
-            }
-        }
-
-        public RoomCurrentStateResponse GiveInfoAboutRoom(RoomCurrentStateRequest request)
-        {
-            try
-            {
-                StormValidator.ValidateRequest(request);
-
-                using (UnitOfWork data = WorkersUnitOfWork)
-                {
-                    var room = data.Rooms.Get(request.RoomId);
-                    if (room == null)
-                        throw new Exception($"Room with id {request.RoomId} not found!");
-
-                    var response = new RoomCurrentStateResponse()
-                    {
-                        Difficulty = room.Difficulty,
-                        MaxPlayers = room.MaxPlayers,
-                        NumberOfRounds = room.MaxPlayers,
-                        Details = "Successful",
-                        Status = OperationStatus.Successfull
-                    };
-
-                    foreach (Player player in room.ListOfPlayers)
-                    {
-                        var playerDTO = new DTOLibrary.SubDTOs.Player()
-                        {
-                            PlayerId = player.Id,
-                            Username = player.Username,
-                            IsReady = player.IsReady,
-                        };
-
-                        response.Players.Add(playerDTO);
-                    }
-                    
-                    Log($"[SUCCESS] Current state for room: { request.RoomId }");
-
-                    return response;
-                }
-            }
-            catch (Exception ex)
-            {
-                Log($"[FAILED] Current state for room: { request.RoomId }; Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
-
-                return new RoomCurrentStateResponse()
-                {
-                    Status = OperationStatus.Failed,
-                    Details = ex.Message
-                };
-            }
-        }
-
-        public JoinRoomResponse JoinRoom(JoinRoomRequest request)
-        {
-            try
-            {
-                StormValidator.ValidateRequest(request);
-
-                using (UnitOfWork data = WorkersUnitOfWork)
-                {
-                    var room = data.Rooms.Get(request.RoomId);
-                    if (room == null)
-                        throw new Exception($"Room with ID {request.RoomId} not found!");
-
-                    var joiner = data.Players.Get(request.RequesterId);
-                    if (joiner == null)
-                        throw new Exception($"Cannot find user with {request.RequesterId}!");
-
-                    if (room.State != RoomState.Available)
-                        throw new Exception($"Room is not joinable.");
-
-                    if (room.ListOfPlayers.Count >= room.MaxPlayers)
-                        throw new Exception($"Room is full. Cannot join.");
-
-                    if (!room.IsPublic && room.Password != request.Password)
-                        throw new Exception($"Wrong password!");
-
-                    if (room.Owner == joiner || room.ListOfPlayers.Contains(joiner))
-                        throw new Exception("You are already in room!");
-
-
-                    room.ListOfPlayers.Add(joiner);
-                    joiner.IsReady = false;
-                    joiner.Score = 0;
-                    data.Complete();
-
-                    if (room.ListOfPlayers.Count == room.MaxPlayers)
-                    {
-                        room.State = RoomState.Full;
-                        data.Complete();
-
-                        var updateMessageFilledRoom = GenerateRoomStateUpdate(room, RoomUpdateType.Filled);
-                        NotifyAll(updateMessageFilledRoom);
-                    }
-                        
-                    var updateMessage = GenerateRoomPlayerUpdate(room.Id, joiner.Id, RoomPlayerUpdateType.Joined);
-                    NotifyChangesInRoom(updateMessage);
-                    
-                    Log($"[SUCCESS] Player {request.RoomId} joined in room {request.RoomId}");
-                    return new JoinRoomResponse()
-                    {
-                        Status = OperationStatus.Successfull,
-                        Details = $"Successfully joined to room with Id {request.RoomId}."
-                    };
-                }
-            }
-            catch (Exception ex)
-            {
-                Log($"[FAILED] Player {request.RoomId} failed to join in {request.RoomId}, Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
-
-                return new JoinRoomResponse()
                 {
                     Status = OperationStatus.Failed,
                     Details = ex.Message
@@ -334,7 +221,9 @@ namespace ServerLobby.Workers
             }
         }
 
-        public ChangeStatusResponse ChangeStatus(ChangeStatusRequest request)
+
+
+        public ChangeStatusResponse PlayerChangeStatus(ChangeStatusRequest request)
         {
             try
             {
@@ -352,7 +241,7 @@ namespace ServerLobby.Workers
                     var updateMessage = GenerateRoomPlayerUpdate(player.CurrentRoom.Id, player.Id, RoomPlayerUpdateType.ChangedStatus);
 
                     Log($"[SUCCESS] Status changed for player {request.RequesterId}");
-                    NotifyChangesInRoom(updateMessage);
+                    NotifyAll(updateMessage);
 
                     return new ChangeStatusResponse()
                     {
@@ -373,7 +262,74 @@ namespace ServerLobby.Workers
             }
         }
 
-        public LeaveRoomResponse LeaveRoom(LeaveRoomRequest request)
+        public JoinRoomResponse PlayerJoinRoom(JoinRoomRequest request)
+        {
+            try
+            {
+                StormValidator.ValidateRequest(request);
+
+                using (UnitOfWork data = WorkersUnitOfWork)
+                {
+                    var room = data.Rooms.Get(request.RoomId);
+                    if (room == null)
+                        throw new Exception($"Room with ID {request.RoomId} not found!");
+
+                    var joiner = data.Players.Get(request.RequesterId);
+                    if (joiner == null)
+                        throw new Exception($"Cannot find user with {request.RequesterId}!");
+
+                    if (room.State != RoomState.Available)
+                        throw new Exception($"Room is not joinable.");
+
+                    if (room.ListOfPlayers.Count >= room.MaxPlayers)
+                        throw new Exception($"Room is full. Cannot join.");
+
+                    if (!room.IsPublic && room.Password != request.Password)
+                        throw new Exception($"Wrong password!");
+
+                    if (room.Owner == joiner || room.ListOfPlayers.Contains(joiner))
+                        throw new Exception("You are already in room!");
+
+
+                    room.ListOfPlayers.Add(joiner);
+                    joiner.IsReady = false;
+                    joiner.Score = 0;
+                    data.Complete();
+
+                    var updateMessage = GenerateRoomPlayerUpdate(room.Id, joiner.Id, RoomPlayerUpdateType.Joined);
+                    NotifyAll(updateMessage);
+
+                    if (room.ListOfPlayers.Count == room.MaxPlayers)
+                    {
+                        room.State = RoomState.Full;
+                        data.Complete();
+
+                        Log($"[INFO] Room {request.RequesterId} is full.");
+                        var updateMessageFilledRoom = GenerateRoomStateUpdate(room, RoomUpdateType.Filled);
+                        NotifyAll(updateMessageFilledRoom);
+                    }
+
+                    Log($"[SUCCESS] Player {request.RoomId} joined in room {request.RoomId}");
+                    return new JoinRoomResponse()
+                    {
+                        Status = OperationStatus.Successfull,
+                        Details = $"Successfully joined to room with Id {request.RoomId}."
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                Log($"[FAILED] Player {request.RoomId} failed to join in {request.RoomId}, Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
+
+                return new JoinRoomResponse()
+                {
+                    Status = OperationStatus.Failed,
+                    Details = ex.Message
+                };
+            }
+        }
+
+        public LeaveRoomResponse PlayerLeaveRoom(LeaveRoomRequest request)
         {
             try
             {
@@ -388,7 +344,8 @@ namespace ServerLobby.Workers
                     if (player.CurrentRoom.State == RoomState.Full)
                     {
                         player.CurrentRoom.State = RoomState.Available;
-                        
+
+                        Log($"[INFO] Room {request.RoomId} is available again [Not full]");
                         var updateMessageRoomBecameAvailable = GenerateRoomStateUpdate(player.CurrentRoom, RoomUpdateType.BecameAvailable);
                         NotifyAll(updateMessageRoomBecameAvailable);
                     }
@@ -397,11 +354,12 @@ namespace ServerLobby.Workers
                     player.IsReady = false;
                     player.CurrentRoom = null;
                     data.Complete();
-                    
-                    var updateMessage = GenerateRoomPlayerUpdate(request.RoomId, player.Id, RoomPlayerUpdateType.LeftRoom);
-                    Log($"[SUCCESS] Player {request.RequesterId} successfully left room {request.RoomId}");
-                    NotifyChangesInRoom(updateMessage);
 
+
+                    Log($"[SUCCESS] Player {request.RequesterId} successfully left room {request.RoomId}");
+                    var updateMessage = GenerateRoomPlayerUpdate(request.RoomId, player.Id, RoomPlayerUpdateType.LeftRoom);
+                    NotifyAll(updateMessage);
+                    
                     return new LeaveRoomResponse()
                     {
                         Status = OperationStatus.Successfull,
@@ -421,7 +379,57 @@ namespace ServerLobby.Workers
             }
         }
 
-        public StartRoomResponse StartRoom(StartRoomRequest request)
+        
+
+        public GetAllRoomsResponse GetAvailableRooms(GetAllRoomsRequest request)
+        {
+            try
+            {
+                StormValidator.ValidateRequest(request);
+
+                using (var data = WorkersUnitOfWork)
+                {
+                    var availableRooms = data.Rooms.GetAllAvailable().ToList();
+
+                    GetAllRoomsResponse response = new GetAllRoomsResponse
+                    {
+                        Status = OperationStatus.Successfull,
+                        Details = "Successfull",
+                        List = new List<RoomInfo>(availableRooms.Count)
+                    };
+
+                    foreach (Room room in availableRooms)
+                    {
+                        response.List.Add(new RoomInfo()
+                        {
+                            RoomId = room.Id,
+                            CreatorUsername = room.Owner.Username,
+                            Difficulty = room.Difficulty,
+                            MaxPlayers = room.MaxPlayers,
+                            NumberOfRounds = room.NumberOfRounds,
+                            IsPublic = room.IsPublic
+                        });
+                    }
+
+                    Log($"[SUCCESS] Request for list of all available rooms. Requester: {request.RequesterId}");
+
+                    return response;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log($"[FAILED] Request for list all available rooms. Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
+
+                return new GetAllRoomsResponse()
+                {
+                    Status = OperationStatus.Failed,
+                    Details = ex.Message,
+                    List = null
+                };
+            }
+        }
+
+        public RoomCurrentStateResponse GetRoomState(RoomCurrentStateRequest request)
         {
             try
             {
@@ -431,60 +439,66 @@ namespace ServerLobby.Workers
                 {
                     var room = data.Rooms.Get(request.RoomId);
                     if (room == null)
-                        throw new Exception($"Room with ID {request.RoomId} not found!");
+                        throw new Exception($"Room with id {request.RoomId} not found!");
 
-                    var puzzle = data.Puzzles.GetPuzzle(ConvertDifficultyToInt(room.Difficulty)); //za sad vraca prvu odgovarajucu puzzlu koju nadje u bazi
-                    var game = new Game
+                    var response = new RoomCurrentStateResponse()
                     {
-                        PuzzleForGame = puzzle,
-                        RoomForThisGame = room
+                        Difficulty = room.Difficulty,
+                        MaxPlayers = room.MaxPlayers,
+                        NumberOfRounds = room.MaxPlayers,
+                        Details = "Successful",
+                        Status = OperationStatus.Successfull
                     };
-                    data.Games.Add(game);
-                    data.Complete();
-                    
-                    room.State = RoomState.Playing;
-                    data.Complete();
 
-                    var updateMessage = GenerateRoomStateUpdate(room, RoomUpdateType.Started);
-                    NotifyAll(updateMessage);
-
-                    Log($"[SUCCESS] Player {request.RequesterId} successfully started room {request.RoomId}");
-
-                    return new StartRoomResponse()
+                    foreach (Player player in room.ListOfPlayers)
                     {
-                        GameId = game.Id,
-                        PuzzleId = puzzle.Id,
-                        Status = OperationStatus.Successfull,
-                        Details = $"Room {request.RoomId} successfully started."
-                    };
+                        var playerDTO = new DTOLibrary.SubDTOs.Player()
+                        {
+                            PlayerId = player.Id,
+                            Username = player.Username,
+                            IsReady = player.IsReady,
+                        };
+
+                        response.Players.Add(playerDTO);
+                    }
+
+                    Log($"[SUCCESS] Current state for room: { request.RoomId }");
+
+                    return response;
                 }
             }
             catch (Exception ex)
             {
-                Log($"[FAILED] Starting room {request.RoomId}, Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
+                Log($"[FAILED] Current state for room: { request.RoomId }; Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
 
-                return new StartRoomResponse()
+                return new RoomCurrentStateResponse()
                 {
                     Status = OperationStatus.Failed,
                     Details = ex.Message
                 };
             }
         }
-
-        #region Utils
+        
+        
+        #region NotifyClients
 
         private void NotifyAll(RoomsStateUpdate message)
         {
-             string routingKey = $"{message.UpdateType.ToString()}.{message.RoomId}";
-             Communicator.Publish<RoomsStateUpdate>(message, routingKey);
+            string routingKey = $"Room.{message.UpdateType.ToString()}.{message.RoomId}";
+
+            Communicator.Publish<RoomsStateUpdate>(message, routingKey);
         }
 
-        private void NotifyChangesInRoom(RoomPlayerUpdate message)
+        private void NotifyAll(RoomPlayerUpdate message)
         {
-            // npr. InRoom.4.Joined.20
-            string routingKey = $"InRoom.{message.RoomId}.{message.UpdateType.ToString()}.{message.PlayerId}";
+            string routingKey = $"InRoom.{message.RoomId}";
             Communicator.Publish<RoomPlayerUpdate>(message, routingKey);
         }
+
+        #endregion
+
+
+        #region Utils
 
         private RoomPlayerUpdate GenerateRoomPlayerUpdate(int roomId, int playerId, RoomPlayerUpdateType updateType)
         {
