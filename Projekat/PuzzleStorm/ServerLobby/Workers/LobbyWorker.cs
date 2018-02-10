@@ -42,7 +42,7 @@ namespace ServerLobby.Workers
                     var newRoom = new Room
                     {
                         Difficulty = request.Difficulty,
-                        IsPublic = request.Password == string.Empty,
+                        IsPublic = string.IsNullOrEmpty(request.Password),
                         Password = request.Password,
                         CurrentGame = null,
                         State = RoomState.Available,
@@ -385,23 +385,20 @@ namespace ServerLobby.Workers
                     if (player == null)
                         throw new Exception($"Player with ID {request.RequesterId} not found!");
 
-                    player.Score = 0;
-                    player.IsReady = false;
-                    player.CurrentRoom = null;
-                    data.Complete();
-
                     if (player.CurrentRoom.State == RoomState.Full)
                     {
                         player.CurrentRoom.State = RoomState.Available;
-                        data.Complete();
-
+                        
                         var updateMessageRoomBecameAvailable = GenerateRoomStateUpdate(player.CurrentRoom, RoomUpdateType.BecameAvailable);
                         NotifyAll(updateMessageRoomBecameAvailable);
                     }
 
+                    player.Score = 0;
+                    player.IsReady = false;
+                    player.CurrentRoom = null;
+                    data.Complete();
+                    
                     var updateMessage = GenerateRoomPlayerUpdate(request.RoomId, player.Id, RoomPlayerUpdateType.LeftRoom);
-                    NotifyChangesInRoom(updateMessage);
-
                     Log($"[SUCCESS] Player {request.RequesterId} successfully left room {request.RoomId}");
                     NotifyChangesInRoom(updateMessage);
 
@@ -422,22 +419,6 @@ namespace ServerLobby.Workers
                     Details = ex.Message
                 };
             }
-        }
-
-        private int ConvertDifficultyToInt(PuzzleDifficulty diff)
-        {
-            switch (diff)
-            {
-                case PuzzleDifficulty.Easy:
-                    return 16;
-                case PuzzleDifficulty.Medium:
-                    return 25;
-                case PuzzleDifficulty.Hard:
-                    return 36;
-                default:
-                    return 0;
-            }
-
         }
 
         public StartRoomResponse StartRoom(StartRoomRequest request)
@@ -614,6 +595,22 @@ namespace ServerLobby.Workers
             }
             }
 
+        private int ConvertDifficultyToInt(PuzzleDifficulty diff)
+        {
+            switch (diff)
+            {
+                case PuzzleDifficulty.Easy:
+                    return 16;
+                case PuzzleDifficulty.Medium:
+                    return 25;
+                case PuzzleDifficulty.Hard:
+                    return 36;
+                default:
+                    return 0;
+            }
+
+        }
+        
         #endregion        
     }
 }
