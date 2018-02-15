@@ -36,9 +36,12 @@ namespace Client {
 
         #region Metods
 
-        private void DisposeRabbitBus() {   
-            if(RabbitBus.Instance.Bus != null && RabbitBus.Instance.Bus.IsConnected)
+        private void DisposeRabbitBus() {
+            //TODO REMOVE
+            if (RabbitBus.Instance.Bus != null && RabbitBus.Instance.Bus.IsConnected)
                 RabbitBus.Instance.Bus.Dispose();
+
+            Communicator.API.Instance.Dispose();
         }
 
         #endregion

@@ -142,6 +142,7 @@
     <Compile Include="DataModels\ApplicationPage.cs" />
     <Compile Include="DataModels\ListRooms.cs" />
     <Compile Include="DataModels\Player.cs" />
+    <Compile Include="Helpers\Communication\StormConnector.cs" />
     <Compile Include="Helpers\Communication\RabbitBus.cs" />
     <Compile Include="Pages\Base\BasePage.cs" />
     <Compile Include="Pages\CreateAccount.xaml.cs">
@@ -326,6 +327,10 @@
     <None Include="FodyWeavers.xml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Communicator\Communicator.csproj">
+      <Project>{d9c3538d-d17d-485e-a34a-4b2a7d1a332f}</Project>
+      <Name>Communicator</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DTOLibrary\DTOLibrary.csproj">
       <Project>{495fb5c5-301c-438d-9ddb-6baa4ce0bedd}</Project>
       <Name>DTOLibrary</Name>

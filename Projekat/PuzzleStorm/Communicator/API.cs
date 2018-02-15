@@ -5,10 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DTOLibrary.Broadcasts;
+using DTOLibrary.Enums;
 using DTOLibrary.Requests;
 using DTOLibrary.Responses;
 using EasyNetQ;
 using RabbitMQ.Client.MessagePatterns;
+using StormCommonData;
 using StormCommonData.Events;
 
 namespace Communicator
@@ -63,16 +65,46 @@ namespace Communicator
 
         #region Requests
 
-        public CreateRoomResponse CreateRoom(CreateRoomRequest request)
+        //Generic wrapper
+        private async Task<TResponse> RequestAsync<TRequest, TResponse>(TRequest request)
+            where TRequest : Request, new()
+            where TResponse : Response, new()
         {
-            return Bus.Request<CreateRoomRequest, CreateRoomResponse>(request);
+            try
+            {
+                return await Bus.RequestAsync<TRequest, TResponse>(request);
+            }
+            catch (Exception ex)
+            {
+                return new TResponse()
+                {
+                    Status = OperationStatus.Failed,
+                    Details = "Timeout!" + Environment.NewLine + StormUtils.FlattenException(ex)
+                };
+            }
         }
-        //...
+
+        //Login
+        public async Task<LoginResponse> LoginAsync(LoginRequest request)
+        {
+            return await RequestAsync<LoginRequest, LoginResponse>(request);
+        }
+
+        public async Task<RegistrationResponse> RegisterAsync(RegistrationRequest request)
+        {
+            return await RequestAsync<RegistrationRequest, RegistrationResponse>(request);
+        }
+
+        
+        public async Task<CreateRoomResponse> CreateRoomAsync(CreateRoomRequest request)
+        {
+            return await RequestAsync<CreateRoomRequest, CreateRoomResponse>(request);
+        }
 
         #endregion
 
         #region Subscribing
-        
+
         public ISubscriptionResult SubscribeRoomChanges(
             EventHandler<PuzzleStormEventArgs<RoomsStateUpdate>> RoomChangesHandler, 
             string routingKey = "#"

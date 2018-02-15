@@ -3,6 +3,7 @@ using EasyNetQ;
 
 namespace Client {
 
+    //TODO REMOVE
     public sealed class RabbitBus
     {
         private const string ConnectionString =

@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Client.Helpers.Communication;
+using Communicator;
 using DTOLibrary.Enums;
 using DTOLibrary.Requests;
 using DTOLibrary.Responses;
@@ -48,76 +50,20 @@ namespace Client {
 
         #region Login
 
-        private LoginResponse LoginTask(LoginRequest request)
-        {
-            try
-            {
-                return RabbitBus.Instance.Bus.Request<LoginRequest, LoginResponse>(request);
-            }
-            catch (Exception ex)
-            {
-                return new LoginResponse()
-                {
-                    Status = OperationStatus.Exception,
-                    Details = ex.Message
-                };
-            }
-        }
-
         public async Task Login(object parameter) {
 
             LoginRequest myRequest = new LoginRequest() {
                 Username = UserName,
                 Password = ((PasswordBox)parameter).Password
             };
+            
+            LoginResponse response = await
+                StormConnector.Instance.PerformRequestAsync(API.Instance.LoginAsync, myRequest);
 
-            Task<LoginResponse> task = new Task<LoginResponse>(() => LoginTask(myRequest));
-            task.Start();
+            if (response == null) return;
 
-            //UI LOADING 
-            var popup = new LoadingPopup() {
-                Message = { Text = "Just a moment.." }
-            };
-
-            LoginResponse response = null;
-
-            await DialogHost.Show(popup, async delegate (object sender, DialogOpenedEventArgs args) {
-                response = await task;
-                args.Session.Close(false);
-            });
-
-            //LoginResponse response = await task;
-
-            if (response.Status != OperationStatus.Exception)
-            {
-                if (response.Status == OperationStatus.Successfull) {
-                    //var sampleMessageDialog = new SampleMessageDialog {
-                    //    Message = { Text = "Login Successfull!" }
-                    //};
-
-                    //await DialogHost.Show(sampleMessageDialog);
-
-                    Player.Instance.Id = response.PlayerId;
-
-                    ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new MainPage();
-                }
-                else {
-
-                    var sampleMessageDialog = new SampleMessageDialog {
-                        Message = { Text = "Login error!\n" + response.Details }
-                    };
-
-                    await DialogHost.Show(sampleMessageDialog);
-                }
-            }
-            else //DOSO EXCEPTION
-            {
-                var sampleMessageDialog = new SampleMessageDialog {
-                    Message = { Text = "Exception: " + response.Details }
-                };
-
-                await DialogHost.Show(sampleMessageDialog);
-            } 
+            Player.Instance.Id = response.PlayerId;
+            ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new MainPage();
         }
 
         #endregion
