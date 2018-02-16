@@ -107,7 +107,6 @@ namespace DEBUGConsole
         {
             using (var api = Communicator.API.Instance)
             {
-                api.RequesterId = 3;
                 var subscription = api.SubscribeRoomChanges(RoomChangesHandler, "Room.#");
                 
                 Console.WriteLine("Subscribed...");

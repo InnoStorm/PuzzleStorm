@@ -49,18 +49,6 @@ namespace Client {
 
         #region Metods
 
-        private RegistrationResponse CreateTask(RegistrationRequest request) {
-            try {
-                return RabbitBus.Instance.Bus.Request<RegistrationRequest, RegistrationResponse>(request);
-            }
-            catch (Exception ex) {
-                return new RegistrationResponse() {
-                    Status = OperationStatus.Exception,
-                    Details = ex.Message
-                };
-            }
-        }
-
         // Login f-ja
         public async Task Create(object parameter)
         {
@@ -73,7 +61,7 @@ namespace Client {
             };
 
             RegistrationResponse response =
-                await StormConnector.Instance.PerformRequestAsync(API.Instance.RegisterAsync, myRequest, "Creating new account..");
+                await ClientUtils.PerformRequestAsync(API.Instance.RegisterAsync, myRequest, "Creating new account..");
 
             if (response == null) return;
 
