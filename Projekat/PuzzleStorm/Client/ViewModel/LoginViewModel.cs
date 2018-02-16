@@ -58,7 +58,7 @@ namespace Client {
             };
             
             LoginResponse response = await
-                StormConnector.Instance.PerformRequestAsync(API.Instance.LoginAsync, myRequest);
+                StormConnector.Instance.PerformRequestAsync(API.Instance.LoginAsync, myRequest, "Just a moment..");
 
             if (response == null) return;
 

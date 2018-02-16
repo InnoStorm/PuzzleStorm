@@ -26,14 +26,15 @@ namespace Client.Helpers.Communication
         public async Task<TResponse> PerformRequestAsync<TRequest, TResponse>
             (
                 Func<TRequest, Task<TResponse>> RequestFunc, 
-                TRequest request
+                TRequest request,
+                String loadingMessage
             )
             where TRequest : Request, new()
             where TResponse : Response, new()
         {
             var popup = new LoadingPopup()
             {
-                Message = { Text = "Just a moment.." }
+                Message = { Text = loadingMessage }
             };
 
             TResponse response = null;
@@ -41,7 +42,7 @@ namespace Client.Helpers.Communication
             await DialogHost.Show(popup, async delegate (object sender, DialogOpenedEventArgs args)
             {
                 var task = RequestFunc(request);
-                task.Start();
+                //task.Start();
                 response = await task;
                 args.Session.Close(false);
             });

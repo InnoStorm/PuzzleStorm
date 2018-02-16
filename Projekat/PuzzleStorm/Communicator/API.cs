@@ -84,18 +84,31 @@ namespace Communicator
             }
         }
 
-        //Login
+        /// <summary>
+        /// Login
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public async Task<LoginResponse> LoginAsync(LoginRequest request)
         {
             return await RequestAsync<LoginRequest, LoginResponse>(request);
         }
 
+        /// <summary>
+        /// Create new account
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public async Task<RegistrationResponse> RegisterAsync(RegistrationRequest request)
         {
             return await RequestAsync<RegistrationRequest, RegistrationResponse>(request);
         }
 
-        
+        /// <summary>
+        /// Create new room
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public async Task<CreateRoomResponse> CreateRoomAsync(CreateRoomRequest request)
         {
             return await RequestAsync<CreateRoomRequest, CreateRoomResponse>(request);

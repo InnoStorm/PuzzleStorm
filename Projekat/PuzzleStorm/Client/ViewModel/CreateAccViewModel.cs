@@ -4,6 +4,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using Client.Helpers.Communication;
+using Communicator;
 using DTOLibrary.Enums;
 using DTOLibrary.Requests;
 using DTOLibrary.Responses;
@@ -70,53 +72,18 @@ namespace Client {
                 Email = Email
             };
 
-            Task<RegistrationResponse> task = new Task<RegistrationResponse>(() => CreateTask(myRequest));
-            task.Start();
+            RegistrationResponse response =
+                await StormConnector.Instance.PerformRequestAsync(API.Instance.RegisterAsync, myRequest, "Creating new account..");
 
-            //UI LOADING 
-            var popup = new LoadingPopup() {
-                Message = { Text = "Creating new account.." }
+            if (response == null) return;
+
+            var sampleMessageDialog = new SampleMessageDialog {
+                Message = { Text = "New account created successfully!" }
             };
 
-            RegistrationResponse response = null;
+            await DialogHost.Show(sampleMessageDialog);
 
-            await DialogHost.Show(popup, async delegate (object sender, DialogOpenedEventArgs args) {
-                response = await task;
-                args.Session.Close(false);
-            });
-
-            if (response.Status != OperationStatus.Exception)
-            {
-
-                if (response.Status == OperationStatus.Successfull)
-                {
-                    var sampleMessageDialog = new SampleMessageDialog
-                    {
-                        Message = {Text = "New account created successfully!" }
-                    };
-
-                    await DialogHost.Show(sampleMessageDialog);
-
-                    ((MainWindow) Application.Current.MainWindow).MainFrame.Content = new LoginPage();
-                }
-                else
-                {
-                    var sampleMessageDialog = new SampleMessageDialog
-                    {
-                        Message = {Text = "Creating new account error!\n" + response.Details}
-                    };
-
-                    await DialogHost.Show(sampleMessageDialog);
-                }
-            }
-            else
-            {
-                var sampleMessageDialog = new SampleMessageDialog {
-                    Message = { Text = "Exception: " + response.Details }
-                };
-
-                await DialogHost.Show(sampleMessageDialog);
-            }
+            ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new LoginPage();
         }
 
         public void BackToLoginPage()
