@@ -534,7 +534,7 @@ namespace ServerLobby.Workers
                 IsPublic = room.IsPublic,
                 Level = room.Difficulty,
                 MaxPlayers = room.MaxPlayers,
-                NumberOfRounds = room.MaxPlayers,
+                NumberOfRounds = room.NumberOfRounds,
                 RoomId = room.Id,
                 Status = OperationStatus.Successfull,
                 Details = "Successful getting info about room " + room.Id,
