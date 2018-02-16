@@ -142,7 +142,7 @@
     <Compile Include="DataModels\ApplicationPage.cs" />
     <Compile Include="DataModels\ListRooms.cs" />
     <Compile Include="DataModels\Player.cs" />
-    <Compile Include="Helpers\Communication\StormConnector.cs" />
+    <Compile Include="Helpers\Communication\ClientUtils.cs" />
     <Compile Include="Helpers\Communication\RabbitBus.cs" />
     <Compile Include="Pages\Base\BasePage.cs" />
     <Compile Include="Pages\CreateAccount.xaml.cs">

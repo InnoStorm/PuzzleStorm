@@ -57,10 +57,9 @@ namespace Client {
                 Password = ((PasswordBox)parameter).Password
             };
             
-            LoginResponse response = await
-                StormConnector.Instance.PerformRequestAsync(API.Instance.LoginAsync, myRequest);
-
+            LoginResponse response = await ClientUtils.PerformRequestAsync(API.Instance.LoginAsync, myRequest);
             if (response == null) return;
+
 
             Player.Instance.Id = response.PlayerId;
             ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new MainPage();

@@ -15,11 +15,12 @@ namespace Client {
 
         private static readonly Lazy<RabbitBus> BusInstance
                             = new Lazy<RabbitBus>(() => new RabbitBus(ConnectionString));
-        public IBus Bus { get; set; } 
+        public IBus Bus { get; set; }
 
         public static RabbitBus Instance => BusInstance.Value;
 
-        private RabbitBus() {
+        private RabbitBus()
+        {
         }
 
         private RabbitBus(string bus)

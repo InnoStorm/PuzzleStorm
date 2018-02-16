@@ -11,23 +11,11 @@ using MaterialDesignThemes.Wpf;
 
 namespace Client.Helpers.Communication
 {
-    public sealed class StormConnector
+    public static class ClientUtils
     {
-        private static readonly Lazy<StormConnector> ConnectorInstance
-            = new Lazy<StormConnector>(() => new StormConnector());
+        #region Requests
 
-        public static StormConnector Instance => ConnectorInstance.Value;
-        public static API Api => API.Instance;
-
-        private StormConnector()
-        {
-        }
-
-        public async Task<TResponse> PerformRequestAsync<TRequest, TResponse>
-            (
-                Func<TRequest, Task<TResponse>> RequestFunc, 
-                TRequest request
-            )
+        public static async Task<TResponse> PerformRequestAsync<TRequest, TResponse>(Func<TRequest, Task<TResponse>> RequestFunc, TRequest request)
             where TRequest : Request, new()
             where TResponse : Response, new()
         {
@@ -40,16 +28,14 @@ namespace Client.Helpers.Communication
 
             await DialogHost.Show(popup, async delegate (object sender, DialogOpenedEventArgs args)
             {
-                var task = RequestFunc(request);
-                task.Start();
-                response = await task;
+                response = await RequestFunc(request);
                 args.Session.Close(false);
             });
 
 
             if (response?.Status == OperationStatus.Successfull)
                 return response;
-            
+
 
             await DialogHost.Show(new SampleMessageDialog
                 {
@@ -59,5 +45,23 @@ namespace Client.Helpers.Communication
 
             return null;
         }
+
+        #endregion
+
+        #region Subscribe
+
+        private static string SubscriptionId
+        {
+            get
+            {
+                if (Player.Instance.Id <= 0)
+                    throw new Exception("ClientUtils: SubscriptionId is invalid! PlayerId iz not initialized");
+
+                return Player.Instance.Id.ToString();
+            }
+        }
+        
+        #endregion
+        
     }
 }
