@@ -10,6 +10,7 @@ using DTOLibrary.Enums;
 using DTOLibrary.Requests;
 using DTOLibrary.Responses;
 using EasyNetQ;
+using EasyNetQ.Loggers;
 using RabbitMQ.Client.MessagePatterns;
 using StormCommonData;
 using StormCommonData.Events;
@@ -30,7 +31,8 @@ namespace Communicator
 
         private API()
         {
-            _bus = RabbitHutch.CreateBus(ConnectionString);
+            var logger = new ConsoleLogger();
+            _bus = RabbitHutch.CreateBus(ConnectionString, x => x.Register<IEasyNetQLogger>(_ => logger));
         }
 
         #endregion
