@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using DTOLibrary.Broadcasts;
-using DTOLibrary.Enums;
+using StormCommonData.Enums;
 using DTOLibrary.Requests;
 using DTOLibrary.Responses;
 using DTOLibrary.SubDTOs;

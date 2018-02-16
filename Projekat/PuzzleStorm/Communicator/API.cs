@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DTOLibrary.Broadcasts;
-using DTOLibrary.Enums;
+using StormCommonData.Enums;
 using DTOLibrary.Requests;
 using DTOLibrary.Responses;
 using EasyNetQ;
@@ -221,21 +221,49 @@ namespace Communicator
         #region Subscribe
 
         public ISubscriptionResult SubscribeRoomChanges(
-            EventHandler<PuzzleStormEventArgs<RoomsStateUpdate>> RoomChangesHandler, 
+            EventHandler<StormEventArgs<RoomsStateUpdate>> roomChangesHandler, 
             string subscriptionId,
-            string routingKey = "#"
-        )
+            string routingKey = null
+            )
         {
-            RoomChanged -= RoomChangesHandler;
-            RoomChanged += RoomChangesHandler;
+
+            if (string.IsNullOrEmpty(routingKey))
+                routingKey = RouteGenerator.RoomUpdates.Room.All();
+
+            RoomChanged -= roomChangesHandler;
+            RoomChanged += roomChangesHandler;
             
             return _bus.SubscribeAsync<RoomsStateUpdate>(
                 subscriptionId,
                 message => Task.Factory.StartNew(() =>
                 {
-                    OnRoomChange(message);
-                }),
-                x => x.WithTopic(routingKey));
+                    OnRoomChangeNotify(message);
+
+                }),x => x.WithTopic(routingKey));
+
+        }
+
+        public ISubscriptionResult SubscribeInRoomChanges(
+            EventHandler<StormEventArgs<RoomPlayerUpdate>> inRoomChangesHandler,
+            string subscriptionId,
+            string routingKey = null
+            )
+        {
+
+            if (string.IsNullOrEmpty(routingKey))
+                routingKey = RouteGenerator.RoomUpdates.InRoom.All();
+
+            InRoomChange -= inRoomChangesHandler;
+            InRoomChange += inRoomChangesHandler;
+
+            return _bus.SubscribeAsync<RoomPlayerUpdate>(
+                subscriptionId,
+                message => Task.Factory.StartNew(() =>
+                {
+                    OnInRoomChangeNotify(message);
+
+                }), x => x.WithTopic(routingKey));
+
         }
 
         #endregion
@@ -251,14 +279,17 @@ namespace Communicator
 
         #region Events
 
-        public event EventHandler<PuzzleStormEventArgs<RoomsStateUpdate>> RoomChanged;
-        private void OnRoomChange(RoomsStateUpdate updateMessage)
+        public event EventHandler<StormEventArgs<RoomsStateUpdate>> RoomChanged;
+        private void OnRoomChangeNotify(RoomsStateUpdate updateMessage)
         {
-            RoomChanged?.Invoke(this, new PuzzleStormEventArgs<RoomsStateUpdate>(updateMessage));
+            RoomChanged?.Invoke(this, new StormEventArgs<RoomsStateUpdate>(updateMessage));
         }
 
-
-        
+        public event EventHandler<StormEventArgs<RoomPlayerUpdate>> InRoomChange;
+        private void OnInRoomChangeNotify(RoomPlayerUpdate updateMessage)
+        {
+            InRoomChange?.Invoke(this, new StormEventArgs<RoomPlayerUpdate>(updateMessage));
+        }
 
         #endregion
 

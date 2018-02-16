@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DataLayer.Core.Domain;
 using DataLayer.Persistence;
-using DTOLibrary.Enums;
+using StormCommonData.Enums;
 using DTOLibrary.Requests;
 using DTOLibrary.Responses;
 using DTOLibrary.Broadcasts;
@@ -15,7 +15,6 @@ using Server.Workers;
 using Server;
 using EasyNetQ;
 using StormCommonData;
-using StormCommonData.Enums;
 using Player = DataLayer.Core.Domain.Player;
 using System.IO;
 
@@ -484,14 +483,15 @@ namespace ServerLobby.Workers
 
         private void NotifyAll(RoomsStateUpdate message)
         {
-            string routingKey = $"Room.{message.UpdateType.ToString()}.{message.RoomId}";
-
+            string routingKey = RouteGenerator.RoomUpdates.Room.FromEnum(message.UpdateType, message.RoomId);
+            
             Communicator.Publish<RoomsStateUpdate>(message, routingKey);
         }
 
         private void NotifyAll(RoomPlayerUpdate message)
         {
-            string routingKey = $"InRoom.{message.RoomId}";
+            string routingKey = RouteGenerator.RoomUpdates.InRoom.FromEnum(message.UpdateType, message.RoomId);
+
             Communicator.Publish<RoomPlayerUpdate>(message, routingKey);
         }
 

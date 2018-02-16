@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Communicator;
-using DTOLibrary.Enums;
 using DTOLibrary.Requests;
 using DTOLibrary.Responses;
 using MaterialDesignThemes.Wpf;
+using StormCommonData.Enums;
 
 namespace Client.Helpers.Communication
 {

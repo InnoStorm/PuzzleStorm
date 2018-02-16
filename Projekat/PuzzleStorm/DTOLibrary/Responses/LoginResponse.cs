@@ -1,4 +1,4 @@
-﻿using DTOLibrary.Enums;
+﻿using StormCommonData.Enums;
 
 namespace DTOLibrary.Responses
 {

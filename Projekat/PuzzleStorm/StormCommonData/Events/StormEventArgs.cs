@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace StormCommonData.Events
 {
-    public class PuzzleStormEventArgs<TEventPayload> : System.EventArgs
+    public class StormEventArgs<TEventPayload> : System.EventArgs
     {
         public TEventPayload Data { get; }
 
-        public PuzzleStormEventArgs(TEventPayload payload)
+        public StormEventArgs(TEventPayload payload)
         {
             Data = payload;
         }

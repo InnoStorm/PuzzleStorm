@@ -11,7 +11,7 @@ using StormCommonData.Interfaces;
 namespace Server
 {
 
-    public abstract class StormServer<TServerImpl> : IDisposable, IStormServer
+    public class StormServer<TServerImpl> : IDisposable, IStormServer
         where TServerImpl : StormServer<TServerImpl>
     {
 

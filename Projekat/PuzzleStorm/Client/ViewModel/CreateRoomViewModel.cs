@@ -5,7 +5,7 @@ using System.Windows.Input;
 using MaterialDesignThemes.Wpf;
 using System.Windows;
 using System.Windows.Controls;
-using DTOLibrary.Enums;
+using StormCommonData.Enums;
 using DTOLibrary.Requests;
 using DTOLibrary.Responses;
 using StormCommonData.Enums;

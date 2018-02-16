@@ -7,7 +7,7 @@ using System.Windows.Input;
 using DTOLibrary.Broadcasts;
 using System.Threading.Tasks;
 using System.Windows.Threading;
-using DTOLibrary.Enums;
+using StormCommonData.Enums;
 using EasyNetQ;
 
 namespace Client {

@@ -1,4 +1,4 @@
-﻿namespace DTOLibrary.Enums
+﻿namespace StormCommonData.Enums
 {
     public enum OperationStatus
     {

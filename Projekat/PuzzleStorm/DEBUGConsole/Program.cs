@@ -119,7 +119,7 @@ namespace DEBUGConsole
             }
         }
 
-        private static void RoomChangesHandler(object sender, PuzzleStormEventArgs<RoomsStateUpdate> e)
+        private static void RoomChangesHandler(object sender, StormEventArgs<RoomsStateUpdate> e)
         {
             Console.WriteLine("New Update: " + e.Data.UpdateType);
         }
