@@ -40,7 +40,7 @@
             <!--  Username labela  -->
             <Label
                 Grid.Column="2"
-                Content="UserName"
+                Content="{Binding lobbyBy, FallbackValue=UserName}"
                 FontSize="50"
                 FontWeight="ExtraBold" />
         </Grid>

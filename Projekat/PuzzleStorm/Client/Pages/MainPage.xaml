@@ -31,9 +31,8 @@
             <TextBlock
                 HorizontalAlignment="Left"
                 FontSize="40"
-                FontWeight="ExtraBold">
-                Welcome to PuzzleStorm!
-            </TextBlock>
+                FontWeight="ExtraBold"
+                Text="{Binding WelcomeMessage, FallbackValue=Welcome to PuzzleStorm!}" />
             <TextBlock
                 Grid.Row="1"
                 HorizontalAlignment="Left"

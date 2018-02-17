@@ -61,6 +61,8 @@ namespace Client {
             if (response == null) return;
             
             Player.Instance.Id = response.PlayerId;
+            Player.Instance.UserName = UserName;
+
             ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new MainPage();
         }
 

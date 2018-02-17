@@ -24,6 +24,8 @@ namespace Client
 
         public ObservableCollection<LobbyJoinedPlayerViewModel> JoinedPlayersItems { get; set; }
 
+        public string lobbyBy { get; set; }
+
         #endregion
 
         #region Commands
@@ -148,6 +150,8 @@ namespace Client
                     }
                 );
             }
+
+            if (Player.Instance.Creator) lobbyBy = Player.Instance.UserName;
         }
 
         #endregion
@@ -173,6 +177,8 @@ namespace Client
             };
 
             await DialogHost.Show(sampleMessageDialog);
+
+            Player.Instance.Creator = false; //vise nije creator sobe
 
             ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new MainPage();
         }

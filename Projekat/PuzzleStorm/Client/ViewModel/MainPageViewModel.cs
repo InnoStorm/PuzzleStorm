@@ -35,6 +35,8 @@ namespace Client {
 
         public bool NoRoomLabel { get; set; } = true;
 
+        public string WelcomeMessage { get; set; }
+
         #endregion
 
         #region Commands
@@ -73,6 +75,8 @@ namespace Client {
                 RoomsItemsList = ListRooms.Instance.RoomsItemsList;
 
             NoRoomLabel = false;
+
+            WelcomeMessage = "Welcome to PuzzleStorm, " + Player.Instance.UserName + "!";
 
             Subscribe();
         }

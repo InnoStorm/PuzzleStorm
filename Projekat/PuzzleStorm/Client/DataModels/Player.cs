@@ -11,6 +11,8 @@ namespace Client {
 
         public int Id { get; set; }
 
+        public string UserName { get; set; }
+
         public int RoomId { get; set; }
 
         public bool Creator { get; set; } = false; // kad napravi sobu setuje mu se na true
