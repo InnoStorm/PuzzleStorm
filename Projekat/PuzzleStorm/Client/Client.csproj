@@ -97,6 +97,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\ChangeRoomsPropsDialog.xaml.cs">
+      <DependentUpon>ChangeRoomsPropsDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ChangeSettingsControl.xaml.cs">
       <DependentUpon>ChangeSettingsControl.xaml</DependentUpon>
     </Compile>
@@ -144,6 +147,7 @@
     <Compile Include="DataModels\Player.cs" />
     <Compile Include="Helpers\Communication\ClientUtils.cs" />
     <Compile Include="Helpers\Communication\RabbitBus.cs" />
+    <Compile Include="Helpers\MiniHelpFunctions.cs" />
     <Compile Include="Pages\Base\BasePage.cs" />
     <Compile Include="Pages\CreateAccount.xaml.cs">
       <DependentUpon>CreateAccount.xaml</DependentUpon>
@@ -173,6 +177,7 @@
     <Compile Include="ValueConverters\ApplicationPageValueConverter.cs" />
     <Compile Include="ValueConverters\BaseValueConverter.cs" />
     <Compile Include="ValueConverters\BoolToColorConverter.cs" />
+    <Compile Include="ValueConverters\MultiBindingsValueConverter.cs" />
     <Compile Include="ValueConverters\OnTheMoveToVisibilityConverter.cs" />
     <Compile Include="ViewModel\Base\BaseViewModel.cs" />
     <Compile Include="ViewModel\Base\RelayCommand.cs" />
@@ -191,6 +196,10 @@
     <Compile Include="ViewModel\RoomsListViewModel.cs" />
     <Compile Include="ViewModel\RoomsPropsViewModel.cs" />
     <Compile Include="ViewModel\WindowViewModel.cs" />
+    <Page Include="Controls\ChangeRoomsPropsDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\ChangeSettingsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -78,24 +78,36 @@ namespace Client
 
         private async void ChangeButtonAsync() {
 
-            /*
-            RoomStatus = new RoomsPropsViewModel() {
-                MaxPlayers = 6.ToString(),
-                Rounds = 6.ToString(),
-                ChangeCommand = new RelayCommand(ChangeButton)
-            };
-            */
-
-
             var dialog = new ChangeRoomsPropsDialog() {
                 BoxDiff = { SelectedIndex = MiniHelpFunctions.DifficultyToIndex(RoomStatus.Difficulty) },
                 BoxMax = { SelectedIndex = Int32.Parse(RoomStatus.MaxPlayers) - 2 },
                 BoxRnd = { SelectedIndex = Int32.Parse(RoomStatus.Rounds) - 1 }
             };
 
-            await DialogHost.Show(dialog, delegate (object sender, DialogClosingEventArgs args)
-            {
-                
+            await DialogHost.Show(dialog, async delegate (object sender, DialogClosingEventArgs args) {
+                List<String> paramsList = (List<String>)args.Parameter;
+
+                ChangeRoomPropertiesRequest request = new ChangeRoomPropertiesRequest() {
+                    Difficulty = MiniHelpFunctions.StringToDifficulty(paramsList[0]),
+                    MaxPlayers = Int32.Parse(paramsList[1]),
+                    NumberOfRounds = Int32.Parse(paramsList[2]),
+                    RoomId = Player.Instance.RoomId,
+                    RequesterId = Player.Instance.Id
+                };
+
+                ChangeRoomPropertiesResponse response =
+                    await ClientUtils.PerformRequestAsync(API.Instance.ChangeRoomPropertiesAsync, request, "Changing..");
+
+                if (response == null) return;
+
+                /*
+                RoomStatus = new RoomsPropsViewModel() {
+                    MaxPlayers = response.Max,
+                    Rounds = response.Rnd,
+                    Difficulty = response.Diff,
+                    ChangeCommand = new RelayCommand(ChangeButtonAsync)
+                };
+                */
             });
         }
 

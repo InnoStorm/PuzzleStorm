@@ -59,8 +59,7 @@ namespace Client {
             
             LoginResponse response = await ClientUtils.PerformRequestAsync(API.Instance.LoginAsync, myRequest, "Just a moment..");
             if (response == null) return;
-
-
+            
             Player.Instance.Id = response.PlayerId;
             ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new MainPage();
         }
@@ -68,8 +67,7 @@ namespace Client {
         #endregion
 
         //Create button f-ja
-        public void CreateButton()
-        {
+        public void CreateButton() {
             //((WindowViewModel)((MainWindow)Application.Current.MainWindow).DataContext).CurrentPage = ApplicationPage.CreateAccount;
             ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new CreateAccount();
         }

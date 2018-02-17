@@ -74,7 +74,10 @@
                     FontWeight="ExtraBold" />
 
                 <!--  Settings kontrola  -->
-                <local:LobbySettingsControl Grid.Row="1" Margin="110,0" />
+                <local:LobbySettingsControl
+                    Grid.Row="1"
+                    Margin="110,0"
+                    DataContext="{Binding RoomStatus}" />
 
             </Grid>
 
