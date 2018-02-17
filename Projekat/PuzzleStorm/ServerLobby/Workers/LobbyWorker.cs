@@ -200,10 +200,13 @@ namespace ServerLobby.Workers
                     var updateMessage = GenerateRoomStateUpdate(room, RoomUpdateType.Modified);
 
                     Log($"[SUCCESS] Room properties changed for room {request.RoomId}");
-                    NotifyAll(updateMessage);                   
+                    NotifyAll(updateMessage);
 
                     return new ChangeRoomPropertiesResponse()
                     {
+                        Difficulty = room.Difficulty,
+                        MaxPlayers = room.MaxPlayers,
+                        NumberOfRounds = room.NumberOfRounds,                    
                         Status = OperationStatus.Successfull,
                         Details = $"Successfully changed properties for room with Id {request.RoomId}."
                     };
