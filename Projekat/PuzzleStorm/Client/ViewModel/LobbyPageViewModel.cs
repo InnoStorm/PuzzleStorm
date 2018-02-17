@@ -90,6 +90,9 @@ namespace Client
             };
 
             await DialogHost.Show(dialog, async delegate (object sender, DialogClosingEventArgs args) {
+
+                if (args.Parameter != null) {
+
                 List<String> paramsList = (List<String>)args.Parameter;
 
                 ChangeRoomPropertiesRequest request = new ChangeRoomPropertiesRequest() {
@@ -113,6 +116,8 @@ namespace Client
                     ChangeCommand = new RelayCommand(ChangeButtonAsync)
                 };
                 */
+                
+                }
             });
         }
 
