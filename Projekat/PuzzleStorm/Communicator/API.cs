@@ -27,7 +27,7 @@ namespace Communicator
 
         public static API Instance => APILazyInstance.Value;
         
-        private readonly IBus _bus;
+        public readonly IBus _bus; //todo return to private
 
         private API()
         {
@@ -221,7 +221,6 @@ namespace Communicator
         #region Subscribe
 
         public ISubscriptionResult SubscribeRoomChanges(
-            EventHandler<StormEventArgs<RoomsStateUpdate>> roomChangesHandler, 
             string subscriptionId,
             string routingKey = null
             )
@@ -230,21 +229,21 @@ namespace Communicator
             if (string.IsNullOrEmpty(routingKey))
                 routingKey = RouteGenerator.RoomUpdates.Room.All();
 
-            RoomChanged -= roomChangesHandler;
-            RoomChanged += roomChangesHandler;
-            
+          
             return _bus.SubscribeAsync<RoomsStateUpdate>(
                 subscriptionId,
                 message => Task.Factory.StartNew(() =>
                 {
+                    Console.WriteLine("==== INVOKE ROOM_CHANGE ======");
                     OnRoomChangeNotify(message);
+                    Console.WriteLine("==== END ROOM_CHANGE ======");
 
                 }),x => x.WithTopic(routingKey));
 
         }
 
         public ISubscriptionResult SubscribeInRoomChanges(
-            EventHandler<StormEventArgs<RoomPlayerUpdate>> inRoomChangesHandler,
+
             string subscriptionId,
             string routingKey = null
             )
@@ -253,14 +252,13 @@ namespace Communicator
             if (string.IsNullOrEmpty(routingKey))
                 routingKey = RouteGenerator.RoomUpdates.InRoom.All();
 
-            InRoomChange -= inRoomChangesHandler;
-            InRoomChange += inRoomChangesHandler;
-
             return _bus.SubscribeAsync<RoomPlayerUpdate>(
                 subscriptionId,
                 message => Task.Factory.StartNew(() =>
                 {
+                    Console.WriteLine("==== INVOKE IN_ROOM_CHANGE ======");
                     OnInRoomChangeNotify(message);
+                    Console.WriteLine("==== END IN_ROOM_CHANGE ======");
 
                 }), x => x.WithTopic(routingKey));
 
@@ -272,7 +270,7 @@ namespace Communicator
 
         public void Unsubscribe(ISubscriptionResult subscription)
         {
-            subscription.Dispose();
+            subscription?.Dispose();
         }
 
         #endregion

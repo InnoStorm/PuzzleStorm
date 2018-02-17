@@ -1,18 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Client.Helpers.Communication;
+using Communicator;
 using DTOLibrary.Broadcasts;
 using StormCommonData.Enums;
 using DTOLibrary.Requests;
 using DTOLibrary.Responses;
 using DTOLibrary.SubDTOs;
 using MaterialDesignThemes.Wpf;
-using StormCommonData.Enums;
+using StormCommonData.Events;
 
 namespace Client {
 
@@ -22,8 +25,6 @@ namespace Client {
     public class MainPageViewModel : BaseViewModel {
 
         #region Private
-
-        private Task InitTask;
 
         #endregion
 
@@ -66,33 +67,29 @@ namespace Client {
             RoomsItemsList = new ObservableCollection<RoomsPropsViewModel>();
 
             if (ListRooms.Instance.RoomsItemsList.Count == 0)
-                InitializingAsync();
+                Application.Current.Dispatcher.InvokeAsync(InitRooms);
+                //InitializingAsync();
             else
                 RoomsItemsList = ListRooms.Instance.RoomsItemsList;
 
             NoRoomLabel = false;
 
-            Subscribe();
+            //ClientUtils.RoomChanged += OnRoomChange;
+            //ClientUtils.InRoomChange += OnInRoomChange;
+
+            ClientUtils.RoomChanged += (sender, args) =>
+            {
+                Console.WriteLine("PALIS LI ME?");
+            };
+
+            
+            ClientUtils.SwitchState.LoginToHome();
+            //Application.Current.Dispatcher.InvokeAsync(ClientUtils.SwitchState.LoginToHome);
+            //different 
         }
 
-        private async Task InitializingAsync() {
-            await InitRooms();
-        }
-
-
+        
         #region InitRooms
-
-        private GetAllRoomsResponse TakeRoomsTask(GetAllRoomsRequest request) {
-            try {
-                return RabbitBus.Instance.Bus.Request<GetAllRoomsRequest, GetAllRoomsResponse>(request);
-            }
-            catch (Exception ex) {
-                return new GetAllRoomsResponse() {
-                    Status = OperationStatus.Exception,
-                    Details = ex.Message
-                };
-            }
-        }
 
         private async Task InitRooms()
         {
@@ -100,65 +97,28 @@ namespace Client {
                    RequesterId = Player.Instance.Id
             };
 
-            Task<GetAllRoomsResponse> task = new Task<GetAllRoomsResponse>(() => TakeRoomsTask(myRequest));
-            task.Start();
+            var response = await ClientUtils.PerformRequestAsync(API.Instance.GetAllRoomsAsync, myRequest);
+            if (response == null) return;
 
-            //UI LOADING 
-            var popup = new LoadingPopup() {
-                Message = { Text = "Initializing.." }
-            };
-
-            GetAllRoomsResponse response = null;
-
-            await DialogHost.Show(popup, async delegate (object sender, DialogOpenedEventArgs args) {
-                response = await task;
-                args.Session.Close(false);
-            });
-
-            if (response.Status != OperationStatus.Exception) {
-                if (response.Status == OperationStatus.Successfull) {
-
-                    if (response.List.Count != 0)
-                    {
-
-                        foreach (RoomInfo room in response.List)
-                        {
-                            ListRooms.Instance.RoomsItemsList.Add(
-                                new RoomsPropsViewModel()
-                                {
-                                    RoomId = room.RoomId,
-                                    Name = "Room #" + room.RoomId,
-                                    By = room.CreatorUsername,
-                                    Difficulty = CastDifficulty(room.Difficulty),
-                                    MaxPlayers = room.MaxPlayers.ToString(),
-                                    Rounds = room.NumberOfRounds.ToString(),
-                                    Visibility = Visibility.Visible,
-                                    Locked = !room.IsPublic
-                                }
-                            );
-                        }
-
-                        RoomsItemsList = ListRooms.Instance.RoomsItemsList;
-                        NoRoomLabel = false;
-                    }
-
-                }
-                else {
-                    var sampleMessageDialog = new SampleMessageDialog {
-                        Message = { Text = "Error!\n" + response.Details }
-                    };
-
-                    await DialogHost.Show(sampleMessageDialog);
-                }
-            }
-            else //DOSO EXCEPTION
+            foreach (RoomInfo room in response.List)
             {
-                var sampleMessageDialog = new SampleMessageDialog {
-                    Message = { Text = "Exception: " + response.Details }
-                };
-
-                await DialogHost.Show(sampleMessageDialog);
+                ListRooms.Instance.RoomsItemsList.Add(
+                    new RoomsPropsViewModel()
+                    {
+                        RoomId = room.RoomId,
+                        Name = "Room #" + room.RoomId,
+                        By = room.CreatorUsername,
+                        Difficulty = CastDifficulty(room.Difficulty),
+                        MaxPlayers = room.MaxPlayers.ToString(),
+                        Rounds = room.NumberOfRounds.ToString(),
+                        Visibility = Visibility.Visible,
+                        Locked = !room.IsPublic
+                    }
+                );
             }
+
+            RoomsItemsList = ListRooms.Instance.RoomsItemsList;
+            NoRoomLabel = false;
         }
 
         private string CastDifficulty(PuzzleDifficulty level) {
@@ -181,6 +141,8 @@ namespace Client {
 
         #region Metode
 
+
+        //TODO REPLACE
         private void Subscribe() {
             var subResult = RabbitBus.Instance.Bus.SubscribeAsync<RoomsStateUpdate>("cl_" + Player.Instance.Id,
                     request =>
@@ -216,6 +178,54 @@ namespace Client {
                             }
                         }),
                     x => x.WithTopic("#"));
+        }
+
+        private void OnInRoomChange(object o, StormEventArgs<RoomPlayerUpdate> stormEventArgs)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void OnRoomChange(object o, StormEventArgs<RoomsStateUpdate> stormEventArgs)
+        {
+            var update = stormEventArgs.Data;
+
+            switch (update.UpdateType)
+            {
+                case RoomUpdateType.Created:
+                case RoomUpdateType.BecameAvailable:
+                    ClientUtils.UpdateGUI(() =>
+                    {
+                        RoomsItemsList.Add(new RoomsPropsViewModel()
+                        {
+                            By = update.Creator.Username,
+                            RoomId = update.RoomId,
+                            MaxPlayers = update.MaxPlayers.ToString(),
+                            Difficulty = CastDifficulty(update.Level),
+                            Locked = !update.IsPublic,
+                            Name = update.Creator.Username,
+                            Rounds = update.NumberOfRounds.ToString(),
+                        });
+
+                        ListRooms.Instance.RoomsItemsList = RoomsItemsList;
+                    });
+                    break;
+
+                case RoomUpdateType.Modified:
+                    break;
+
+                case RoomUpdateType.Deleted:
+                case RoomUpdateType.Started:
+                case RoomUpdateType.Filled:
+                    ClientUtils.UpdateGUI(() =>
+                    {
+                        RoomsItemsList.Remove(RoomsItemsList.SingleOrDefault(x => x.RoomId == update.RoomId));
+                        ListRooms.Instance.RoomsItemsList = RoomsItemsList;
+                    });
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
         }
 
         #region TriTacke

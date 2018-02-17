@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Communicator;
 using DTOLibrary.Broadcasts;
 using DTOLibrary.Requests;
 using DTOLibrary.Responses;
 using DTOLibrary.SubDTOs;
 using EasyNetQ;
+using StormCommonData;
 using StormCommonData.Enums;
 using StormCommonData.Events;
 
@@ -107,18 +109,22 @@ namespace DEBUGConsole
         {
             using (var api = Communicator.API.Instance)
             {
-                var subscription = api.SubscribeRoomChanges(RoomChangesHandler, "Room.#");
+                //api.RoomChanged += RoomChangesHandler;
+                //var subscription = api.SubscribeRoomChanges("#");
+                //api.RoomChanged += RoomChangesHandler;
+
+                var sub = API.Instance.SubscribeRoomChanges("1", RouteGenerator.RoomUpdates.Room.All());
+                api.RoomChanged += (sender, eventArgs) =>
+                {
+                    Console.WriteLine($"ROOM {eventArgs.Data.RoomId} is {eventArgs.Data.UpdateType.ToString()}");
+                };
                 
                 Console.WriteLine("Subscribed...");
-                Console.ReadKey();
-
-                api.Unsubscribe(subscription);
-
-                Console.WriteLine("Unsubscribed..");
                 Console.ReadKey();
             }
         }
 
+        
         private static void RoomChangesHandler(object sender, StormEventArgs<RoomsStateUpdate> e)
         {
             Console.WriteLine("New Update: " + e.Data.UpdateType);
