@@ -51,10 +51,9 @@
                             <!--  Difficulty No  -->
                             <Label
                                 Grid.Column="2"
+                                Content="{Binding Difficulty, FallbackValue=X}"
                                 FontSize="18"
-                                FontWeight="Black">
-                                32
-                            </Label>
+                                FontWeight="Black" />
                         </Grid>
 
                         <!--  Linija ispod Difficulty  -->
@@ -79,10 +78,9 @@
                             <!--  Max players No  -->
                             <Label
                                 Grid.Column="2"
+                                Content="{Binding MaxPlayers, FallbackValue=X}"
                                 FontSize="18"
-                                FontWeight="Black">
-                                5
-                            </Label>
+                                FontWeight="Black" />
                         </Grid>
 
                         <!--  Linija ispod Max  -->
@@ -107,10 +105,9 @@
                             <!--  Max players No  -->
                             <Label
                                 Grid.Column="2"
+                                Content="{Binding Rounds, FallbackValue=X}"
                                 FontSize="18"
-                                FontWeight="Black">
-                                4
-                            </Label>
+                                FontWeight="Black" />
                         </Grid>
                     </Grid>
 
@@ -119,6 +116,7 @@
                         Grid.Row="1"
                         Margin="0,0,0,15"
                         HorizontalAlignment="Center"
+                        Command="{Binding ChangeCommand}"
                         FontSize="22"
                         FontWeight="ExtraBold"
                         Foreground="#464646"

@@ -40,7 +40,7 @@
             <!--  Username labela  -->
             <Label
                 Grid.Column="2"
-                Content="UserName"
+                Content="{Binding lobbyBy, FallbackValue=UserName}"
                 FontSize="50"
                 FontWeight="ExtraBold" />
         </Grid>
@@ -74,7 +74,10 @@
                     FontWeight="ExtraBold" />
 
                 <!--  Settings kontrola  -->
-                <local:LobbySettingsControl Grid.Row="1" Margin="110,0" />
+                <local:LobbySettingsControl
+                    Grid.Row="1"
+                    Margin="110,0"
+                    DataContext="{Binding RoomStatus}" />
 
             </Grid>
 
@@ -105,7 +108,7 @@
             Margin="400,0"
             Background="#9A8F78"
             Command="{Binding StartReadyCommand}"
-            Content="START/READY"
+            Content="{Binding StartReadyLabel, FallbackValue=START/READY}"
             FontSize="25"
             FontWeight="ExtraBold"
             Foreground="Black" />

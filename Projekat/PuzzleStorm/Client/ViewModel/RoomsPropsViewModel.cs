@@ -2,6 +2,8 @@
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Client.Helpers.Communication;
+using Communicator;
 using DTOLibrary.Enums;
 using DTOLibrary.Requests;
 using DTOLibrary.Responses;
@@ -14,6 +16,9 @@ namespace Client {
         #region Constructors
 
         public RoomsPropsViewModel() {
+
+            //ChangeCommand = new RelayCommand(ChangeButton);
+
             JoinCommand = new RelayCommandWithParameter(async (paramater) => await JoinInRoomAsync(paramater));
         }
 
@@ -42,6 +47,8 @@ namespace Client {
         #region Commands
 
         public ICommand JoinCommand { get; set; }
+
+        public ICommand ChangeCommand { get; set; }
 
         #endregion
 
@@ -74,65 +81,20 @@ namespace Client {
                 });
             }
 
-            Task<JoinRoomResponse> task = new Task<JoinRoomResponse>(() => JoinRoomTask(request));
-            task.Start();
+            JoinRoomResponse response = await ClientUtils.PerformRequestAsync(API.Instance.JoinRoomAsync, request,
+                "Joining..");
 
-            //UI LOADING 
-            var popup = new LoadingPopup() {
-                Message = { Text = "Joining.." }
+            if (response == null) return;
+
+            var sampleMessageDialog = new SampleMessageDialog {
+                Message = { Text = "Joining Successfull!" }
             };
 
-            JoinRoomResponse response = null;
+            await DialogHost.Show(sampleMessageDialog);
 
-            await DialogHost.Show(popup, async delegate (object sender, DialogOpenedEventArgs args) {
-                response = await task;
-                args.Session.Close(false);
-            });
-            //
+            Player.Instance.RoomId = this.RoomId;
 
-            if (response.Status != OperationStatus.Exception)
-            {
-                if (response.Status == OperationStatus.Successfull) {
-                    var sampleMessageDialog = new SampleMessageDialog {
-                        Message = { Text = "Joining Successfull!" }
-                    };
-
-                    await DialogHost.Show(sampleMessageDialog);
-
-                    Player.Instance.RoomId = this.RoomId;
-
-                    ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new LobbyPage();
-                }
-                else {
-
-                    var sampleMessageDialog = new SampleMessageDialog {
-                        Message = { Text = "Joining error!\n" + response.Details }
-                    };
-
-                    await DialogHost.Show(sampleMessageDialog);
-                }
-            }
-            else //DOSO EXCEPTION
-            {
-                var sampleMessageDialog = new SampleMessageDialog {
-                    Message = { Text = "Exception: " + response.Details }
-                };
-
-                await DialogHost.Show(sampleMessageDialog);
-            } 
-        }
-
-        private JoinRoomResponse JoinRoomTask(JoinRoomRequest request) {
-
-            try {
-                return RabbitBus.Instance.Bus.Request<JoinRoomRequest, JoinRoomResponse>(request);
-            }
-            catch (Exception ex) {
-                return new JoinRoomResponse() {
-                    Status = OperationStatus.Exception,
-                    Details = ex.Message
-                };
-            }
+            ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new LobbyPage();
         }
 
         #endregion

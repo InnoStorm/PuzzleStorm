@@ -57,19 +57,19 @@ namespace Client {
                 Password = ((PasswordBox)parameter).Password
             };
             
-            LoginResponse response = await ClientUtils.PerformRequestAsync(API.Instance.LoginAsync, myRequest, "Login...");
+            LoginResponse response = await ClientUtils.PerformRequestAsync(API.Instance.LoginAsync, myRequest, "Just a moment..");
             if (response == null) return;
-
-
+            
             Player.Instance.Id = response.PlayerId;
+            Player.Instance.UserName = UserName;
+
             ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new MainPage();
         }
 
         #endregion
 
         //Create button f-ja
-        public void CreateButton()
-        {
+        public void CreateButton() {
             //((WindowViewModel)((MainWindow)Application.Current.MainWindow).DataContext).CurrentPage = ApplicationPage.CreateAccount;
             ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new CreateAccount();
         }
