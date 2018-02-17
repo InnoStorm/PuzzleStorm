@@ -57,7 +57,7 @@ namespace Client {
                 Password = ((PasswordBox)parameter).Password
             };
             
-            LoginResponse response = await ClientUtils.PerformRequestAsync(API.Instance.LoginAsync, myRequest, "Login...");
+            LoginResponse response = await ClientUtils.PerformRequestAsync(API.Instance.LoginAsync, myRequest, "Just a moment..");
             if (response == null) return;
 
 

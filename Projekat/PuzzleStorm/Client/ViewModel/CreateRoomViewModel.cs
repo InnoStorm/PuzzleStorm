@@ -5,6 +5,8 @@ using System.Windows.Input;
 using MaterialDesignThemes.Wpf;
 using System.Windows;
 using System.Windows.Controls;
+using Client.Helpers.Communication;
+using Communicator;
 using DTOLibrary.Enums;
 using DTOLibrary.Requests;
 using DTOLibrary.Responses;
@@ -85,21 +87,8 @@ namespace Client {
 
         #region Create
 
-        private CreateRoomResponse CreateTask(CreateRoomRequest request) {
-            try {
-                return RabbitBus.Instance.Bus.Request<CreateRoomRequest, CreateRoomResponse>(request);
-            }
-            catch (Exception ex) {
-                return new CreateRoomResponse() {
-                    Status = OperationStatus.Exception,
-                    Details = ex.Message
-                };
-            }
-        }
-
         public async Task CreateRoom()
         {
-
             // Napravi se request
             CreateRoomRequest request = new CreateRoomRequest()
             {
@@ -124,52 +113,21 @@ namespace Client {
                     break;
             }
 
-            // Taks za create
-            Task<CreateRoomResponse> task = new Task<CreateRoomResponse>(() => CreateTask(request));
-            task.Start();
+            CreateRoomResponse response = await ClientUtils.PerformRequestAsync(API.Instance.CreateRoomAsync, request,
+                "Creating a room..");
 
-            // UI
-            var popup = new LoadingPopup() {
-                Message = { Text = "Creating a room.." }
+            if (response == null) return;
+
+            var sampleMessageDialog = new SampleMessageDialog {
+                Message = { Text = "Room created successfully!" }
             };
 
-            CreateRoomResponse response = null;
+            await DialogHost.Show(sampleMessageDialog);
 
-            await DialogHost.Show(popup, async delegate (object sender, DialogOpenedEventArgs args) {
-                response = await task;
-                args.Session.Close(false);
-            });
+            Player.Instance.RoomId = response.RoomId;
+            Player.Instance.Creator = true;
 
-            if (response.Status != OperationStatus.Exception) {
-                if (response.Status == OperationStatus.Successfull) {
-                    var sampleMessageDialog = new SampleMessageDialog {
-                        Message = { Text = "Room created successfully!" }
-                    };
-
-                    await DialogHost.Show(sampleMessageDialog);
-
-                    Player.Instance.RoomId = response.RoomId;
-                    Player.Instance.Creator = true;
-
-                    ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new LobbyPage();
-                }
-                else {
-
-                    var sampleMessageDialog = new SampleMessageDialog {
-                        Message = { Text = "Room creating error!\n" + response.Details }
-                    };
-
-                    await DialogHost.Show(sampleMessageDialog);
-                }
-            }
-            else
-            {
-                var sampleMessageDialog = new SampleMessageDialog {
-                    Message = { Text = "Exception: " + response.Details }
-                };
-
-                await DialogHost.Show(sampleMessageDialog);
-            }
+            ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new LobbyPage();
         }
 
         #endregion

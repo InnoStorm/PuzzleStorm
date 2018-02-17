@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using Client.Helpers.Communication;
+using Communicator;
 using DTOLibrary.Enums;
 using DTOLibrary.Requests;
 using DTOLibrary.Responses;
@@ -29,7 +32,6 @@ namespace Client
 
         public ICommand BackCommand { get; set; }
 
-        public ICommand ChangeCommand { get; set; }
 
         #endregion
 
@@ -38,8 +40,6 @@ namespace Client
         public LobbyPageViewModel()
         {
             StartReadyCommand = new RelayCommand(StartReadyGame);
-
-            ChangeCommand = new RelayCommand(ChangeButton);
 
             if (Player.Instance.Creator)
                 BackCommand = new RelayCommand(async () => await DeleteRoomAsync());
@@ -76,6 +76,28 @@ namespace Client
 
         #region Metods
 
+        private async void ChangeButtonAsync() {
+
+            /*
+            RoomStatus = new RoomsPropsViewModel() {
+                MaxPlayers = 6.ToString(),
+                Rounds = 6.ToString(),
+                ChangeCommand = new RelayCommand(ChangeButton)
+            };
+            */
+
+
+            var dialog = new ChangeRoomsPropsDialog() {
+                BoxDiff = { SelectedIndex = MiniHelpFunctions.DifficultyToIndex(RoomStatus.Difficulty) },
+                BoxMax = { SelectedIndex = Int32.Parse(RoomStatus.MaxPlayers) - 2 },
+                BoxRnd = { SelectedIndex = Int32.Parse(RoomStatus.Rounds) - 1 }
+            };
+
+            await DialogHost.Show(dialog, delegate (object sender, DialogClosingEventArgs args)
+            {
+                
+            });
+        }
 
         //Create button f-ja
         public void StartReadyGame()
@@ -83,26 +105,7 @@ namespace Client
             this.JoinedPlayersItems[0] = new LobbyJoinedPlayerViewModel() { Username = JoinedPlayersItems[0].Username, Ready = true};
         }
 
-        private void ChangeButton() {
-            
-
-
-        }
-
         #region InitPlayers
-
-        private RoomCurrentStateResponse TakePlayersTask(RoomCurrentStateRequest request) {
-
-            try {
-                return RabbitBus.Instance.Bus.Request<RoomCurrentStateRequest, RoomCurrentStateResponse>(request);
-            }
-            catch (Exception ex) {
-                return new RoomCurrentStateResponse() {
-                    Status = OperationStatus.Exception,
-                    Details = ex.Message
-                };
-            }
-        }
 
         private async Task InitPlayersAsync()
         {
@@ -112,76 +115,32 @@ namespace Client
                 RoomId = Player.Instance.RoomId
             };
 
-            Task<RoomCurrentStateResponse> task = new Task<RoomCurrentStateResponse>(() => TakePlayersTask(request));
-            task.Start();
+            RoomCurrentStateResponse response = await ClientUtils.PerformRequestAsync(API.Instance.GetRoomCurrentStateAsync,
+                request, "Initializing..");
 
-            //UI LOADING 
-            var popup = new LoadingPopup() {
-                Message = { Text = "Initializing.." }
+            if (response == null) return;
+
+            RoomStatus = new RoomsPropsViewModel()
+            {
+                Difficulty = MiniHelpFunctions.CastDifficulty(response.Difficulty),
+                MaxPlayers = response.MaxPlayers.ToString(),
+                Rounds = response.NumberOfRounds.ToString(),
+                ChangeCommand = new RelayCommand(ChangeButtonAsync)
             };
 
-            RoomCurrentStateResponse response = null;
-
-            await DialogHost.Show(popup, async delegate (object sender, DialogOpenedEventArgs args) {
-                response = await task;
-                args.Session.Close(false);
-            });
-            //
-
-            if (response.Status != OperationStatus.Exception)
-            {
-                if (response.Status == OperationStatus.Successfull)
-                {
-                    foreach (DTOLibrary.SubDTOs.Player player in response.Players)
-                    {
-                        JoinedPlayersItems.Add(
-                            new LobbyJoinedPlayerViewModel()
-                            {
-                                Username = player.Username,
-                                Ready = player.IsReady
-                            }
-                        );
+            foreach (DTOLibrary.SubDTOs.Player player in response.Players) {
+                JoinedPlayersItems.Add(
+                    new LobbyJoinedPlayerViewModel() {
+                        Username = player.Username,
+                        Ready = player.IsReady
                     }
-                }
-                else
-                {
-                    var sampleMessageDialog = new SampleMessageDialog {
-                        Message = { Text = "Error!\n" + response.Details }
-                    };
-
-                    await DialogHost.Show(sampleMessageDialog);
-                }
-            }
-            else //DOSO EXCEPTION
-            {
-                var sampleMessageDialog = new SampleMessageDialog
-                {
-                    Message = {Text = "Exception: " + response.Details}
-                };
-
-                await DialogHost.Show(sampleMessageDialog);
+                );
             }
         }
 
         #endregion
 
         #region DeleteRoom
-
-        private CancelRoomResponse DeleteRoomTask(CancelRoomRequest request)
-        {
-            try
-            {
-                return RabbitBus.Instance.Bus.Request<CancelRoomRequest, CancelRoomResponse>(request);
-            }
-            catch (Exception ex)
-            {
-                return new CancelRoomResponse()
-                {
-                    Status = OperationStatus.Exception,
-                    Details = ex.Message
-                };
-            }
-        }
 
         private async Task DeleteRoomAsync()
         {
@@ -192,71 +151,22 @@ namespace Client
                 RoomId = Player.Instance.RoomId
             };
 
-            Task<CancelRoomResponse> task = new Task<CancelRoomResponse>(() => DeleteRoomTask(request));
-            task.Start();
+            CancelRoomResponse response = await ClientUtils.PerformRequestAsync(API.Instance.CancelRoomAsync, request,
+                "Deleting a room..");
 
-            //UI
-            var popup = new LoadingPopup()
-            {
-                Message = {Text = "Deleting a room.."}
+            if (response == null) return;
+
+            var sampleMessageDialog = new SampleMessageDialog {
+                Message = { Text = "Room deleted Successfull!" }
             };
 
-            CancelRoomResponse response = null;
+            await DialogHost.Show(sampleMessageDialog);
 
-            await DialogHost.Show(popup, async delegate(object sender, DialogOpenedEventArgs args)
-            {
-                response = await task;
-                args.Session.Close(false);
-            });
-
-            if (response.Status != OperationStatus.Exception)
-            {
-                if (response.Status == OperationStatus.Successfull)
-                {
-                    var sampleMessageDialog = new SampleMessageDialog
-                    {
-                        Message = {Text = "Room deleted Successfull!"}
-                    };
-
-                    await DialogHost.Show(sampleMessageDialog);
-
-                    ((MainWindow) Application.Current.MainWindow).MainFrame.Content = new MainPage();
-                }
-                else
-                {
-                    var sampleMessageDialog = new SampleMessageDialog
-                    {
-                        Message = {Text = "Delete room error!\n" + response.Details}
-                    };
-
-                    await DialogHost.Show(sampleMessageDialog);
-                }
-            }
-            else //DOSO EXCEPTION
-            {
-                var sampleMessageDialog = new SampleMessageDialog
-                {
-                    Message = {Text = "Exception: " + response.Details}
-                };
-
-                await DialogHost.Show(sampleMessageDialog);
-            }
+            ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new MainPage();
         }
         #endregion
 
         #region Disconnect
-
-        private LeaveRoomResponse LeaveTask(LeaveRoomRequest request) {
-            try {
-                return RabbitBus.Instance.Bus.Request<LeaveRoomRequest, LeaveRoomResponse>(request);
-            }
-            catch (Exception ex) {
-                return new LeaveRoomResponse() {
-                    Status = OperationStatus.Exception,
-                    Details = ex.Message
-                };
-            }
-        }
 
         private async Task DisconnectFromRoomAsync() {
 
@@ -265,41 +175,12 @@ namespace Client
                 RoomId = Player.Instance.RoomId
             };
 
-            Task<LeaveRoomResponse> task = new Task<LeaveRoomResponse>(() => LeaveTask(request));
-            task.Start();
+            LeaveRoomResponse response = await ClientUtils.PerformRequestAsync(API.Instance.LeaveRoomAsync, request,
+                "Leaving.. :(");
 
-            //UI LOADING 
-            var popup = new LoadingPopup() {
-                Message = { Text = "Leaving.. :(" }
-            };
+            if (response == null) return;
 
-            LeaveRoomResponse response = null;
-
-            await DialogHost.Show(popup, async delegate (object sender, DialogOpenedEventArgs args) {
-                response = await task;
-                args.Session.Close(false);
-            });
-            //
-
-            if (response.Status != OperationStatus.Exception) {
-                if (response.Status == OperationStatus.Successfull)
-                    ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new MainPage();
-
-                else {
-                    var sampleMessageDialog = new SampleMessageDialog {
-                        Message = { Text = "Login error!\n" + response.Details }
-                    };
-                    await DialogHost.Show(sampleMessageDialog);
-                }
-            }
-            else //DOSO EXCEPTION
-            {
-                var sampleMessageDialog = new SampleMessageDialog {
-                    Message = { Text = "Exception: " + response.Details }
-                };
-
-                await DialogHost.Show(sampleMessageDialog);
-            }
+            ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new MainPage();
         }
 
         #endregion

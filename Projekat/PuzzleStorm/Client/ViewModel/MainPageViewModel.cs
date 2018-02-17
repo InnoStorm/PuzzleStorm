@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Client.Helpers.Communication;
+using Communicator;
 using DTOLibrary.Broadcasts;
 using DTOLibrary.Enums;
 using DTOLibrary.Requests;
@@ -82,96 +84,39 @@ namespace Client {
 
         #region InitRooms
 
-        private GetAllRoomsResponse TakeRoomsTask(GetAllRoomsRequest request) {
-            try {
-                return RabbitBus.Instance.Bus.Request<GetAllRoomsRequest, GetAllRoomsResponse>(request);
-            }
-            catch (Exception ex) {
-                return new GetAllRoomsResponse() {
-                    Status = OperationStatus.Exception,
-                    Details = ex.Message
-                };
-            }
-        }
-
         private async Task InitRooms()
         {
             GetAllRoomsRequest myRequest = new GetAllRoomsRequest() {
                    RequesterId = Player.Instance.Id
             };
 
-            Task<GetAllRoomsResponse> task = new Task<GetAllRoomsResponse>(() => TakeRoomsTask(myRequest));
-            task.Start();
+            GetAllRoomsResponse response = await ClientUtils.PerformRequestAsync(API.Instance.GetAllRoomsAsync,
+                myRequest, "Initializing..");
 
-            //UI LOADING 
-            var popup = new LoadingPopup() {
-                Message = { Text = "Initializing.." }
-            };
+            if (response == null) return;
 
-            GetAllRoomsResponse response = null;
+            if (response.List.Count != 0)
+            {
 
-            await DialogHost.Show(popup, async delegate (object sender, DialogOpenedEventArgs args) {
-                response = await task;
-                args.Session.Close(false);
-            });
-
-            if (response.Status != OperationStatus.Exception) {
-                if (response.Status == OperationStatus.Successfull) {
-
-                    if (response.List.Count != 0)
-                    {
-
-                        foreach (RoomInfo room in response.List)
+                foreach (RoomInfo room in response.List)
+                {
+                    ListRooms.Instance.RoomsItemsList.Add(
+                        new RoomsPropsViewModel()
                         {
-                            ListRooms.Instance.RoomsItemsList.Add(
-                                new RoomsPropsViewModel()
-                                {
-                                    RoomId = room.RoomId,
-                                    Name = "Room #" + room.RoomId,
-                                    By = room.CreatorUsername,
-                                    Difficulty = CastDifficulty(room.Difficulty),
-                                    MaxPlayers = room.MaxPlayers.ToString(),
-                                    Rounds = room.NumberOfRounds.ToString(),
-                                    Visibility = Visibility.Visible,
-                                    Locked = !room.IsPublic
-                                }
-                            );
+                            RoomId = room.RoomId,
+                            Name = "Room #" + room.RoomId,
+                            By = room.CreatorUsername,
+                            Difficulty = MiniHelpFunctions.CastDifficulty(room.Difficulty),
+                            MaxPlayers = room.MaxPlayers.ToString(),
+                            Rounds = room.NumberOfRounds.ToString(),
+                            Visibility = Visibility.Visible,
+                            Locked = !room.IsPublic
                         }
-
-                        RoomsItemsList = ListRooms.Instance.RoomsItemsList;
-                        NoRoomLabel = false;
-                    }
-
+                    );
                 }
-                else {
-                    var sampleMessageDialog = new SampleMessageDialog {
-                        Message = { Text = "Error!\n" + response.Details }
-                    };
 
-                    await DialogHost.Show(sampleMessageDialog);
-                }
-            }
-            else //DOSO EXCEPTION
-            {
-                var sampleMessageDialog = new SampleMessageDialog {
-                    Message = { Text = "Exception: " + response.Details }
-                };
-
-                await DialogHost.Show(sampleMessageDialog);
-            }
-        }
-
-        private string CastDifficulty(PuzzleDifficulty level) {
-            switch (level)
-            {
-                case PuzzleDifficulty.Easy:
-                    return 16.ToString();
-                case PuzzleDifficulty.Medium:
-                    return 25.ToString();
-                case PuzzleDifficulty.Hard:
-                    return 36.ToString();
-                default:
-                    return "X";
+                RoomsItemsList = ListRooms.Instance.RoomsItemsList;
+                NoRoomLabel = false;
             }
         }
 
@@ -202,6 +147,8 @@ namespace Client {
                                         RoomsItemsList.Remove(rem);
 
                                     ListRooms.Instance.RoomsItemsList = RoomsItemsList;
+
+                                    if (RoomsItemsList.Count == 0) NoRoomLabel = true;
                                 }));
                             }
                             else if (request.UpdateType == RoomUpdateType.Created) {
@@ -231,18 +178,6 @@ namespace Client {
 
         #region LogOut
 
-        private SignOutResponse LogoutTask(SignOutRequest request) {
-            try {
-                return RabbitBus.Instance.Bus.Request<SignOutRequest, SignOutResponse>(request);
-            }
-            catch (Exception ex) {
-                return new SignOutResponse() {
-                    Status = OperationStatus.Exception,
-                    Details = ex.InnerException.Message
-                };
-            }
-        }
-
         /// <summary>
         /// Dugme za logout
         /// </summary>
@@ -252,53 +187,18 @@ namespace Client {
                 RequesterId = Player.Instance.Id
             };
 
-            Task<SignOutResponse> task = new Task<SignOutResponse>(() => LogoutTask(request));
-            task.Start();
+            SignOutResponse response = await ClientUtils.PerformRequestAsync(API.Instance.SignOutAsync, request,
+                "Signing out..");
 
-            //UI LOADING 
-            var popup = new LoadingPopup() {
-                Message = { Text = "Signing out.." }
+            if (response == null) return;
+
+            var sampleMessageDialog = new SampleMessageDialog {
+                Message = { Text = "Sign out Successfull!" }
             };
 
-            SignOutResponse response = null;
+            await DialogHost.Show(sampleMessageDialog);
 
-            await DialogHost.Show(popup, async delegate (object sender, DialogOpenedEventArgs args) {
-                response = await task;
-                args.Session.Close(false);
-            });
-
-            if (response.Status != OperationStatus.Exception)
-            {
-                if (response.Status == OperationStatus.Successfull)
-                {
-                    var sampleMessageDialog = new SampleMessageDialog
-                    {
-                        Message = {Text = "Sign out Successfull!" }
-                    };
-
-                    await DialogHost.Show(sampleMessageDialog);
-                }
-                else
-                {
-                    var sampleMessageDialog = new SampleMessageDialog
-                    {
-                        Message = {Text = "Sigh out error!\n" + response.Details}
-                    };
-
-                    await DialogHost.Show(sampleMessageDialog);
-                }
-
-                ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new LoginPage();
-            }
-            else
-            {
-                var sampleMessageDialog = new SampleMessageDialog
-                {
-                    Message = {Text = "Exception: " + response.Details}
-                };
-
-                await DialogHost.Show(sampleMessageDialog);
-            }
+            ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new LoginPage();
         }
 
         #endregion
@@ -313,8 +213,6 @@ namespace Client {
         }
 
         #endregion
-
-
 
         #endregion
 

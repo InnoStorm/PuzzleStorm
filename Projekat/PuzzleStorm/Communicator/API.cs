@@ -81,7 +81,7 @@ namespace Communicator
         }
 
         /// <summary>
-        /// Create new room
+        /// Sign out
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
@@ -89,8 +89,7 @@ namespace Communicator
         {
             return await RequestAsync<SignOutRequest, SignOutResponse>(request);
         }
-
-
+        
         //Room
         public async Task<CreateRoomResponse> CreateRoomAsync(CreateRoomRequest request)
         {
