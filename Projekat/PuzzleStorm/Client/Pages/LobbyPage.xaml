@@ -108,7 +108,7 @@
             Margin="400,0"
             Background="#9A8F78"
             Command="{Binding StartReadyCommand}"
-            Content="START/READY"
+            Content="{Binding StartReadyLabel, FallbackValue=START/READY}"
             FontSize="25"
             FontWeight="ExtraBold"
             Foreground="Black" />

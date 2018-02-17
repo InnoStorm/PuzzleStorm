@@ -40,7 +40,7 @@ namespace Client {
             //TODO REMOVE
             if (RabbitBus.Instance.Bus != null && RabbitBus.Instance.Bus.IsConnected)
                 RabbitBus.Instance.Bus.Dispose();
-
+           
             Communicator.API.Instance.Dispose();
         }
 

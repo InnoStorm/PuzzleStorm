@@ -78,6 +78,8 @@ namespace Client {
 
             WelcomeMessage = "Welcome to PuzzleStorm, " + Player.Instance.UserName + "!";
 
+            ((MainWindow) Application.Current.MainWindow).Title = "PuzzleStorm! Have fun " + Player.Instance.UserName + "!";
+
             Subscribe();
         }
 
@@ -195,6 +197,8 @@ namespace Client {
                 "Signing out..");
 
             if (response == null) return;
+
+            ((MainWindow) Application.Current.MainWindow).Title = "PuzzleStorm!";
 
             var sampleMessageDialog = new SampleMessageDialog {
                 Message = { Text = "Sign out Successfull!" }

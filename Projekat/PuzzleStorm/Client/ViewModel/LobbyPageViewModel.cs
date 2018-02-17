@@ -26,6 +26,8 @@ namespace Client
 
         public string lobbyBy { get; set; }
 
+        public string StartReadyLabel { get; set; }
+
         #endregion
 
         #region Commands
@@ -41,7 +43,8 @@ namespace Client
 
         public LobbyPageViewModel()
         {
-            StartReadyCommand = new RelayCommand(StartReadyGame);
+            StartReadyCommand = new RelayCommand(StartReadyGameAsync);
+            StartReadyLabel = Player.Instance.Creator ? "START" : "READY";
 
             if (Player.Instance.Creator)
                 BackCommand = new RelayCommand(async () => await DeleteRoomAsync());
@@ -114,9 +117,46 @@ namespace Client
         }
 
         //Create button f-ja
-        public void StartReadyGame()
-        {
-            this.JoinedPlayersItems[0] = new LobbyJoinedPlayerViewModel() { Username = JoinedPlayersItems[0].Username, Ready = true};
+        public async void StartReadyGameAsync() {
+            //this.JoinedPlayersItems[0] = new LobbyJoinedPlayerViewModel() { Username = JoinedPlayersItems[0].Username, Ready = true};
+
+            if (Player.Instance.Creator) {
+                //PUSTA SE IGRICA
+            }
+            else {
+
+                if (StartReadyLabel == "READY") //SALJE DA JE READY
+                {
+                    ChangeStatusRequest request = new ChangeStatusRequest()
+                    {
+                        RequesterId = Player.Instance.Id,
+                        IAmReady = true
+                    };
+
+                    ChangeStatusResponse response = await ClientUtils.PerformRequestAsync(
+                        API.Instance.ChangeStatusAsync,
+                        request, "Moment..");
+
+                    if (response == null) return;
+
+                    StartReadyLabel = "NOT READY";
+                }
+                else // SALJE DA NIJE READY
+                {
+                    ChangeStatusRequest request = new ChangeStatusRequest() {
+                        RequesterId = Player.Instance.Id,
+                        IAmReady = false
+                    };
+
+                    ChangeStatusResponse response = await ClientUtils.PerformRequestAsync(
+                        API.Instance.ChangeStatusAsync,
+                        request, "Moment..");
+
+                    if (response == null) return;
+
+                    StartReadyLabel = "READY";
+                }
+            }
         }
 
         #region InitPlayers
