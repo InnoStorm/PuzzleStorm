@@ -7,7 +7,7 @@ using DTOLibrary.SubDTOs;
 
 namespace DTOLibrary.Responses
 {
-    public class StartRoomResponse : Response
+    public class GameCurrentStatusResponse : Response
     {
         public int GameId;
         public int PuzzleId;

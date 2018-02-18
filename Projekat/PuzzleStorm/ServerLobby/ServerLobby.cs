@@ -169,7 +169,7 @@ namespace ServerLobby
                     }
                 }));
 
-            Communicator.RespondAsync<StartRoomRequest, StartRoomResponse>(request =>
+            Communicator.RespondAsync<GameCurrentStatusRequest, GameCurrentStatusResponse>(request =>
                 Task.Factory.StartNew(() =>
                 {
                     var worker = _lobbyWorkerPool.Take();

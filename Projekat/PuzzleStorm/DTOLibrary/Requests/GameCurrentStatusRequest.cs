@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DTOLibrary.Requests
 {
-    public class StartRoomRequest : PostLoginRequest
+    public class GameCurrentStatusRequest : PostLoginRequest
     {
         public int RoomId { get; set; }
     }

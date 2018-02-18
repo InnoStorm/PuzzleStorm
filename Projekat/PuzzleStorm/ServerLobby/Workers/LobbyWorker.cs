@@ -84,7 +84,7 @@ namespace ServerLobby.Workers
             }
         }
 
-        public StartRoomResponse StartRoom(StartRoomRequest request)
+        public GameCurrentStatusResponse StartRoom(GameCurrentStatusRequest request)
         {
             try
             {
@@ -128,7 +128,7 @@ namespace ServerLobby.Workers
                         });
                     }
 
-                    return new StartRoomResponse()
+                    return new GameCurrentStatusResponse()
                     {
                         GameId = game.Id,
                         PuzzleId = puzzle.Id,
@@ -144,7 +144,7 @@ namespace ServerLobby.Workers
             {
                 Log($"[FAILED] Starting room {request.RoomId}, Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
 
-                return new StartRoomResponse()
+                return new GameCurrentStatusResponse()
                 {
                     Status = OperationStatus.Failed,
                     Details = ex.Message
