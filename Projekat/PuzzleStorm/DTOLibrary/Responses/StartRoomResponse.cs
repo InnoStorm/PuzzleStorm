@@ -10,5 +10,7 @@ namespace DTOLibrary.Responses
     {
         public int GameId;
         public int PuzzleId;
+        public string PuzzlePath;
+        public int CurrentPlayerId;
     }
 }
