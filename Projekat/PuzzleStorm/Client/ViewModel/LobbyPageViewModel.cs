@@ -128,6 +128,19 @@ namespace Client
 
             if (Player.Instance.Creator) {
                 //PUSTA SE IGRICA
+
+                StartGameRequest request = new StartGameRequest()
+                {
+                    RequesterId = Player.Instance.Id,
+                    RoomId = Player.Instance.RoomId
+                };
+
+                StartGameResponse response = await ClientUtils.PerformRequestAsync(API.Instance.StartGameAsync, request,
+                    "Starting..");
+
+                if (response == null) return;
+
+                ((MainWindow) Application.Current.MainWindow).MainFrame.Content = new GamePage();
             }
             else {
 

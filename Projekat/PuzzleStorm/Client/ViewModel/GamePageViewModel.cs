@@ -4,6 +4,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Client.Helpers.Communication;
+using Communicator;
+using DTOLibrary.Requests;
+using DTOLibrary.Responses;
 using EasyNetQ;
 
 namespace Client {
@@ -80,6 +84,7 @@ namespace Client {
                 }
             };
 
+            //InitializingAsync();
         }
 
         #endregion
@@ -110,6 +115,39 @@ namespace Client {
             ListaShuffleSlika.Shuffle();
         }
 
+        private async void InitializingAsync() {
+            GameCurrentStatusRequest request = new GameCurrentStatusRequest() {
+                RoomId = Player.Instance.RoomId,
+                RequesterId = Player.Instance.Id
+            };
+
+            GameCurrentStatusResponse response = await ClientUtils.PerformRequestAsync(API.Instance.GameInitAsync, request,
+                "Initializing..");
+
+            if (response == null) return;
+
+            ListaSourceSlika = response.PiecesPaths;
+
+            foreach (string s in ListaSourceSlika)
+                ListaShuffleSlika.Add(s);
+
+            ListaShuffleSlika.Shuffle();
+
+            foreach (var p in response.ListOfPlayers)
+            {
+                PlayersItems.Add(new GameWhoPlaysItemViewModel()
+                {
+                    UserName = p.Username,
+                    OnTheMove = response.CurrentPlayerId == p.PlayerId
+                });
+
+                ScoreItems.Add(new GameScoreItemViewModel()
+                {
+                    UserName = p.Username,
+                    Score = 0.ToString()
+                });
+            }
+        }
 
         public void SelectPiece(object parameter)
         {

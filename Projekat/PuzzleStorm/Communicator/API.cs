@@ -199,6 +199,10 @@ namespace Communicator
         public async Task<LeaveRoomResponse> LeaveRoomAsync(LeaveRoomRequest request)
             => await RequestAsync<LeaveRoomRequest, LeaveRoomResponse>(request);
 
+        public async Task<GameCurrentStatusResponse> GameInitAsync(GameCurrentStatusRequest request)
+        {
+            return await RequestAsync <GameCurrentStatusRequest, GameCurrentStatusResponse>(request);
+        }
 
 
         public StartGameResponse StartRoom(StartGameRequest request)
