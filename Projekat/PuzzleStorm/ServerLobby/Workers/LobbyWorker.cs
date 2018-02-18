@@ -243,6 +243,48 @@ namespace ServerLobby.Workers
             }
         }
 
+        public StartGameResponse StartGame(StartGameRequest request)
+        {
+            try
+            {
+                //StormValidator.ValidateRequest(request);
+
+                using (UnitOfWork data = WorkersUnitOfWork)
+                {
+                    var room = data.Rooms.Get(request.RoomId);
+                    foreach (Player player in room.ListOfPlayers)
+                        if (!player.IsReady)
+                        {
+                            Log($"[FAILED] Player with Id {player.Id} is not ready.", LogMessageType.Error);
+
+                            return new StartGameResponse()
+                            {
+                                Status = OperationStatus.Failed,
+                                Details = $"Player with Id {player.Id} is not ready."
+                            };
+                        }
+                    
+                    Log($"[SUCCESS] All players in room {request.RoomId} are ready.");
+                    
+                    return new StartGameResponse()
+                    {
+                        Status = OperationStatus.Successfull,
+                        Details = $"All players in room {request.RoomId} are ready."
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                Log($"[FAILED] Not all players are ready.", LogMessageType.Error);
+
+                return new StartGameResponse()
+                {
+                    Status = OperationStatus.Failed,
+                    Details = $"Not all players are ready."
+                };
+            }
+        }
+
 
 
         public ChangeStatusResponse PlayerChangeStatus(ChangeStatusRequest request)
