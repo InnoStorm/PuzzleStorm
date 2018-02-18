@@ -135,10 +135,10 @@ namespace Client
                     RoomId = Player.Instance.RoomId
                 };
 
-                StartGameResponse response = await ClientUtils.PerformRequestAsync(API.Instance.StartGameAsync, request,
-                    "Starting..");
+                //StartGameResponse response = await ClientUtils.PerformRequestAsync(API.Instance.StartGameAsync, request,
+                //    "Starting..");
 
-                if (response == null) return;
+                // if (response == null) return;
 
                 ((MainWindow) Application.Current.MainWindow).MainFrame.Content = new GamePage();
             }

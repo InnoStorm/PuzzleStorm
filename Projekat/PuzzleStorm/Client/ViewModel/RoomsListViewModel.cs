@@ -41,8 +41,6 @@ namespace Client {
 
             BackCommand = new RelayCommand(BackToMainPage);
 
-            Subscribe();
-
         }
 
         #endregion
