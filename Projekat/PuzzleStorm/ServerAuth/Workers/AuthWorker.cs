@@ -7,13 +7,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using DataLayer.Core.Domain;
 using DataLayer.Persistence;
-using DTOLibrary.Enums;
+using StormCommonData.Enums;
 using DTOLibrary.Requests;
 using DTOLibrary.Responses;
 using EasyNetQ;
 using Server;
 using Server.Workers;
-using StormCommonData.Enums;
 using StormCommonData;
 
 namespace ServerAuth.Workers

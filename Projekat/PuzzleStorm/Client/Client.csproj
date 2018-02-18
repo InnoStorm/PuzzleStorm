@@ -150,6 +150,7 @@
     <Compile Include="DataModels\Player.cs" />
     <Compile Include="Helpers\Communication\ClientUtils.cs" />
     <Compile Include="Helpers\Communication\RabbitBus.cs" />
+    <Compile Include="Helpers\Enums\WindowTransition.cs" />
     <Compile Include="Helpers\MiniHelpFunctions.cs" />
     <Compile Include="Pages\Base\BasePage.cs" />
     <Compile Include="Pages\CreateAccount.xaml.cs">
@@ -330,7 +331,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Backgrounds\puzzlewall.jpg" />

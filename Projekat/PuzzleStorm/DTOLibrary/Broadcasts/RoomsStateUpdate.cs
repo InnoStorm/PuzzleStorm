@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DTOLibrary.Enums;
+using StormCommonData.Enums;
 using DTOLibrary.SubDTOs;
 using EasyNetQ;
-using StormCommonData.Enums;
 
 namespace DTOLibrary.Broadcasts
 {
-    [Queue(queueName: "RoomsStateUpdateQueue", ExchangeName = "RoomsChangesExchange")]
+    [Queue(queueName: "RoomsStateUpdateQueue", ExchangeName = "RoomUpdatesExchange")]
     public class RoomsStateUpdate : BroadcastMessage
     {
         public RoomUpdateType UpdateType { get; set; }

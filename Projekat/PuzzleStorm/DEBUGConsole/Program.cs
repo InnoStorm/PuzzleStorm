@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Communicator;
 using DTOLibrary.Broadcasts;
 using DTOLibrary.Requests;
 using DTOLibrary.Responses;
 using DTOLibrary.SubDTOs;
 using EasyNetQ;
+using StormCommonData;
 using StormCommonData.Enums;
 using StormCommonData.Events;
 
@@ -107,21 +109,39 @@ namespace DEBUGConsole
         {
             using (var api = Communicator.API.Instance)
             {
-                var subscription = api.SubscribeRoomChanges(RoomChangesHandler, "Room.#");
                 
+                //API.Instance.RoomChanged += (sender, eventArgs) =>
+                //{
+                //    Console.WriteLine($"ROOM {eventArgs.Data.RoomId} is {eventArgs.Data.UpdateType.ToString()}");
+                //};
+                
+                //var sub = API.Instance.SubscribeRoomChanges("1", RouteGenerator.RoomUpdates.Room.All());
+
+
+                API.Instance.RoomChanged += (sender, e) =>
+                {
+                    var update = e.Data;
+
+                    Console.WriteLine($"Update Event received: {update.UpdateType.ToString()}.{update.RoomId}");
+                };
+                API.Instance.SubscribeRoomChanges("console", RouteGenerator.RoomUpdates.Room.Filter.All());
+
+                //API.Instance._bus.Subscribe<RoomsStateUpdate>("client_console",
+                //    update =>
+                //    {
+                //        Console.WriteLine($"Update received: {update.UpdateType.ToString()}.{update.RoomId}");
+                //    }, x =>
+                //    {
+                //        x.WithTopic(RouteGenerator.RoomUpdates.Room.All());
+                //        x.WithDurable(false);      
+                //    });
+
+
                 Console.WriteLine("Subscribed...");
                 Console.ReadKey();
-
-                api.Unsubscribe(subscription);
-
-                Console.WriteLine("Unsubscribed..");
-                Console.ReadKey();
             }
-        }
 
-        private static void RoomChangesHandler(object sender, PuzzleStormEventArgs<RoomsStateUpdate> e)
-        {
-            Console.WriteLine("New Update: " + e.Data.UpdateType);
+            Console.ReadKey();
         }
 
         private static void SignOutValid()
@@ -292,13 +312,6 @@ namespace DEBUGConsole
             });
         }
 
-        private static void StartRoom()
-        {
-            object response = rabbit.Request<StartRoomRequest, StartRoomResponse>(new StartRoomRequest()
-            {
-                RequesterId = 2,
-                RoomId = 7
-            });
-        }
+        
     }
 }

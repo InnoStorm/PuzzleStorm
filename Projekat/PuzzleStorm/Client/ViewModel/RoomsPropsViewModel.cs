@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using StormCommonData.Enums;
 using Client.Helpers.Communication;
 using Communicator;
-using DTOLibrary.Enums;
 using DTOLibrary.Requests;
 using DTOLibrary.Responses;
 using MaterialDesignThemes.Wpf;

@@ -1,20 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Client.Helpers.Communication;
+using Client.Helpers.Enums;
 using Communicator;
 using DTOLibrary.Broadcasts;
-using DTOLibrary.Enums;
+using StormCommonData.Enums;
 using DTOLibrary.Requests;
 using DTOLibrary.Responses;
 using DTOLibrary.SubDTOs;
 using MaterialDesignThemes.Wpf;
-using StormCommonData.Enums;
+using StormCommonData;
+using StormCommonData.Events;
 
 namespace Client {
 
@@ -24,8 +28,6 @@ namespace Client {
     public class MainPageViewModel : BaseViewModel {
 
         #region Private
-
-        private Task InitTask;
 
         #endregion
 
@@ -70,7 +72,8 @@ namespace Client {
             RoomsItemsList = new ObservableCollection<RoomsPropsViewModel>();
 
             if (ListRooms.Instance.RoomsItemsList.Count == 0)
-                InitializingAsync();
+                Application.Current.Dispatcher.InvokeAsync(InitRooms);
+                //InitializingAsync();
             else
                 RoomsItemsList = ListRooms.Instance.RoomsItemsList;
 
@@ -80,13 +83,38 @@ namespace Client {
 
             ((MainWindow) Application.Current.MainWindow).Title = "PuzzleStorm! Have fun " + Player.Instance.UserName + "!";
 
-            Subscribe();
+            //TODO DETECT transition
+            //Demo
+            ActivateTransition(WindowTransition.LoginToHome);
         }
 
-        private async Task InitializingAsync() {
-            await InitRooms();
-        }
 
+        private void ActivateTransition(WindowTransition transition)
+        {
+            //Samo prelazi ToHome (To-this-view)
+            switch (transition)
+            {
+                case WindowTransition.LoginToHome:
+                    ClientUtils.SwitchState.LoginToHome();
+                    break;
+                case WindowTransition.LobbyOwnerToHome:
+                    ClientUtils.SwitchState.LobbyOwnerToHome();
+                    break;
+                case WindowTransition.LobbyJoinerToHome:
+                    ClientUtils.SwitchState.LobbyJoinerToHome();
+                    break;
+                case WindowTransition.CreateRoomToHome:
+                    ClientUtils.SwitchState.CreateRoomToHome();
+                    break;
+                case WindowTransition.HomeToHome:
+                    break;
+                default:
+                    return;
+            }
+
+            ClientUtils.RoomChanged += OnRoomChange;
+            //ClientUtils.InRoomChange += OnInRoomChange;
+        }
 
         #region InitRooms
 
@@ -98,32 +126,27 @@ namespace Client {
 
             GetAllRoomsResponse response = await ClientUtils.PerformRequestAsync(API.Instance.GetAllRoomsAsync,
                 myRequest, "Initializing..");
-
             if (response == null) return;
 
-            if (response.List.Count != 0)
+            foreach (RoomInfo room in response.List)
             {
-
-                foreach (RoomInfo room in response.List)
-                {
-                    ListRooms.Instance.RoomsItemsList.Add(
-                        new RoomsPropsViewModel()
-                        {
-                            RoomId = room.RoomId,
-                            Name = "Room #" + room.RoomId,
-                            By = room.CreatorUsername,
-                            Difficulty = MiniHelpFunctions.CastDifficulty(room.Difficulty),
-                            MaxPlayers = room.MaxPlayers.ToString(),
-                            Rounds = room.NumberOfRounds.ToString(),
-                            Visibility = Visibility.Visible,
-                            Locked = !room.IsPublic
-                        }
-                    );
-                }
-
-                RoomsItemsList = ListRooms.Instance.RoomsItemsList;
-                NoRoomLabel = false;
+                ListRooms.Instance.RoomsItemsList.Add(
+                    new RoomsPropsViewModel()
+                    {
+                        RoomId = room.RoomId,
+                        Name = "Room #" + room.RoomId,
+                        By = room.CreatorUsername,
+                        Difficulty = room.Difficulty.ToString(),
+                        MaxPlayers = room.MaxPlayers.ToString(),
+                        Rounds = room.NumberOfRounds.ToString(),
+                        Visibility = Visibility.Visible,
+                        Locked = !room.IsPublic
+                    }
+                );
             }
+
+            RoomsItemsList = ListRooms.Instance.RoomsItemsList;
+            NoRoomLabel = false;
         }
 
         #endregion
@@ -132,43 +155,51 @@ namespace Client {
 
         #region Metode
 
-        private void Subscribe() {
-            var subResult = RabbitBus.Instance.Bus.SubscribeAsync<RoomsStateUpdate>("cl_" + Player.Instance.Id,
-                    request =>
-                        Task.Factory.StartNew(() => {
-                            if (request.UpdateType == RoomUpdateType.Deleted) {
-                                //var rem = RoomsItemsList.Where(x => x.RoomId == request.RoomId);
-                                //RoomsItemsList.Remove(rem);
+        //private void OnInRoomChange(object o, StormEventArgs<RoomPlayerUpdate> stormEventArgs)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-                                Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() => {
+        private void OnRoomChange(object o, StormEventArgs<RoomsStateUpdate> stormEventArgs)
+        {
+            ClientUtils.UpdateGUI(() =>
+            {
+                var update = stormEventArgs.Data;
 
-                                    RoomsPropsViewModel rem = null;
+                switch (update.UpdateType)
+                {
+                    case RoomUpdateType.Created:
+                    case RoomUpdateType.BecameAvailable:
+                        RoomsItemsList.Add(new RoomsPropsViewModel()
+                            {
+                                By = update.Creator.Username,
+                                RoomId = update.RoomId,
+                                MaxPlayers = update.MaxPlayers.ToString(),
+                                Difficulty = update.Level.ToString(),
+                                Locked = !update.IsPublic,
+                                Name = update.Creator.Username,
+                                Rounds = update.NumberOfRounds.ToString(),
+                            });
+                        ListRooms.Instance.RoomsItemsList = RoomsItemsList;
+                        break;
 
-                                    foreach (var v in RoomsItemsList) {
-                                        if (v.RoomId == request.RoomId)
-                                            rem = v;
-                                    }
+                    case RoomUpdateType.Modified:
+                        var room = RoomsItemsList.Single(x => x.RoomId == update.RoomId);
+                        room.Difficulty = update.Level.ToString();
+                        room.MaxPlayers = update.MaxPlayers.ToString();
+                        room.Rounds = update.NumberOfRounds.ToString();
+                        break;
 
-                                    if (rem != null)
-                                        RoomsItemsList.Remove(rem);
-
-                                    ListRooms.Instance.RoomsItemsList = RoomsItemsList;
-
-                                    if (RoomsItemsList.Count == 0) NoRoomLabel = true;
-                                }));
-                            }
-                            else if (request.UpdateType == RoomUpdateType.Created) {
-                                Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() => {
-                                    RoomsItemsList.Add(new RoomsPropsViewModel() {
-                                        By = request.Creator.Username,
-                                        RoomId = request.RoomId
-                                    });
-
-                                    ListRooms.Instance.RoomsItemsList = RoomsItemsList;
-                                }));
-                            }
-                        }),
-                    x => x.WithTopic("#"));
+                    case RoomUpdateType.Deleted:
+                    case RoomUpdateType.Started:
+                    case RoomUpdateType.Filled:
+                        RoomsItemsList.Remove(RoomsItemsList.Single(x => x.RoomId == update.RoomId));
+                        ListRooms.Instance.RoomsItemsList = RoomsItemsList;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            });
         }
 
         #region TriTacke
@@ -183,7 +214,6 @@ namespace Client {
         #endregion
 
         #region LogOut
-
         /// <summary>
         /// Dugme za logout
         /// </summary>

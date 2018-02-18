@@ -3,11 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using Communicator;
-using DTOLibrary.Enums;
+using DTOLibrary.Broadcasts;
 using DTOLibrary.Requests;
 using DTOLibrary.Responses;
+using EasyNetQ;
 using MaterialDesignThemes.Wpf;
+using StormCommonData;
+using StormCommonData.Enums;
+using StormCommonData.Events;
 
 namespace Client.Helpers.Communication
 {
@@ -68,8 +73,131 @@ namespace Client.Helpers.Communication
                 return Player.Instance.Id.ToString();
             }
         }
+
+        #endregion
+
+        #region EventsForwarder
+
+        public static event EventHandler<StormEventArgs<RoomsStateUpdate>> RoomChanged
+        {
+            add
+            {
+                API.Instance.RoomChanged -= value;
+                API.Instance.RoomChanged += value;
+            }
+            remove => API.Instance.RoomChanged -= value;
+        }
+
+        public static event EventHandler<StormEventArgs<RoomPlayerUpdate>> InRoomChange
+        {
+            add
+            {
+                API.Instance.InRoomChange -= value;
+                API.Instance.InRoomChange += value;
+            }
+            remove => API.Instance.InRoomChange -= value;
+        }
+
+        #endregion
+
+        #region States
+
+        public static class SwitchState
+        {
+            private static ISubscriptionResult _roomChangesSubscription;
+            private static ISubscriptionResult _inRoomChangesSubscription;
+
+            //A
+            public static void LoginToHome()
+            {
+                ResubscribeRoomChanges(RouteGenerator.RoomUpdates.Room.Filter.All());
+            }
+
+            //B
+            public static void HomeToCreateRoom()
+            {
+                Unsubscribe(_roomChangesSubscription);
+            }
+
+            //C
+            public static void CreateRoomToLobbyOwner(int createdRoomId)
+            {
+                ResubscribeInRoom(RouteGenerator.RoomUpdates.InRoom.Filter.All(createdRoomId));
+            }
+
+            //D
+            public static void LobbyOwnerToGameplay()
+            {
+                Unsubscribe(_roomChangesSubscription);
+                Unsubscribe(_inRoomChangesSubscription);
+            }
+
+            //E
+            public static void LobbyOwnerToHome()
+            {
+                Unsubscribe(_inRoomChangesSubscription);
+                ResubscribeRoomChanges(RouteGenerator.RoomUpdates.Room.Filter.All());
+            }
+
+            //F
+            public static void HomeToLobbyJoiner(int joinedRoomId)
+            {
+                ResubscribeRoomChanges(RouteGenerator.RoomUpdates.Room.Filter.All(joinedRoomId));
+                ResubscribeInRoom(RouteGenerator.RoomUpdates.InRoom.Filter.All(joinedRoomId));
+            }
+
+            //G
+            public static void LobbyJoinerToHome()
+            {
+                ResubscribeRoomChanges(RouteGenerator.RoomUpdates.Room.Filter.All());
+                Unsubscribe(_inRoomChangesSubscription);
+            }
+
+            //H I
+            public static void LobbyJoinerToGameplay()
+            {
+                Unsubscribe(_roomChangesSubscription);
+                Unsubscribe(_inRoomChangesSubscription);
+            }
+
+            //J
+            public static void CreateRoomToHome()
+            {
+                ResubscribeRoomChanges(RouteGenerator.RoomUpdates.Room.Filter.All());
+            }
+
+            public static void HomeToLogin()
+            {
+                Unsubscribe(_inRoomChangesSubscription);
+                Unsubscribe(_roomChangesSubscription);
+            }
+
+
+            //Helper funcs
+            private static void ResubscribeRoomChanges(string routingKey)
+            {
+                API.Instance.Unsubscribe(_roomChangesSubscription);
+                _roomChangesSubscription = API.Instance.SubscribeRoomChanges(SubscriptionId, routingKey);
+            }
+
+            private static void ResubscribeInRoom(string routingKey)
+            {
+                API.Instance.Unsubscribe(_inRoomChangesSubscription);
+                _inRoomChangesSubscription = API.Instance.SubscribeInRoomChanges(SubscriptionId, routingKey);
+            }
+
+            private static void Unsubscribe(ISubscriptionResult subscription)
+            {
+                API.Instance.Unsubscribe(subscription);
+            }
+            
+        }
         
         #endregion
-        
+
+        public static void UpdateGUI(Action action)
+        {
+            Application.Current.Dispatcher.InvokeAsync(action);
+        }
     }
 }

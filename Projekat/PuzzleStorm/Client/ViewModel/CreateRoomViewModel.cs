@@ -5,12 +5,11 @@ using System.Windows.Input;
 using MaterialDesignThemes.Wpf;
 using System.Windows;
 using System.Windows.Controls;
+using StormCommonData.Enums;
 using Client.Helpers.Communication;
 using Communicator;
-using DTOLibrary.Enums;
 using DTOLibrary.Requests;
 using DTOLibrary.Responses;
-using StormCommonData.Enums;
 
 namespace Client {
     public class CreateRoomViewModel : BaseViewModel {
