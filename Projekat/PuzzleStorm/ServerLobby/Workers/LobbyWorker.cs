@@ -18,6 +18,7 @@ using StormCommonData;
 using StormCommonData.Enums;
 using Player = DataLayer.Core.Domain.Player;
 using System.IO;
+using DTOLibrary.SubDTOs;
 
 namespace ServerLobby.Workers
 {
@@ -112,12 +113,28 @@ namespace ServerLobby.Workers
 
                     Log($"[SUCCESS] Player {request.RequesterId} successfully started room {request.RoomId}");
 
+                    List<String> partsPaths = new List<String>();
+                    foreach (PieceData piece in puzzle.ListOfPieces)
+                        partsPaths.Add(piece.PartPath);
+
+                    List <DTOLibrary.SubDTOs.Player> list = new List<DTOLibrary.SubDTOs.Player>();
+                    foreach (Player p in room.ListOfPlayers)
+                    {
+                        list.Add(new DTOLibrary.SubDTOs.Player()
+                        {
+                            IsReady = p.IsReady,
+                            PlayerId = p.Id,
+                            Username = p.Username
+                        });
+                    }
+
                     return new StartRoomResponse()
                     {
                         GameId = game.Id,
                         PuzzleId = puzzle.Id,
-                        PuzzlePath = puzzle.PicturePath,
+                        PiecesPaths = partsPaths,
                         CurrentPlayerId = room.Owner.Id,
+                        ListOfPlayers = list,
                         Status = OperationStatus.Successfull,
                         Details = $"Room {request.RoomId} successfully started."
                     };
