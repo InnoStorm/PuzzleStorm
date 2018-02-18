@@ -115,7 +115,7 @@ namespace Server
             ValidateRequesterIdFormat(request);
         }
 
-        public static void ValidateRequest(StartRoomRequest request)
+        public static void ValidateRequest(GameCurrentStatusRequest request)
         {
             ValidateRequesterIdFormat(request);
         }
