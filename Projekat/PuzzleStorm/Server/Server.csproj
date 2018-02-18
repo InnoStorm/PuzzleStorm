@@ -77,7 +77,7 @@
       <Name>DataLayer</Name>
     </ProjectReference>
     <ProjectReference Include="..\DTOLibrary\DTOLibrary.csproj">
-      <Project>{495FB5C5-301C-438D-9DDB-6BAA4CE0BEDD}</Project>
+      <Project>{495fb5c5-301c-438d-9ddb-6baa4ce0bedd}</Project>
       <Name>DTOLibrary</Name>
     </ProjectReference>
     <ProjectReference Include="..\StormCommonData\StormCommonData.csproj">

@@ -24,89 +24,93 @@ namespace DEBUGConsole
 
         private static IBus rabbit;
 
-        //static void Main(string[] args)
-        //{
-        //    try
-        //    {
-        //        rabbit = RabbitHutch.CreateBus(ConnectionString);
-
-        //        bool loop = true;
-
-        //        while (loop)
-        //        {
-        //            Console.Clear();
-        //            Console.WriteLine("Choose option:");
-        //            Console.WriteLine(
-        //                $"1. Invalid Registration()" + Environment.NewLine +
-        //                $"2. Valid Registration()" + Environment.NewLine +
-        //                $"3. Invalid Login()" + Environment.NewLine +
-        //                $"4. Valid Login()" + Environment.NewLine +
-        //                $"5. Invalid Signout()" + Environment.NewLine +
-        //                $"6. Valid Signout()" + Environment.NewLine +
-        //                $"7. Test Function()" + Environment.NewLine +
-        //                $"8. Add puzzles to database()" + Environment.NewLine +
-        //                $"10. Start room()" + Environment.NewLine +
-
-        //                Environment.NewLine +
-        //                $"0. Exit");
-
-        //            string input = Console.ReadLine();
-        //            Console.WriteLine("Executing...");
-
-        //            switch (input)
-        //            {
-        //                case "0":
-        //                    loop = false;
-        //                    break;
-        //                case "1":
-        //                    RegistrationInvalid();
-        //                    break;
-        //                case "2":
-        //                    RegistrationValid();
-        //                    break;
-        //                case "3":
-        //                    LoginInvalid();
-        //                    break;
-        //                case "4":
-        //                    LoginValid();
-        //                    break;
-        //                case "5":
-        //                    SignOutInvalid();
-        //                    break;
-        //                case "6":
-        //                    SignOutValid();
-        //                    break;
-        //                case "7":
-        //                    TestFunction();
-        //                    break;
-        //                case "8":
-        //                    AddPuzzlesToDatabase();
-        //                    break;
-        //                case "9":
-        //                    ChangeStatusForPlayer();
-        //                    break;
-        //                case "10":
-        //                    StartRoom();
-        //                    break;
-
-        //                default:
-        //                    break;
-        //            }
-        //        }               
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine($"Greska: {ex.Message}");
-        //        Console.WriteLine($"Vise: {ex.InnerException?.Message}");
-        //    }
-        //    finally
-        //    {
-        //        rabbit.Dispose();
-        //    }
-        //}
-
         static void Main(string[] args)
         {
+            try
+            {
+                rabbit = RabbitHutch.CreateBus(ConnectionString);
+
+                bool loop = true;
+
+                while (loop)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Choose option:");
+                    Console.WriteLine(
+                        $"1. Invalid Registration()" + Environment.NewLine +
+                        $"2. Valid Registration()" + Environment.NewLine +
+                        $"3. Invalid Login()" + Environment.NewLine +
+                        $"4. Valid Login()" + Environment.NewLine +
+                        $"5. Invalid Signout()" + Environment.NewLine +
+                        $"6. Valid Signout()" + Environment.NewLine +
+                        $"7. Test Function()" + Environment.NewLine +
+                        $"8. Add puzzles to database()" + Environment.NewLine +
+                        $"10. Start room()" + Environment.NewLine +
+                        $"11. Make a move()" + Environment.NewLine + 
+                        Environment.NewLine +
+                        $"0. Exit");
+
+                    string input = Console.ReadLine();
+                    Console.WriteLine("Executing...");
+
+                    switch (input)
+                    {
+                        case "0":
+                            loop = false;
+                            break;
+                        case "1":
+                            RegistrationInvalid();
+                            break;
+                        case "2":
+                            RegistrationValid();
+                            break;
+                        case "3":
+                            LoginInvalid();
+                            break;
+                        case "4":
+                            LoginValid();
+                            break;
+                        case "5":
+                            SignOutInvalid();
+                            break;
+                        case "6":
+                            SignOutValid();
+                            break;
+                        case "7":
+                            TestFunction();
+                            break;
+                        case "8":
+                            AddPuzzlesToDatabase();
+                            break;
+                        case "9":
+                            ChangeStatusForPlayer();
+                            break;
+                        case "10":
+                            StartRoom();
+                            break;
+                        case "11":
+                            Move();
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Greska: {ex.Message}");
+                Console.WriteLine($"Vise: {ex.InnerException?.Message}");
+            }
+            finally
+            {
+                rabbit.Dispose();
+            }
+        }
+        /*
+        static void Main(string[] args)
+        {
+            
             using (var api = Communicator.API.Instance)
             {
                 
@@ -140,8 +144,12 @@ namespace DEBUGConsole
                 Console.WriteLine("Subscribed...");
                 Console.ReadKey();
             }
+        }
+        */
 
-            Console.ReadKey();
+        private static void RoomChangesHandler(object sender, StormEventArgs<RoomsStateUpdate> e)
+        {
+            Console.WriteLine("New Update: " + e.Data.UpdateType);
         }
 
         private static void SignOutValid()
@@ -170,7 +178,7 @@ namespace DEBUGConsole
 
             response = rabbit.Request<LoginRequest, LoginResponse>(new LoginRequest()
             {
-                Username = "dacha204",
+                Username = "neko205",
                 Password = "666"
             });
         }
@@ -203,7 +211,7 @@ namespace DEBUGConsole
             object
             response = rabbit.Request<RegistrationRequest, RegistrationResponse>(new RegistrationRequest()
             {
-                Username = "dacha204",
+                Username = "neko205",
                 Email = "dacha@mail.com",
                 Password = "666"
             });
@@ -256,7 +264,7 @@ namespace DEBUGConsole
             Console.WriteLine("Creating room...");
             response = rabbit.Request<CreateRoomRequest, CreateRoomResponse>(new CreateRoomRequest()
             {
-                RequesterId = 2,
+                RequesterId = 14,
                 MaxPlayers = 10,
                 Password = "666",
                 Difficulty = PuzzleDifficulty.Easy,
@@ -270,32 +278,32 @@ namespace DEBUGConsole
             {
                 RoomId = soba,
                 Password = "666",
-                RequesterId = 1,
+                RequesterId = 13,
             });
 
             Console.WriteLine("Listing room...");
             response = rabbit.Request<GetAllRoomsRequest, GetAllRoomsResponse>(new GetAllRoomsRequest()
             {
-               RequesterId = 2
+               RequesterId = 14
             });
 
             Console.WriteLine("Changing room prop...");
             response = rabbit.Request<ChangeRoomPropertiesRequest, ChangeRoomPropertiesResponse>(new ChangeRoomPropertiesRequest()
             {
-                RequesterId = 2,
+                RequesterId = 14,
                 RoomId = soba,
                 MaxPlayers = 22,
                 Difficulty = PuzzleDifficulty.Hard,
                 NumberOfRounds = 204,
             });
-
+            /*
             Console.WriteLine("Leaving room...");
             response = rabbit.Request<CancelRoomRequest, CancelRoomResponse>(new CancelRoomRequest()
             {
                 RequesterId = 2,
                 RoomId = soba
             });
-
+            */
         }
 
         private static void AddPuzzlesToDatabase()
@@ -312,6 +320,27 @@ namespace DEBUGConsole
             });
         }
 
-        
+        private static void StartRoom()
+        {
+            object response = rabbit.Request<GameCurrentStatusRequest, GameCurrentStatusResponse>(new GameCurrentStatusRequest()
+            {
+                RequesterId = 2,
+                RoomId = 7
+            });
+        }
+
+        private static void Move()
+        {
+            Console.WriteLine("Making a move...");
+            MakeAMoveResponse response = rabbit.Request<MakeAMoveRequest, MakeAMoveResponse>(new MakeAMoveRequest()
+            {
+                RequesterId = 14,
+                RoomId = 136,
+                SelectedPartNumber = 10,
+                TablePlaceNumber = 100
+            });
+
+            Console.WriteLine(response.CurrentPlayerId);
+        }
     }
 }

@@ -211,6 +211,10 @@ namespace Communicator
         public async Task<StartGameResponse> StartRoomAsync(StartGameRequest request)
             => await RequestAsync<StartGameRequest, StartGameResponse>(request);
 
+        public async Task<GameCurrentStatusResponse> StartRoomAsync(GameCurrentStatusRequest request)
+        {
+            return await RequestAsync <GameCurrentStatusRequest, GameCurrentStatusResponse>(request);
+        }
 
 
         //Puzzle

@@ -351,7 +351,7 @@
       <Name>DTOLibrary</Name>
     </ProjectReference>
     <ProjectReference Include="..\StormCommonData\StormCommonData.csproj">
-      <Project>{74f9a2fc-687c-4c7b-a051-93ef8ec4f144}</Project>
+      <Project>{a13319c1-dba7-42c8-b5d2-6d96b3316b01}</Project>
       <Name>StormCommonData</Name>
     </ProjectReference>
   </ItemGroup>

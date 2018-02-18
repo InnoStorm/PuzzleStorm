@@ -17,7 +17,6 @@ using EasyNetQ;
 using StormCommonData;
 using Player = DataLayer.Core.Domain.Player;
 using System.IO;
-using DTOLibrary.SubDTOs;
 
 namespace ServerLobby.Workers
 {
@@ -251,6 +250,11 @@ namespace ServerLobby.Workers
                 using (UnitOfWork data = WorkersUnitOfWork)
                 {
                     var room = data.Rooms.Get(request.RoomId);
+
+                    var starter = data.Players.Get(request.RequesterId);
+                    starter.IsReady = true;
+                    data.Complete();
+
                     foreach (Player player in room.ListOfPlayers)
                         if (!player.IsReady)
                         {
@@ -262,9 +266,16 @@ namespace ServerLobby.Workers
                                 Details = $"Player with Id {player.Id} is not ready."
                             };
                         }
+
+                    var updateMessage = new RoomReadyUpdate()
+                    {
+                        RoomId = room.Id
+                    };
                     
                     Log($"[SUCCESS] All players in room {request.RoomId} are ready.");
-                    
+
+                    NotifyAll(updateMessage);
+
                     return new StartGameResponse()
                     {
                         Status = OperationStatus.Successfull,
@@ -559,6 +570,12 @@ namespace ServerLobby.Workers
             Communicator.Publish<RoomPlayerUpdate>(message, routingKey);
 
             Log($"NOTIFY_ALL: {routingKey}");
+        }
+
+        public void NotifyAll(RoomReadyUpdate message)
+        {
+            string routingKey = $"Room.{message.RoomId}.IsReady";
+            Communicator.Publish<RoomReadyUpdate>(message, routingKey);
         }
 
         #endregion

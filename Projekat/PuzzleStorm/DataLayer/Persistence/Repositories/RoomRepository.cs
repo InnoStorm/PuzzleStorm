@@ -20,5 +20,10 @@ namespace DataLayer.Persistence.Repositories
         {
             return Find(x => x.State == RoomState.Available);
         }
+
+        public IEnumerable<Room> GetAllPlaying()
+        {
+            return Find(x => x.State == RoomState.Playing);
+        }
     }
 }

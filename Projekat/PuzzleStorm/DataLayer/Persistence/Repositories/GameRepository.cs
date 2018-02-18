@@ -1,5 +1,9 @@
-﻿using DataLayer.Core.Domain;
+﻿using System.Collections.Generic;
+using System.Linq;
+using DataLayer.Core.Domain;
 using DataLayer.Core.Repositories;
+using System.Data.Entity;
+using StormCommonData.Enums;
 
 namespace DataLayer.Persistence.Repositories
 {

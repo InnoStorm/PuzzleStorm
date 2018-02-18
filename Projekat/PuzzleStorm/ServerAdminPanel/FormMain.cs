@@ -30,6 +30,7 @@ namespace ServerAdminPanel
         {
             availableServers.Add(new KeyValuePair<string, IStormServer>("Auth Server",  ServerAuth.ServerAuth.Instance));
             availableServers.Add(new KeyValuePair<string, IStormServer>("Lobby Server", ServerLobby.ServerLobby.Instance));
+            availableServers.Add(new KeyValuePair<string, IStormServer>("Game Server", ServerGame.ServerGame.Instance));
 
             foreach (var item in availableServers)
                 item.Value.NewLogMessage += OnNewServerLogMessage;
