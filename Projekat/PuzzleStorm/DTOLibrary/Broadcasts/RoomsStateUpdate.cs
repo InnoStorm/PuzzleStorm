@@ -9,7 +9,7 @@ using EasyNetQ;
 
 namespace DTOLibrary.Broadcasts
 {
-    [Queue(queueName: "RoomsStateUpdateQueue", ExchangeName = "RoomsChangesExchange")]
+    [Queue(queueName: "RoomsStateUpdateQueue", ExchangeName = "RoomUpdatesExchange")]
     public class RoomsStateUpdate : BroadcastMessage
     {
         public RoomUpdateType UpdateType { get; set; }

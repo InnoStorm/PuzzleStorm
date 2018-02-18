@@ -483,7 +483,7 @@ namespace ServerLobby.Workers
 
         private void NotifyAll(RoomsStateUpdate message)
         {
-            string routingKey = RouteGenerator.RoomUpdates.Room.FromEnum(message.UpdateType, message.RoomId);
+            string routingKey = RouteGenerator.RoomUpdates.Room.Set.FromEnum(message.UpdateType, message.RoomId);
             Communicator.Publish<RoomsStateUpdate>(message, routingKey);
 
             Log($"NOTIFY_ALL: {routingKey}");
@@ -491,7 +491,7 @@ namespace ServerLobby.Workers
 
         private void NotifyAll(RoomPlayerUpdate message)
         {
-            string routingKey = RouteGenerator.RoomUpdates.InRoom.FromEnum(message.UpdateType, message.RoomId);
+            string routingKey = RouteGenerator.RoomUpdates.InRoom.Set.FromEnum(message.UpdateType, message.RoomId);
             Communicator.Publish<RoomPlayerUpdate>(message, routingKey);
 
             Log($"NOTIFY_ALL: {routingKey}");

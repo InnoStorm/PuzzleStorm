@@ -120,8 +120,8 @@ namespace Communicator
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public Task<SignOutResponse> SignOut(SignOutRequest request)
-            => RequestAsync<SignOutRequest, SignOutResponse>(request);
+        public SignOutResponse SignOut(SignOutRequest request)
+            => Request<SignOutRequest, SignOutResponse>(request);
 
         /// <summary>
         /// SignOutAsync
@@ -227,42 +227,49 @@ namespace Communicator
         {
 
             if (string.IsNullOrEmpty(routingKey))
-                routingKey = RouteGenerator.RoomUpdates.Room.All();
+                routingKey = RouteGenerator.RoomUpdates.Room.Filter.All();
 
           
             return _bus.SubscribeAsync<RoomsStateUpdate>(
-                subscriptionId,
+                $"client_{subscriptionId}",
                 message => Task.Factory.StartNew(() =>
                 {
                     Console.WriteLine("==== INVOKE ROOM_CHANGE ======");
                     OnRoomChangeNotify(message);
                     Console.WriteLine("==== END ROOM_CHANGE ======");
 
-                }),x => x.WithTopic(routingKey));
+                }),x =>
+                {
+                    x.WithTopic(routingKey);
+                    x.WithDurable(false);
+                });
 
         }
 
         public ISubscriptionResult SubscribeInRoomChanges(
-
             string subscriptionId,
             string routingKey = null
             )
         {
 
             if (string.IsNullOrEmpty(routingKey))
-                routingKey = RouteGenerator.RoomUpdates.InRoom.All();
+                routingKey = RouteGenerator.RoomUpdates.InRoom.Filter.All();
 
             return _bus.SubscribeAsync<RoomPlayerUpdate>(
-                subscriptionId,
+                $"client_{subscriptionId}",
                 message => Task.Factory.StartNew(() =>
                 {
                     Console.WriteLine("==== INVOKE IN_ROOM_CHANGE ======");
                     OnInRoomChangeNotify(message);
                     Console.WriteLine("==== END IN_ROOM_CHANGE ======");
 
-                }), x => x.WithTopic(routingKey));
-
+                }), x =>
+                {
+                    x.WithTopic(routingKey);
+                    x.WithDurable(false);
+                });
         }
+
 
         #endregion
 

@@ -5,9 +5,11 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Client.Helpers.Communication;
+using Client.Helpers.Enums;
 using Communicator;
 using DTOLibrary.Broadcasts;
 using StormCommonData.Enums;
@@ -15,6 +17,7 @@ using DTOLibrary.Requests;
 using DTOLibrary.Responses;
 using DTOLibrary.SubDTOs;
 using MaterialDesignThemes.Wpf;
+using StormCommonData;
 using StormCommonData.Events;
 
 namespace Client {
@@ -74,21 +77,39 @@ namespace Client {
 
             NoRoomLabel = false;
 
-            //ClientUtils.RoomChanged += OnRoomChange;
-            //ClientUtils.InRoomChange += OnInRoomChange;
-
-            ClientUtils.RoomChanged += (sender, args) =>
-            {
-                Console.WriteLine("PALIS LI ME?");
-            };
-
-            
-            ClientUtils.SwitchState.LoginToHome();
-            //Application.Current.Dispatcher.InvokeAsync(ClientUtils.SwitchState.LoginToHome);
-            //different 
+            //TODO DETECT transition
+            //Demo
+            ActivateTransition(WindowTransition.LoginToHome);
         }
 
-        
+
+        private void ActivateTransition(WindowTransition transition)
+        {
+            //Samo prelazi ToHome (To-this-view)
+            switch (transition)
+            {
+                case WindowTransition.LoginToHome:
+                    ClientUtils.SwitchState.LoginToHome();
+                    break;
+                case WindowTransition.LobbyOwnerToHome:
+                    ClientUtils.SwitchState.LobbyOwnerToHome();
+                    break;
+                case WindowTransition.LobbyJoinerToHome:
+                    ClientUtils.SwitchState.LobbyJoinerToHome();
+                    break;
+                case WindowTransition.CreateRoomToHome:
+                    ClientUtils.SwitchState.CreateRoomToHome();
+                    break;
+                case WindowTransition.HomeToHome:
+                    break;
+                default:
+                    return;
+            }
+
+            ClientUtils.RoomChanged += OnRoomChange;
+            //ClientUtils.InRoomChange += OnInRoomChange;
+        }
+
         #region InitRooms
 
         private async Task InitRooms()
@@ -141,91 +162,51 @@ namespace Client {
 
         #region Metode
 
-
-        //TODO REPLACE
-        private void Subscribe() {
-            var subResult = RabbitBus.Instance.Bus.SubscribeAsync<RoomsStateUpdate>("cl_" + Player.Instance.Id,
-                    request =>
-                        Task.Factory.StartNew(() => {
-                            if (request.UpdateType == RoomUpdateType.Deleted) {
-                                //var rem = RoomsItemsList.Where(x => x.RoomId == request.RoomId);
-                                //RoomsItemsList.Remove(rem);
-
-                                Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() => {
-
-                                    RoomsPropsViewModel rem = null;
-
-                                    foreach (var v in RoomsItemsList) {
-                                        if (v.RoomId == request.RoomId)
-                                            rem = v;
-                                    }
-
-                                    if (rem != null)
-                                        RoomsItemsList.Remove(rem);
-
-                                    ListRooms.Instance.RoomsItemsList = RoomsItemsList;
-                                }));
-                            }
-                            else if (request.UpdateType == RoomUpdateType.Created) {
-                                Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() => {
-                                    RoomsItemsList.Add(new RoomsPropsViewModel() {
-                                        By = request.Creator.Username,
-                                        RoomId = request.RoomId
-                                    });
-
-                                    ListRooms.Instance.RoomsItemsList = RoomsItemsList;
-                                }));
-                            }
-                        }),
-                    x => x.WithTopic("#"));
-        }
-
-        private void OnInRoomChange(object o, StormEventArgs<RoomPlayerUpdate> stormEventArgs)
-        {
-            throw new NotImplementedException();
-        }
+        //private void OnInRoomChange(object o, StormEventArgs<RoomPlayerUpdate> stormEventArgs)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         private void OnRoomChange(object o, StormEventArgs<RoomsStateUpdate> stormEventArgs)
         {
-            var update = stormEventArgs.Data;
-
-            switch (update.UpdateType)
+            ClientUtils.UpdateGUI(() =>
             {
-                case RoomUpdateType.Created:
-                case RoomUpdateType.BecameAvailable:
-                    ClientUtils.UpdateGUI(() =>
-                    {
+                var update = stormEventArgs.Data;
+
+                switch (update.UpdateType)
+                {
+                    case RoomUpdateType.Created:
+                    case RoomUpdateType.BecameAvailable:
                         RoomsItemsList.Add(new RoomsPropsViewModel()
-                        {
-                            By = update.Creator.Username,
-                            RoomId = update.RoomId,
-                            MaxPlayers = update.MaxPlayers.ToString(),
-                            Difficulty = CastDifficulty(update.Level),
-                            Locked = !update.IsPublic,
-                            Name = update.Creator.Username,
-                            Rounds = update.NumberOfRounds.ToString(),
-                        });
-
+                            {
+                                By = update.Creator.Username,
+                                RoomId = update.RoomId,
+                                MaxPlayers = update.MaxPlayers.ToString(),
+                                Difficulty = CastDifficulty(update.Level),
+                                Locked = !update.IsPublic,
+                                Name = update.Creator.Username,
+                                Rounds = update.NumberOfRounds.ToString(),
+                            });
                         ListRooms.Instance.RoomsItemsList = RoomsItemsList;
-                    });
-                    break;
+                        break;
 
-                case RoomUpdateType.Modified:
-                    break;
+                    case RoomUpdateType.Modified:
+                        var room = RoomsItemsList.Single(x => x.RoomId == update.RoomId);
+                        room.Difficulty = CastDifficulty(update.Level);
+                        room.MaxPlayers = update.MaxPlayers.ToString();
+                        room.Rounds = update.NumberOfRounds.ToString();
+                        break;
 
-                case RoomUpdateType.Deleted:
-                case RoomUpdateType.Started:
-                case RoomUpdateType.Filled:
-                    ClientUtils.UpdateGUI(() =>
-                    {
+                    case RoomUpdateType.Deleted:
+                    case RoomUpdateType.Started:
+                    case RoomUpdateType.Filled:
                         RoomsItemsList.Remove(RoomsItemsList.SingleOrDefault(x => x.RoomId == update.RoomId));
                         ListRooms.Instance.RoomsItemsList = RoomsItemsList;
-                    });
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            });
         }
 
         #region TriTacke
@@ -240,19 +221,6 @@ namespace Client {
         #endregion
 
         #region LogOut
-
-        private SignOutResponse LogoutTask(SignOutRequest request) {
-            try {
-                return RabbitBus.Instance.Bus.Request<SignOutRequest, SignOutResponse>(request);
-            }
-            catch (Exception ex) {
-                return new SignOutResponse() {
-                    Status = OperationStatus.Exception,
-                    Details = ex.InnerException.Message
-                };
-            }
-        }
-
         /// <summary>
         /// Dugme za logout
         /// </summary>
@@ -262,53 +230,11 @@ namespace Client {
                 RequesterId = Player.Instance.Id
             };
 
-            Task<SignOutResponse> task = new Task<SignOutResponse>(() => LogoutTask(request));
-            task.Start();
 
-            //UI LOADING 
-            var popup = new LoadingPopup() {
-                Message = { Text = "Signing out.." }
-            };
+            var response = await ClientUtils.PerformRequestAsync(API.Instance.SignOutAsync,request);
+            if (response == null) return;
 
-            SignOutResponse response = null;
-
-            await DialogHost.Show(popup, async delegate (object sender, DialogOpenedEventArgs args) {
-                response = await task;
-                args.Session.Close(false);
-            });
-
-            if (response.Status != OperationStatus.Exception)
-            {
-                if (response.Status == OperationStatus.Successfull)
-                {
-                    var sampleMessageDialog = new SampleMessageDialog
-                    {
-                        Message = {Text = "Sign out Successfull!" }
-                    };
-
-                    await DialogHost.Show(sampleMessageDialog);
-                }
-                else
-                {
-                    var sampleMessageDialog = new SampleMessageDialog
-                    {
-                        Message = {Text = "Sigh out error!\n" + response.Details}
-                    };
-
-                    await DialogHost.Show(sampleMessageDialog);
-                }
-
-                ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new LoginPage();
-            }
-            else
-            {
-                var sampleMessageDialog = new SampleMessageDialog
-                {
-                    Message = {Text = "Exception: " + response.Details}
-                };
-
-                await DialogHost.Show(sampleMessageDialog);
-            }
+            ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new LoginPage();
         }
 
         #endregion
@@ -323,8 +249,6 @@ namespace Client {
         }
 
         #endregion
-
-
 
         #endregion
 

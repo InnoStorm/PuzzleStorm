@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Client.Helpers.Communication;
+using Client.Helpers.Enums;
 using Communicator;
 using StormCommonData.Enums;
 using DTOLibrary.Requests;
@@ -67,6 +68,12 @@ namespace Client {
 
         #endregion
 
+        public void ActivateTransition(WindowTransition transition)
+        {
+            if (transition == WindowTransition.HomeToLogin)
+                ClientUtils.SwitchState.HomeToLogin();
+        }
+        
         //Create button f-ja
         public void CreateButton()
         {

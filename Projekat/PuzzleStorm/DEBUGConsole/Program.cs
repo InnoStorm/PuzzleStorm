@@ -109,25 +109,39 @@ namespace DEBUGConsole
         {
             using (var api = Communicator.API.Instance)
             {
-                //api.RoomChanged += RoomChangesHandler;
-                //var subscription = api.SubscribeRoomChanges("#");
-                //api.RoomChanged += RoomChangesHandler;
-
-                var sub = API.Instance.SubscribeRoomChanges("1", RouteGenerator.RoomUpdates.Room.All());
-                api.RoomChanged += (sender, eventArgs) =>
-                {
-                    Console.WriteLine($"ROOM {eventArgs.Data.RoomId} is {eventArgs.Data.UpdateType.ToString()}");
-                };
                 
+                //API.Instance.RoomChanged += (sender, eventArgs) =>
+                //{
+                //    Console.WriteLine($"ROOM {eventArgs.Data.RoomId} is {eventArgs.Data.UpdateType.ToString()}");
+                //};
+                
+                //var sub = API.Instance.SubscribeRoomChanges("1", RouteGenerator.RoomUpdates.Room.All());
+
+
+                API.Instance.RoomChanged += (sender, e) =>
+                {
+                    var update = e.Data;
+
+                    Console.WriteLine($"Update Event received: {update.UpdateType.ToString()}.{update.RoomId}");
+                };
+                API.Instance.SubscribeRoomChanges("console", RouteGenerator.RoomUpdates.Room.Filter.All());
+
+                //API.Instance._bus.Subscribe<RoomsStateUpdate>("client_console",
+                //    update =>
+                //    {
+                //        Console.WriteLine($"Update received: {update.UpdateType.ToString()}.{update.RoomId}");
+                //    }, x =>
+                //    {
+                //        x.WithTopic(RouteGenerator.RoomUpdates.Room.All());
+                //        x.WithDurable(false);      
+                //    });
+
+
                 Console.WriteLine("Subscribed...");
                 Console.ReadKey();
             }
-        }
 
-        
-        private static void RoomChangesHandler(object sender, StormEventArgs<RoomsStateUpdate> e)
-        {
-            Console.WriteLine("New Update: " + e.Data.UpdateType);
+            Console.ReadKey();
         }
 
         private static void SignOutValid()

@@ -102,7 +102,7 @@ namespace Client.Helpers.Communication
             //A
             public static void LoginToHome()
             {
-                ResubscribeRoomChanges(RouteGenerator.RoomUpdates.Room.All());
+                ResubscribeRoomChanges(RouteGenerator.RoomUpdates.Room.Filter.All());
             }
 
             //B
@@ -114,7 +114,7 @@ namespace Client.Helpers.Communication
             //C
             public static void CreateRoomToLobbyOwner(int createdRoomId)
             {
-                ResubscribeInRoom(RouteGenerator.RoomUpdates.InRoom.All(createdRoomId));
+                ResubscribeInRoom(RouteGenerator.RoomUpdates.InRoom.Filter.All(createdRoomId));
             }
 
             //D
@@ -128,20 +128,20 @@ namespace Client.Helpers.Communication
             public static void LobbyOwnerToHome()
             {
                 Unsubscribe(_inRoomChangesSubscription);
-                ResubscribeRoomChanges(RouteGenerator.RoomUpdates.Room.All());
+                ResubscribeRoomChanges(RouteGenerator.RoomUpdates.Room.Filter.All());
             }
 
             //F
             public static void HomeToLobbyJoiner(int joinedRoomId)
             {
-                ResubscribeRoomChanges(RouteGenerator.RoomUpdates.Room.All(joinedRoomId));
-                ResubscribeInRoom(RouteGenerator.RoomUpdates.InRoom.All(joinedRoomId));
+                ResubscribeRoomChanges(RouteGenerator.RoomUpdates.Room.Filter.All(joinedRoomId));
+                ResubscribeInRoom(RouteGenerator.RoomUpdates.InRoom.Filter.All(joinedRoomId));
             }
 
             //G
             public static void LobbyJoinerToHome()
             {
-                ResubscribeRoomChanges(RouteGenerator.RoomUpdates.Room.All());
+                ResubscribeRoomChanges(RouteGenerator.RoomUpdates.Room.Filter.All());
                 Unsubscribe(_inRoomChangesSubscription);
             }
 
@@ -155,19 +155,27 @@ namespace Client.Helpers.Communication
             //J
             public static void CreateRoomToHome()
             {
-                ResubscribeRoomChanges(RouteGenerator.RoomUpdates.Room.All());
+                ResubscribeRoomChanges(RouteGenerator.RoomUpdates.Room.Filter.All());
             }
 
+            public static void HomeToLogin()
+            {
+                Unsubscribe(_inRoomChangesSubscription);
+                Unsubscribe(_roomChangesSubscription);
+            }
+
+
+            //Helper funcs
             private static void ResubscribeRoomChanges(string routingKey)
             {
                 API.Instance.Unsubscribe(_roomChangesSubscription);
-                _inRoomChangesSubscription = API.Instance.SubscribeInRoomChanges(SubscriptionId, routingKey);
+                _roomChangesSubscription = API.Instance.SubscribeRoomChanges(SubscriptionId, routingKey);
             }
 
             private static void ResubscribeInRoom(string routingKey)
             {
-                API.Instance.Unsubscribe(_roomChangesSubscription);
-                _roomChangesSubscription = API.Instance.SubscribeRoomChanges(SubscriptionId, routingKey);
+                API.Instance.Unsubscribe(_inRoomChangesSubscription);
+                _inRoomChangesSubscription = API.Instance.SubscribeInRoomChanges(SubscriptionId, routingKey);
             }
 
             private static void Unsubscribe(ISubscriptionResult subscription)
