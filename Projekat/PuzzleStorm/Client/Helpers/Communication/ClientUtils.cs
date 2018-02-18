@@ -15,7 +15,7 @@ namespace Client.Helpers.Communication
     {
         #region Requests
 
-        public static async Task<TResponse> PerformRequestAsync<TRequest, TResponse>(Func<TRequest, Task<TResponse>> RequestFunc, TRequest request, string loadingMessage = "Please wait...")
+        public static async Task<TResponse> PerformRequestAsync<TRequest, TResponse>(Func<TRequest, Task<TResponse>> RequestFunc, TRequest request, string loadingMessage)
             where TRequest : Request, new()
             where TResponse : Response, new()
         {
@@ -26,12 +26,20 @@ namespace Client.Helpers.Communication
 
             TResponse response = null;
 
-            await DialogHost.Show(popup, async delegate (object sender, DialogOpenedEventArgs args)
+
+            if (!String.IsNullOrEmpty(loadingMessage))
+            {
+
+                await DialogHost.Show(popup, async delegate (object sender, DialogOpenedEventArgs args)
+                {
+                    response = await RequestFunc(request);
+                    args.Session.Close(false);
+                });
+
+            } else
             {
                 response = await RequestFunc(request);
-                args.Session.Close(false);
-            });
-
+            }
 
             if (response?.Status == OperationStatus.Successfull)
                 return response;

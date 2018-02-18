@@ -116,6 +116,8 @@ namespace ServerLobby.Workers
                     {
                         GameId = game.Id,
                         PuzzleId = puzzle.Id,
+                        PuzzlePath = puzzle.PicturePath,
+                        CurrentPlayerId = room.Owner.Id,
                         Status = OperationStatus.Successfull,
                         Details = $"Room {request.RoomId} successfully started."
                     };
@@ -448,7 +450,7 @@ namespace ServerLobby.Workers
                     {
                         Difficulty = room.Difficulty,
                         MaxPlayers = room.MaxPlayers,
-                        NumberOfRounds = room.MaxPlayers,
+                        NumberOfRounds = room.NumberOfRounds,
                         Details = "Successful",
                         Status = OperationStatus.Successfull
                     };

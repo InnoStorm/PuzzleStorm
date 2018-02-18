@@ -91,32 +91,33 @@ namespace Client
 
             await DialogHost.Show(dialog, async delegate (object sender, DialogClosingEventArgs args) {
 
-                if (args.Parameter != null) {
+                if (args.Parameter != null)
+                {
 
-                List<String> paramsList = (List<String>)args.Parameter;
+                    List<String> paramsList = (List<String>)args.Parameter;
 
-                ChangeRoomPropertiesRequest request = new ChangeRoomPropertiesRequest() {
-                    Difficulty = MiniHelpFunctions.StringToDifficulty(paramsList[0]),
-                    MaxPlayers = Int32.Parse(paramsList[1]),
-                    NumberOfRounds = Int32.Parse(paramsList[2]),
-                    RoomId = Player.Instance.RoomId,
-                    RequesterId = Player.Instance.Id
-                };
+                    ChangeRoomPropertiesRequest request = new ChangeRoomPropertiesRequest()
+                    {
+                        Difficulty = MiniHelpFunctions.StringToDifficulty(paramsList[0]),
+                        MaxPlayers = Int32.Parse(paramsList[1]),
+                        NumberOfRounds = Int32.Parse(paramsList[2]),
+                        RoomId = Player.Instance.RoomId,
+                        RequesterId = Player.Instance.Id
+                    };
 
-                ChangeRoomPropertiesResponse response =
-                    await ClientUtils.PerformRequestAsync(API.Instance.ChangeRoomPropertiesAsync, request, "Changing..");
+                    ChangeRoomPropertiesResponse response =
+                        await ClientUtils.PerformRequestAsync(API.Instance.ChangeRoomPropertiesAsync, request, null);
 
-                if (response == null) return;
+                    if (response == null) return;
 
-                /*
-                RoomStatus = new RoomsPropsViewModel() {
-                    MaxPlayers = response.Max,
-                    Rounds = response.Rnd,
-                    Difficulty = response.Diff,
-                    ChangeCommand = new RelayCommand(ChangeButtonAsync)
-                };
-                */
-                
+                    RoomStatus = new RoomsPropsViewModel()
+                    {
+                        MaxPlayers = response.MaxPlayers.ToString(),
+                        Rounds = response.NumberOfRounds.ToString(),
+                        Difficulty = MiniHelpFunctions.CastDifficulty(response.Difficulty),
+                        ChangeCommand = new RelayCommand(ChangeButtonAsync)
+                    };
+
                 }
             });
         }
