@@ -50,12 +50,12 @@ namespace ServerLobby.Workers
                         NumberOfRounds = request.NumberOfRounds,
                         Owner = creator,
                         MaxPlayers = request.MaxPlayers,
-                        
+
                     };
 
                     newRoom.ListOfPlayers.Add(creator);
                     data.Rooms.Add(newRoom);
-                    creator.IsReady = true;                    
+                    creator.IsReady = true;
                     data.Complete();
 
                     var updateMessage = GenerateRoomStateUpdate(newRoom, RoomUpdateType.Created);
@@ -83,7 +83,7 @@ namespace ServerLobby.Workers
             }
         }
 
-       public CancelRoomResponse CancelRoom(CancelRoomRequest request)
+        public CancelRoomResponse CancelRoom(CancelRoomRequest request)
         {
             try
             {
@@ -100,7 +100,7 @@ namespace ServerLobby.Workers
                     data.Complete();
                     data.Rooms.Remove(room);
                     data.Complete();
-                    
+
                     var roomStateUpdate = GenerateRoomStateUpdate(room, RoomUpdateType.Deleted);
                     NotifyAll(roomStateUpdate);
 
@@ -156,7 +156,7 @@ namespace ServerLobby.Workers
                     {
                         Difficulty = room.Difficulty,
                         MaxPlayers = room.MaxPlayers,
-                        NumberOfRounds = room.NumberOfRounds,                    
+                        NumberOfRounds = room.NumberOfRounds,
                         Status = OperationStatus.Successfull,
                         Details = $"Successfully changed properties for room with Id {request.RoomId}."
                     };
@@ -187,7 +187,7 @@ namespace ServerLobby.Workers
 
                     if (room.Owner.Id != request.RequesterId)
                         throw new Exception("[FAILED] Only owner cant start room!");
-                    
+
                     bool allReady = room.ListOfPlayers.All(x => x.IsReady == true);
                     if (!allReady)
                         throw new Exception("Not all players are ready!");
@@ -202,13 +202,13 @@ namespace ServerLobby.Workers
                     var response = Communicator.Request<StartGameRequest, StartGameResponse>(newGameRequest);
                     if (response.Status != OperationStatus.Successfull)
                         throw new Exception("Failed to create new game! Reason: " + response.Details);
-                    
+
                     room.State = RoomState.Playing;
                     data.Complete();
 
                     var updateMessagePlaying = GenerateRoomStateUpdate(room, RoomUpdateType.Started);
                     NotifyAll(updateMessagePlaying);
-                    
+
                     return new StartRoomResponse()
                     {
                         Status = OperationStatus.Successfull,
@@ -228,7 +228,7 @@ namespace ServerLobby.Workers
                 };
             }
         }
-        
+
         public ChangeStatusResponse PlayerChangeStatus(ChangeStatusRequest request)
         {
             try
@@ -365,7 +365,7 @@ namespace ServerLobby.Workers
                     Log($"[SUCCESS] Player {request.RequesterId} successfully left room {request.RoomId}");
                     var updateMessage = GenerateRoomPlayerUpdate(player, RoomPlayerUpdateType.LeftRoom);
                     NotifyAll(updateMessage);
-                    
+
                     return new LeaveRoomResponse()
                     {
                         Status = OperationStatus.Successfull,
@@ -385,7 +385,7 @@ namespace ServerLobby.Workers
             }
         }
 
-        
+
 
         public GetAllRoomsResponse GetAvailableRooms(GetAllRoomsRequest request)
         {
@@ -468,6 +468,13 @@ namespace ServerLobby.Workers
                         response.Players.Add(playerDTO);
                     }
 
+                    response.Creator = new DTOLibrary.SubDTOs.Player()
+                    {
+                        PlayerId = room.Owner.Id,
+                        Username = room.Owner.Username,
+                        IsReady = room.Owner.IsReady,
+                    };
+
                     Log($"[SUCCESS] Current state for room: { request.RoomId }");
 
                     return response;
@@ -484,8 +491,8 @@ namespace ServerLobby.Workers
                 };
             }
         }
-        
-        
+
+
         #region NotifyClients
 
         private void NotifyAll(RoomsStateUpdate message)
@@ -566,7 +573,7 @@ namespace ServerLobby.Workers
                     {
                         for (int j = 4; j <= 6; ++j)
                         {
-                            string folderForPuzzle = @"..\Images\" + i;
+                            string folderForPuzzle = @"..\..\..\Images\" + i;
                             string nameOfPicture = Directory.GetFiles(folderForPuzzle)[0].Contains("ini") ? Directory.GetFiles(folderForPuzzle)[1] : Directory.GetFiles(folderForPuzzle)[0];
 
                             PuzzleData puzzle = new PuzzleData()
@@ -579,8 +586,9 @@ namespace ServerLobby.Workers
                             data.Complete();
 
                             Log($"[SUCCESS] Successfully created puzzle with Id {puzzle.Id}");
-
+                            
                             string folderForParts = folderForPuzzle + "/" + j * j;
+                            //string folderForParts = "../Images/"+ i + "/" + j * j;
                             string[] namesOfParts = Directory.GetFiles(folderForParts);
                             var listOfNames = new List<string>(namesOfParts);
 
@@ -591,7 +599,7 @@ namespace ServerLobby.Workers
                             {
                                 PieceData piece = new PieceData()
                                 {
-                                    PartPath = listOfNames[k],
+                                    PartPath = listOfNames[k].Remove(0, 6).Replace("\\", "/"),
                                     SeqNumber = k + 1,
                                     ParentPuzzle = puzzle
                                 };
@@ -603,7 +611,7 @@ namespace ServerLobby.Workers
                             Log($"[SUCCESS] Successfully added pieces for puzzle with Id {puzzle.Id}");
                         }
                     }
-                    
+
                     return new AddPuzzlesResponse()
                     {
                         Status = OperationStatus.Successfull,
@@ -621,7 +629,7 @@ namespace ServerLobby.Workers
                     Details = ex.Message
                 };
             }
-            }
+        }
 
         private int ConvertDifficultyToInt(PuzzleDifficulty diff)
         {
@@ -638,7 +646,7 @@ namespace ServerLobby.Workers
             }
 
         }
-        
-        #endregion        
+
+        #endregion
     }
 }
