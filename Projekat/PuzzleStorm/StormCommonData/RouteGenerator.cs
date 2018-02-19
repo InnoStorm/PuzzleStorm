@@ -82,6 +82,50 @@ namespace StormCommonData
                     public static string FromEnum(RoomPlayerUpdateType updateType, int id) => $"{BaseRoute}.{id}.{updateType.ToString()}";
                 }
             }
+
+        }
+
+        public static class GameUpdates
+        {
+            public static string ExchangeName => "GameUpdates";
+
+            public static class GamePlay
+            {
+                public static string BaseRoute => "Game.Gameplay";
+
+                public static class Filter
+                {
+                    public static string All() => $"{BaseRoute}.#";
+                    public static string All(int roomId) => $"{BaseRoute}.{roomId}.#";
+
+                    public static string Playing() => $"{BaseRoute}.*.Playing";
+                    public static string Playing(int roomId) => $"{BaseRoute}.{roomId}.Playing";
+
+                    public static string GameOver() => $"{BaseRoute}.*.GameOver";
+                    public static string GameOver(int roomId) => $"{BaseRoute}.{roomId}.GameOver";
+
+                    public static string RoundOver() => $"{BaseRoute}.*.RoundOver";
+                    public static string RoundOver(int roomId) => $"{BaseRoute}.{roomId}.RoundOver";
+
+                    public static string FromEnum(GamePlayUpdateType type) => $"{BaseRoute}.*.{type.ToString()}";
+
+                    public static string FromEnum(GamePlayUpdateType type, int roomId) =>
+                        $"{BaseRoute}.{roomId}.{type.ToString()}";
+                }
+
+                public static class Set
+                {
+                    public static string Playing(int roomId) => $"{BaseRoute}.{roomId}.Playing";
+
+                    public static string GameOver(int roomId) => $"{BaseRoute}.{roomId}.GameOver";
+
+                    public static string RoundOver(int roomId) => $"{BaseRoute}.{roomId}.RoundOver";
+
+                    
+                    public static string FromEnum(GamePlayUpdateType type, int roomId) =>
+                        $"{BaseRoute}.{roomId}.{type.ToString()}";
+                }
+            }
         }
     }
 }

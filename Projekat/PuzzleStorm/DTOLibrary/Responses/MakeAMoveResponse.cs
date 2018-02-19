@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace DTOLibrary.Responses
 {
-    public class MakeAMoveResponse : Response
-    {
-        public int CurrentPlayerId;
-        public List<int> ScoreBoard;
-    }
+    //public class MakeAMoveResponse : Response
+    //{
+    //    public int CurrentPlayerId;
+    //    public List<int> ScoreBoard;
+    //}
 }

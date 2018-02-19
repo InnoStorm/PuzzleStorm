@@ -331,16 +331,16 @@ namespace DEBUGConsole
 
         private static void Move()
         {
-            Console.WriteLine("Making a move...");
-            MakeAMoveResponse response = rabbit.Request<MakeAMoveRequest, MakeAMoveResponse>(new MakeAMoveRequest()
-            {
-                RequesterId = 14,
-                //RoomId = 136,
-                //SelectedPartNumber = 10,
-                //TablePlaceNumber = 100
-            });
+            //Console.WriteLine("Making a move...");
+            //MakeAMoveResponse response = rabbit.Request<MakeAMoveRequest, MakeAMoveResponse>(new MakeAMoveRequest()
+            //{
+            //    RequesterId = 14,
+            //    //RoomId = 136,
+            //    //SelectedPartNumber = 10,
+            //    //TablePlaceNumber = 100
+            //});
 
-            Console.WriteLine(response.CurrentPlayerId);
+            //Console.WriteLine(response.CurrentPlayerId);
         }
     }
 }

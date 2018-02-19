@@ -9,6 +9,7 @@ namespace DTOLibrary.Requests
 {
     public class MakeAMoveRequest : PostLoginRequest
     {
+        public int RoomId { get; set; }
         public Move MoveToPlay;
     }
 }

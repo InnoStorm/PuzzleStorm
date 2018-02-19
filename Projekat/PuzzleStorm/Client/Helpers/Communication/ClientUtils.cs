@@ -98,6 +98,16 @@ namespace Client.Helpers.Communication
             remove => API.Instance.InRoomChange -= value;
         }
 
+        public static event EventHandler<StormEventArgs<GameUpdate>> GameUpdated
+        {
+            add
+            {
+                API.Instance.GameUpdated -= value;
+                API.Instance.GameUpdated += value;
+            }
+            remove => API.Instance.GameUpdated -= value;
+        }
+
         #endregion
 
         #region States
@@ -106,7 +116,13 @@ namespace Client.Helpers.Communication
         {
             private static ISubscriptionResult _roomChangesSubscription;
             private static ISubscriptionResult _inRoomChangesSubscription;
+            private static ISubscriptionResult _gameUpdatesSubscription;
 
+            public static void GamePlayDemo()
+            {
+                ResubscribeGameUpdates(RouteGenerator.GameUpdates.GamePlay.Filter.All(Player.Instance.RoomId));
+            }
+            
             //PROBA
             public static void HomeEnter()
             {
@@ -219,12 +235,23 @@ namespace Client.Helpers.Communication
             {
                 API.Instance.Unsubscribe(subscription);
             }
+
+            public static void ResubscribeGameUpdates(string routingKey)
+            {
+                API.Instance.Unsubscribe(_gameUpdatesSubscription);
+                _gameUpdatesSubscription = API.Instance.SubscribeGameUpdates(SubscriptionId, routingKey);
+            }
             
         }
         
         #endregion
 
         public static void UpdateGUI(Action action)
+        {
+            DoAsync(action);
+        }
+
+        public static void DoAsync(Action action)
         {
             Application.Current.Dispatcher.InvokeAsync(action);
         }

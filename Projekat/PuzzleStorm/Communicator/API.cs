@@ -240,10 +240,8 @@ namespace Communicator
                 $"client_{subscriptionId}",
                 message => Task.Factory.StartNew(() =>
                 {
-                    Console.WriteLine("==== INVOKE ROOM_CHANGE ======");
-                    OnRoomChangeNotify(message);
-                    Console.WriteLine("==== END ROOM_CHANGE ======");
-
+                    RiseRoomChanged(message);
+                    
                 }),x =>
                 {
                     x.WithTopic(routingKey);
@@ -265,9 +263,7 @@ namespace Communicator
                 $"client_{subscriptionId}",
                 message => Task.Factory.StartNew(() =>
                 {
-                    Console.WriteLine("==== INVOKE IN_ROOM_CHANGE ======");
-                    OnInRoomChangeNotify(message);
-                    Console.WriteLine("==== END IN_ROOM_CHANGE ======");
+                    RiseInRoomChange(message);
 
                 }), x =>
                 {
@@ -276,6 +272,26 @@ namespace Communicator
                 });
         }
 
+        public ISubscriptionResult SubscribeGameUpdates(
+            string subscriptionId,
+            string routingKey = null
+        )
+        {
+            if (string.IsNullOrEmpty(routingKey))
+                routingKey = RouteGenerator.GameUpdates.GamePlay.Filter.All();
+
+            return _bus.SubscribeAsync<GameUpdate>(
+                $"client_{subscriptionId}",
+                message => Task.Factory.StartNew(() =>
+                {
+                    RiseGamePlayUpdated(message);
+
+                }), x =>
+                {
+                    x.WithTopic(routingKey);
+                    x.WithDurable(false);
+                });
+        }
 
         #endregion
 
@@ -288,20 +304,40 @@ namespace Communicator
 
         #endregion
 
+        #region Send
+
+        public void Send(MakeAMoveRequest request)
+        {
+            _bus.Send(RouteGenerator.GameUpdates.GamePlay.Set.Playing(request.RoomId), request);
+        }
+
+        public Task SendAsync(MakeAMoveRequest request)
+        {
+            return _bus.SendAsync(RouteGenerator.GameUpdates.GamePlay.Set.Playing(request.RoomId), request);
+        }
+
+        #endregion
+
         #region Events
 
         public event EventHandler<StormEventArgs<RoomsStateUpdate>> RoomChanged;
-        private void OnRoomChangeNotify(RoomsStateUpdate updateMessage)
+        private void RiseRoomChanged(RoomsStateUpdate updateMessage)
         {
             RoomChanged?.Invoke(this, new StormEventArgs<RoomsStateUpdate>(updateMessage));
         }
 
         public event EventHandler<StormEventArgs<RoomPlayerUpdate>> InRoomChange;
-        private void OnInRoomChangeNotify(RoomPlayerUpdate updateMessage)
+        private void RiseInRoomChange(RoomPlayerUpdate updateMessage)
         {
             InRoomChange?.Invoke(this, new StormEventArgs<RoomPlayerUpdate>(updateMessage));
         }
 
+        public event EventHandler<StormEventArgs<GameUpdate>> GameUpdated;
+        private void RiseGamePlayUpdated(GameUpdate updateMessage)
+        {
+            GameUpdated?.Invoke(this, new StormEventArgs<GameUpdate>(updateMessage));
+        }
+        
         #endregion
 
         #endregion
