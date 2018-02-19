@@ -356,15 +356,15 @@ namespace ServerLobby.Workers
                         NotifyAll(updateMessageRoomBecameAvailable);
                     }
 
+                    
+                    Log($"[SUCCESS] Player {request.RequesterId} successfully left room {request.RoomId}");
+                    var updateMessage = GenerateRoomPlayerUpdate(player, RoomPlayerUpdateType.LeftRoom);
+                    NotifyAll(updateMessage);
+
                     player.Score = 0;
                     player.IsReady = false;
                     player.CurrentRoom = null;
                     data.Complete();
-
-
-                    Log($"[SUCCESS] Player {request.RequesterId} successfully left room {request.RoomId}");
-                    var updateMessage = GenerateRoomPlayerUpdate(player, RoomPlayerUpdateType.LeftRoom);
-                    NotifyAll(updateMessage);
 
                     return new LeaveRoomResponse()
                     {
