@@ -566,7 +566,7 @@ namespace ServerLobby.Workers
                     {
                         for (int j = 4; j <= 6; ++j)
                         {
-                            string folderForPuzzle = @"..\..\..\Images\" + i;
+                            string folderForPuzzle = @"..\Images\" + i;
                             string nameOfPicture = Directory.GetFiles(folderForPuzzle)[0].Contains("ini") ? Directory.GetFiles(folderForPuzzle)[1] : Directory.GetFiles(folderForPuzzle)[0];
 
                             PuzzleData puzzle = new PuzzleData()
@@ -580,7 +580,7 @@ namespace ServerLobby.Workers
 
                             Log($"[SUCCESS] Successfully created puzzle with Id {puzzle.Id}");
 
-                            string folderForParts = folderForPuzzle + "\\" + j * j;
+                            string folderForParts = folderForPuzzle + "/" + j * j;
                             string[] namesOfParts = Directory.GetFiles(folderForParts);
                             var listOfNames = new List<string>(namesOfParts);
 

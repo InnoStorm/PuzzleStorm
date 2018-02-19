@@ -8,6 +8,6 @@ namespace DTOLibrary.Requests
 {
     public class LoadGameRequest : PostLoginRequest
     {
-        public int GameId { get; set; }
+        public int RoomId { get; set; }
     }
 }

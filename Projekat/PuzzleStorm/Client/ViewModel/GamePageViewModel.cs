@@ -128,7 +128,7 @@ namespace Client {
             //TODO Refactor
             LoadGameRequest request = new LoadGameRequest()
             {
-                GameId = Player.Instance.RoomId,
+                RoomId = Player.Instance.RoomId,
                 RequesterId = Player.Instance.Id
             };
             
