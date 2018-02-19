@@ -184,6 +184,54 @@ namespace ServerGame.Workers
 
         }
 
+        public ContinueGameResponse ContinueGame(ContinueGameRequest request)
+        {
+            try
+            {
+                //StormValidator.ValidateRequest(request);
+
+                using (UnitOfWork data = WorkersUnitOfWork)
+                {
+                    var room = data.Rooms.Get(request.RoomId);
+                    if (room == null)
+                        throw new Exception($"Room with ID {request.RoomId} not found!");
+
+                    var puzzle = data.Puzzles.Get(room.CurrentGame.Id + 3); //vraca sledcu puzzluuuuu :D
+
+                    data.Games.Remove(room.CurrentGame);
+                    data.Complete();
+                    
+                    var game = new Game
+                    {
+                        PuzzleForGame = puzzle,
+                        RoomForThisGame = room
+                    };
+                    data.Games.Add(game);
+                    data.Complete();
+
+                    Log($"[SUCCESS] Player {request.RequesterId} successfully continued room {request.RoomId}");
+
+                    return new ContinueGameResponse()
+                    {
+                        Details = $"Room {room.Id} successfully continued.",
+                        Status = OperationStatus.Successfull,
+                        GameId = game.Id,
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                Log($"[FAILED] Starting room {request.RoomId}, Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
+
+                return new ContinueGameResponse()
+                {
+                    Status = OperationStatus.Failed,
+                    Details = ex.Message
+                };
+            }
+
+        }
+
         //public MakeAMoveResponse MakeAMove(MakeAMoveRequest request)
         //{
         //    try
