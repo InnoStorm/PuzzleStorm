@@ -147,6 +147,7 @@ namespace Communicator
         public CancelRoomResponse CancelRoom(CancelRoomRequest request)
             => Request<CancelRoomRequest, CancelRoomResponse>(request);
 
+
         public async Task<CancelRoomResponse> CancelRoomAsync(CancelRoomRequest request)
             => await RequestAsync<CancelRoomRequest, CancelRoomResponse>(request);
 

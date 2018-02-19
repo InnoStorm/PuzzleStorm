@@ -107,6 +107,35 @@ namespace Client.Helpers.Communication
             private static ISubscriptionResult _roomChangesSubscription;
             private static ISubscriptionResult _inRoomChangesSubscription;
 
+            //PROBA
+            public static void HomeEnter()
+            {
+                ResubscribeRoomChanges(RouteGenerator.RoomUpdates.Room.Filter.All());
+            }
+
+            public static void HomeExit()
+            {
+                Unsubscribe(_roomChangesSubscription);
+            }
+
+            public static void AllRoomsEnter() {
+                ResubscribeRoomChanges(RouteGenerator.RoomUpdates.Room.Filter.All());
+            }
+
+            public static void AllRoomsExit() {
+                Unsubscribe(_roomChangesSubscription);
+            }
+
+            public static void LobbyEnter(int joinedRoomId) {
+                ResubscribeRoomChanges(RouteGenerator.RoomUpdates.Room.Filter.All(joinedRoomId));
+                ResubscribeInRoom(RouteGenerator.RoomUpdates.InRoom.Filter.All(joinedRoomId));
+            }
+
+            public static void LobbyExit() {
+                Unsubscribe(_roomChangesSubscription);
+                Unsubscribe(_inRoomChangesSubscription);
+            }
+
             //A
             public static void LoginToHome()
             {

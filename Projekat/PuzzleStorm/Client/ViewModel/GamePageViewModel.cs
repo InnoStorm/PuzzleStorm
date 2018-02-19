@@ -22,6 +22,9 @@ namespace Client {
         public ObservableCollection<string> ListaSourceSlika { get; set; }
         public ObservableCollection<string> ListaShuffleSlika { get; set; }
 
+        //public List<string> ListaSourceSlika { get; set; }
+        //public List<string> ListaShuffleSlika { get; set; }
+
         //public List<GameWhoPlaysItemViewModel> PlayersItems { get; set; }
         //public List<GameScoreItemViewModel> ScoreItems { get; set; }
 
@@ -54,45 +57,6 @@ namespace Client {
             PlayersItems = new ObservableCollection<GameWhoPlaysItemViewModel>();
             ScoreItems = new ObservableCollection<GameScoreItemViewModel>();
 
-            /*
-            PlayersItems = new List<GameWhoPlaysItemViewModel>()
-            {
-                new GameWhoPlaysItemViewModel()
-                {
-                    UserName = "Pera1",
-                    OnTheMove = false
-                },
-                new GameWhoPlaysItemViewModel()
-                {
-                    UserName = "Pera2",
-                    OnTheMove = true
-                },
-                new GameWhoPlaysItemViewModel()
-                {
-                    UserName = "Pera3",
-                    OnTheMove = false
-                }
-            };
-            ScoreItems = new List<GameScoreItemViewModel>()
-            {
-                new GameScoreItemViewModel()
-                {
-                    UserName = "Pera1",
-                    Score = "15"
-                },
-                new GameScoreItemViewModel()
-                {
-                    UserName = "Pera2",
-                    Score = "45"
-                },
-                new GameScoreItemViewModel()
-                {
-                    UserName = "Pera3",
-                    Score = "30"
-                }
-            };
-            */
-
             InitializingAsync();
         }
 
@@ -101,7 +65,7 @@ namespace Client {
         #region Metods
 
         private void PrezumiSlike() {
-            ListaSourceSlika.Add("../Images/PomocnaSlagalica/image_part_001.jpg");
+            ListaSourceSlika.Add("../Images/1/16/image_part_001.jpg");
             ListaSourceSlika.Add("../Images/PomocnaSlagalica/image_part_002.jpg");
             ListaSourceSlika.Add("../Images/PomocnaSlagalica/image_part_003.jpg");
             ListaSourceSlika.Add("../Images/PomocnaSlagalica/image_part_004.jpg");
@@ -133,22 +97,22 @@ namespace Client {
             };
             
             var response = await ClientUtils.PerformRequestAsync(API.Instance.LoadGameAsync, request,
-                "Initializing..");
+                null);
 
             if (response == null) return;
 
-            /*
-            ListaSourceSlika = response.PiecesPaths;
 
-            for (int i = 0; i < ListaSourceSlika.Count; i++)
-                ListaSourceSlika[i] = ListaSourceSlika[i].Substring(3);
+            foreach (var pic in response.PiecesPaths)
+            {
+                ListaSourceSlika.Add(pic);
+            }
 
             foreach (string s in ListaSourceSlika)
                 ListaShuffleSlika.Add(s);
 
             ListaShuffleSlika.Shuffle();
-            */
-            PrezumiSlike();
+            
+            //PrezumiSlike();
 
             foreach (var p in response.ListOfPlayers)
             {
