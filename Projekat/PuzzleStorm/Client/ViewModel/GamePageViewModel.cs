@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -18,11 +19,14 @@ namespace Client {
 
         public Button SelectedPiece { get; set; }
 
-        public List<string> ListaSourceSlika { get; set; }
-        public List<string> ListaShuffleSlika { get; set; }
+        public ObservableCollection<string> ListaSourceSlika { get; set; }
+        public ObservableCollection<string> ListaShuffleSlika { get; set; }
 
-        public List<GameWhoPlaysItemViewModel> PlayersItems { get; set; }
-        public List<GameScoreItemViewModel> ScoreItems { get; set; }
+        //public List<GameWhoPlaysItemViewModel> PlayersItems { get; set; }
+        //public List<GameScoreItemViewModel> ScoreItems { get; set; }
+
+        public ObservableCollection<GameWhoPlaysItemViewModel> PlayersItems { get; set; }
+        public ObservableCollection<GameScoreItemViewModel> ScoreItems { get; set; }
 
         #endregion
 
@@ -42,11 +46,15 @@ namespace Client {
             ClickPieceCommand = new RelayCommandWithParameter((parameter) => SelectPiece(parameter));
             ClickGridCommand = new RelayCommandWithParameter((parameter) => GridPiece(parameter));
 
-            ListaSourceSlika = new List<string>();
-            ListaShuffleSlika = new List<string>();
+            ListaSourceSlika = new ObservableCollection<string>();
+            ListaShuffleSlika = new ObservableCollection<string>();
 
-            PrezumiSlike();
+            //PrezumiSlike();
 
+            PlayersItems = new ObservableCollection<GameWhoPlaysItemViewModel>();
+            ScoreItems = new ObservableCollection<GameScoreItemViewModel>();
+
+            /*
             PlayersItems = new List<GameWhoPlaysItemViewModel>()
             {
                 new GameWhoPlaysItemViewModel()
@@ -83,8 +91,9 @@ namespace Client {
                     Score = "30"
                 }
             };
+            */
 
-            //InitializingAsync();
+            InitializingAsync();
         }
 
         #endregion
@@ -126,12 +135,18 @@ namespace Client {
 
             if (response == null) return;
 
+            /*
             ListaSourceSlika = response.PiecesPaths;
+
+            for (int i = 0; i < ListaSourceSlika.Count; i++)
+                ListaSourceSlika[i] = ListaSourceSlika[i].Substring(3);
 
             foreach (string s in ListaSourceSlika)
                 ListaShuffleSlika.Add(s);
 
             ListaShuffleSlika.Shuffle();
+            */
+            PrezumiSlike();
 
             foreach (var p in response.ListOfPlayers)
             {
@@ -151,7 +166,13 @@ namespace Client {
 
         public void SelectPiece(object parameter)
         {
+            if (SelectedPiece != null)
+                ((Grid)SelectedPiece.Template.FindName("bg", SelectedPiece)).Background = Brushes.Transparent;
+
             SelectedPiece = ((Button) parameter);
+
+            Grid g = (Grid) (SelectedPiece.Template.FindName("bg", SelectedPiece));
+            g.Background = Brushes.Red;
         }
 
 
