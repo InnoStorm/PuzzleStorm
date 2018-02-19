@@ -322,11 +322,11 @@ namespace DEBUGConsole
 
         private static void StartRoom()
         {
-            object response = rabbit.Request<GameCurrentStatusRequest, GameCurrentStatusResponse>(new GameCurrentStatusRequest()
-            {
-                RequesterId = 2,
-                RoomId = 7
-            });
+            //object response = rabbit.Request<GameCurrentStatusRequest, GameCurrentStatusResponse>(new GameCurrentStatusRequest()
+            //{
+            //    RequesterId = 2,
+            //    RoomId = 7
+            //});
         }
 
         private static void Move()

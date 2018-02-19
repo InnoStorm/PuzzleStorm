@@ -169,20 +169,6 @@ namespace ServerLobby
                     }
                 }));
 
-            Communicator.RespondAsync<GameCurrentStatusRequest, GameCurrentStatusResponse>(request =>
-                Task.Factory.StartNew(() =>
-                {
-                    var worker = _lobbyWorkerPool.Take();
-                    try
-                    {
-                        return worker.StartRoom(request);
-                    }
-                    finally
-                    {
-                        _lobbyWorkerPool.Add(worker);
-                    }
-                }));
-
             Communicator.RespondAsync<AddPuzzlesRequest, AddPuzzlesResponse>(request =>
                 Task.Factory.StartNew(() =>
                 {
@@ -197,13 +183,13 @@ namespace ServerLobby
                     }
                 }));
 
-            Communicator.RespondAsync<StartGameRequest, StartGameResponse>(request =>
+            Communicator.RespondAsync<StartRoomRequest, StartRoomResponse>(request =>
                 Task.Factory.StartNew(() =>
                 {
                     var worker = _lobbyWorkerPool.Take();
                     try
                     {
-                        return worker.StartGame(request);
+                        return worker.StartRoom(request);
                     }
                     finally
                     {

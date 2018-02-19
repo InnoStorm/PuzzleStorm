@@ -70,6 +70,34 @@ namespace ServerGame
                          _gameWorkerPool.Add(worker);
                      }
                  }));
+
+            Communicator.RespondAsync<LoadGameRequest, LoadGameResponse>(request =>
+                 Task.Factory.StartNew(() =>
+                 {
+                     var worker = _gameWorkerPool.Take();
+                     try
+                     {
+                         return worker.LoadGame(request);
+                     }
+                     finally
+                     {
+                         _gameWorkerPool.Add(worker);
+                     }
+                 }));
+
+            Communicator.RespondAsync<StartGameRequest, StartGameResponse>(request =>
+                 Task.Factory.StartNew(() =>
+                 {
+                     var worker = _gameWorkerPool.Take();
+                     try
+                     {
+                         return worker.StartGame(request);
+                     }
+                     finally
+                     {
+                         _gameWorkerPool.Add(worker);
+                     }
+                 }));
         }
         #endregion
 

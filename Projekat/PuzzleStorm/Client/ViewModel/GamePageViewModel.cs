@@ -116,12 +116,14 @@ namespace Client {
         }
 
         private async void InitializingAsync() {
-            GameCurrentStatusRequest request = new GameCurrentStatusRequest() {
-                RoomId = Player.Instance.RoomId,
+            //TODO Refactor
+            LoadGameRequest request = new LoadGameRequest()
+            {
+                GameId = Player.Instance.RoomId,
                 RequesterId = Player.Instance.Id
             };
-
-            GameCurrentStatusResponse response = await ClientUtils.PerformRequestAsync(API.Instance.GameInitAsync, request,
+            
+            var response = await ClientUtils.PerformRequestAsync(API.Instance.LoadGameAsync, request,
                 "Initializing..");
 
             if (response == null) return;

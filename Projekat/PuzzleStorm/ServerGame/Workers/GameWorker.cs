@@ -83,6 +83,106 @@ namespace ServerGame.Workers
             points += 5;
         }
 
+
+        #region Worker Functions
+
+        public LoadGameResponse LoadGame(LoadGameRequest request)
+        {
+            try
+            {
+                StormValidator.ValidateRequest(request);
+
+                using (UnitOfWork data = WorkersUnitOfWork)
+                {
+                    var game = data.Games.Get(request.GameId);
+                    if (game == null)
+                        throw new Exception($"Game with ID {request.GameId} not found!");
+   
+                    List<String> partsPaths = game.PuzzleForGame.ListOfPieces.Select(x => x.PartPath).ToList();
+
+                    //List<String> partsPaths = new List<String>();
+                    //foreach (PieceData piece in puzzle.ListOfPieces)
+                    //    partsPaths.Add(piece.PartPath);
+                    
+                    List<DTOLibrary.SubDTOs.Player> list = new List<DTOLibrary.SubDTOs.Player>();
+                    foreach (Player p in game.RoomForThisGame.ListOfPlayers)
+                    {
+                        list.Add(new DTOLibrary.SubDTOs.Player()
+                        {
+                            IsReady = p.IsReady,
+                            PlayerId = p.Id,
+                            Username = p.Username
+                        });
+                    }
+                                       
+                    return new LoadGameResponse()
+                    {
+                        GameId = game.Id,
+                        PiecesPaths = partsPaths,
+                        CurrentPlayerId = game.RoomForThisGame.Owner.Id,
+                        ListOfPlayers = list,
+                        Status = OperationStatus.Successfull,
+                        Details = $"Room {request.GameId} successfully started."
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                Log($"[FAILED] Starting room {request.GameId}, Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
+
+                return new LoadGameResponse()
+                {
+                    Status = OperationStatus.Failed,
+                    Details = ex.Message
+                };
+            }
+        }
+
+        public StartGameResponse StartGame(StartGameRequest request)
+        {
+            try
+            {
+                StormValidator.ValidateRequest(request);
+
+                using (UnitOfWork data = WorkersUnitOfWork)
+                {
+                    var room = data.Rooms.Get(request.RoomId);
+                    if (room == null)
+                        throw new Exception($"Room with ID {request.RoomId} not found!");
+
+                    var puzzle = data.Puzzles.GetPuzzle(ConvertDifficultyToInt(room.Difficulty)); //todo randomize //za sad vraca prvu odgovarajucu puzzlu koju nadje u bazi
+                    var game = new Game
+                    {
+                        PuzzleForGame = puzzle,
+                        RoomForThisGame = room
+                    };
+                    data.Games.Add(game);
+                    data.Complete();
+
+                    Log($"[SUCCESS] Player {request.RequesterId} successfully started room {request.RoomId}");
+
+                    return new StartGameResponse()
+                    {
+                        Details = $"Room {room.Id} successfully started.",
+                        Status = OperationStatus.Successfull,
+                        GameId = game.Id,
+                        CommunicationKey = "NOT IMPLEMENTED YET"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                Log($"[FAILED] Starting room {request.RoomId}, Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
+
+                return new StartGameResponse()
+                {
+                    Status = OperationStatus.Failed,
+                    Details = ex.Message
+                };
+            }
+
+        }
+
         public MakeAMoveResponse MakeAMove(MakeAMoveRequest request)
         {
             try
@@ -121,6 +221,24 @@ namespace ServerGame.Workers
                     Details = ex.Message
                 };
             }
+        }
+
+        #endregion
+
+        private int ConvertDifficultyToInt(PuzzleDifficulty diff)
+        {
+            switch (diff)
+            {
+                case PuzzleDifficulty.Easy:
+                    return 16;
+                case PuzzleDifficulty.Medium:
+                    return 25;
+                case PuzzleDifficulty.Hard:
+                    return 36;
+                default:
+                    return 0;
+            }
+
         }
     }
 }
