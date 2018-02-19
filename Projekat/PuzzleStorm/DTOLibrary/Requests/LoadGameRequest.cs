@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DTOLibrary.Broadcasts
+namespace DTOLibrary.Requests
 {
-    public class RoomReadyUpdate
+    public class LoadGameRequest : PostLoginRequest
     {
-        public int RoomId;
+        public int GameId { get; set; }
     }
 }

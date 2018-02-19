@@ -50,7 +50,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Broadcasts\BroadcastMessage.cs" />
-    <Compile Include="Broadcasts\RoomReadyUpdate.cs" />
     <Compile Include="Broadcasts\RoomsStateUpdate.cs" />
     <Compile Include="Broadcasts\RoomPlayerUpdate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -59,10 +58,10 @@
     <Compile Include="Requests\ChangeStatusRequest.cs" />
     <Compile Include="Requests\CreateRoomRequest.cs" />
     <Compile Include="Requests\CancelRoomRequest.cs" />
-    <Compile Include="Requests\GameCurrentStatusRequest.cs" />
     <Compile Include="Requests\GetAllRoomsRequest.cs" />
     <Compile Include="Requests\JoinRoomRequest.cs" />
     <Compile Include="Requests\LeaveRoomRequest.cs" />
+    <Compile Include="Requests\LoadGameRequest.cs" />
     <Compile Include="Requests\LoginRequest.cs" />
     <Compile Include="Requests\MakeAMoveRequest.cs" />
     <Compile Include="Requests\PostLoginRequest.cs" />
@@ -72,15 +71,16 @@
     <Compile Include="Requests\RoomCurrentStateRequest.cs" />
     <Compile Include="Requests\SignOutRequest.cs" />
     <Compile Include="Requests\StartGameRequest.cs" />
+    <Compile Include="Requests\StartRoomRequest.cs" />
     <Compile Include="Responses\AddPuzzlesResponse.cs" />
     <Compile Include="Responses\ChangeRoomPropertiesResponse.cs" />
     <Compile Include="Responses\ChangeStatusResponse.cs" />
     <Compile Include="Responses\CreateRoomResponse.cs" />
     <Compile Include="Responses\CancelRoomResponse.cs" />
-    <Compile Include="Responses\GameCurrentStatusResponse.cs" />
     <Compile Include="Responses\GetAllRoomsResponse.cs" />
     <Compile Include="Responses\JoinRoomResponse.cs" />
     <Compile Include="Responses\LeaveRoomResponse.cs" />
+    <Compile Include="Responses\LoadGameResponse.cs" />
     <Compile Include="Responses\LoginResponse.cs" />
     <Compile Include="Responses\MakeAMoveResponse.cs" />
     <Compile Include="Responses\RegistrationResponse.cs" />
@@ -88,6 +88,7 @@
     <Compile Include="Responses\RoomCurrentStateResponse.cs" />
     <Compile Include="Responses\SignOutResponse.cs" />
     <Compile Include="Responses\StartGameResponse.cs" />
+    <Compile Include="Responses\StartRoomResponse.cs" />
     <Compile Include="SubDTOs\Player.cs" />
     <Compile Include="SubDTOs\RoomInfo.cs" />
   </ItemGroup>

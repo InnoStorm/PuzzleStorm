@@ -55,6 +55,7 @@ namespace ServerLobby.Workers
 
                     newRoom.ListOfPlayers.Add(creator);
                     data.Rooms.Add(newRoom);
+                    creator.IsReady = true;                    
                     data.Complete();
 
                     var updateMessage = GenerateRoomStateUpdate(newRoom, RoomUpdateType.Created);
@@ -82,75 +83,7 @@ namespace ServerLobby.Workers
             }
         }
 
-        public GameCurrentStatusResponse StartRoom(GameCurrentStatusRequest request)
-        {
-            try
-            {
-                StormValidator.ValidateRequest(request);
-
-                using (UnitOfWork data = WorkersUnitOfWork)
-                {
-                    var room = data.Rooms.Get(request.RoomId);
-                    if (room == null)
-                        throw new Exception($"Room with ID {request.RoomId} not found!");
-
-                    var puzzle = data.Puzzles.GetPuzzle(ConvertDifficultyToInt(room.Difficulty)); //za sad vraca prvu odgovarajucu puzzlu koju nadje u bazi
-                    var game = new Game
-                    {
-                        PuzzleForGame = puzzle,
-                        RoomForThisGame = room
-                    };
-                    data.Games.Add(game);
-                    data.Complete();
-
-                    room.State = RoomState.Playing;
-                    data.Complete();
-
-                    var updateMessage = GenerateRoomStateUpdate(room, RoomUpdateType.Started);
-                    NotifyAll(updateMessage);
-
-                    Log($"[SUCCESS] Player {request.RequesterId} successfully started room {request.RoomId}");
-
-                    List<String> partsPaths = new List<String>();
-                    foreach (PieceData piece in puzzle.ListOfPieces)
-                        partsPaths.Add(piece.PartPath);
-
-                    List <DTOLibrary.SubDTOs.Player> list = new List<DTOLibrary.SubDTOs.Player>();
-                    foreach (Player p in room.ListOfPlayers)
-                    {
-                        list.Add(new DTOLibrary.SubDTOs.Player()
-                        {
-                            IsReady = p.IsReady,
-                            PlayerId = p.Id,
-                            Username = p.Username
-                        });
-                    }
-
-                    return new GameCurrentStatusResponse()
-                    {
-                        GameId = game.Id,
-                        PuzzleId = puzzle.Id,
-                        PiecesPaths = partsPaths,
-                        CurrentPlayerId = room.Owner.Id,
-                        ListOfPlayers = list,
-                        Status = OperationStatus.Successfull,
-                        Details = $"Room {request.RoomId} successfully started."
-                    };
-                }
-            }
-            catch (Exception ex)
-            {
-                Log($"[FAILED] Starting room {request.RoomId}, Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
-
-                return new GameCurrentStatusResponse()
-                {
-                    Status = OperationStatus.Failed,
-                    Details = ex.Message
-                };
-            }
-        }
-
-        public CancelRoomResponse CancelRoom(CancelRoomRequest request)
+       public CancelRoomResponse CancelRoom(CancelRoomRequest request)
         {
             try
             {
@@ -241,45 +174,46 @@ namespace ServerLobby.Workers
             }
         }
 
-        public StartGameResponse StartGame(StartGameRequest request)
+
+        public StartRoomResponse StartRoom(StartRoomRequest request) // Cheking are players ready. If yes, setting room to state playing and notify all, they will call Load game
         {
             try
             {
-                //StormValidator.ValidateRequest(request);
+                StormValidator.ValidateRequest(request);
 
                 using (UnitOfWork data = WorkersUnitOfWork)
                 {
                     var room = data.Rooms.Get(request.RoomId);
 
-                    var starter = data.Players.Get(request.RequesterId);
-                    starter.IsReady = true;
-                    data.Complete();
+                    if (room.Owner.Id != request.RequesterId)
+                        throw new Exception("[FAILED] Only owner cant start room!");
+                    
+                    bool allReady = room.ListOfPlayers.All(x => x.IsReady == true);
+                    if (!allReady)
+                        throw new Exception("Not all players are ready!");
 
-                    foreach (Player player in room.ListOfPlayers)
-                        if (!player.IsReady)
-                        {
-                            Log($"[FAILED] Player with Id {player.Id} is not ready.", LogMessageType.Error);
-
-                            return new StartGameResponse()
-                            {
-                                Status = OperationStatus.Failed,
-                                Details = $"Player with Id {player.Id} is not ready."
-                            };
-                        }
-
-                    var updateMessage = new RoomReadyUpdate()
+                    StartGameRequest newGameRequest = new StartGameRequest()
                     {
+                        RequesterId = request.RequesterId,
                         RoomId = room.Id
                     };
+
+                    //todo handle timeout
+                    var response = Communicator.Request<StartGameRequest, StartGameResponse>(newGameRequest);
+                    if (response.Status != OperationStatus.Successfull)
+                        throw new Exception("Failed to create new game! Reason: " + response.Details);
                     
-                    Log($"[SUCCESS] All players in room {request.RoomId} are ready.");
+                    room.State = RoomState.Playing;
+                    data.Complete();
 
-                    NotifyAll(updateMessage);
-
-                    return new StartGameResponse()
+                    var updateMessagePlaying = GenerateRoomStateUpdate(room, RoomUpdateType.Started);
+                    NotifyAll(updateMessagePlaying);
+                    
+                    return new StartRoomResponse()
                     {
                         Status = OperationStatus.Successfull,
-                        Details = $"All players in room {request.RoomId} are ready."
+                        Details = $"Room {request.RoomId} is started.",
+                        CreatedGame = response
                     };
                 }
             }
@@ -287,16 +221,14 @@ namespace ServerLobby.Workers
             {
                 Log($"[FAILED] Not all players are ready.", LogMessageType.Error);
 
-                return new StartGameResponse()
+                return new StartRoomResponse()
                 {
                     Status = OperationStatus.Failed,
-                    Details = $"Not all players are ready."
+                    Details = $"{ex.Message}"
                 };
             }
         }
-
-
-
+        
         public ChangeStatusResponse PlayerChangeStatus(ChangeStatusRequest request)
         {
             try
@@ -312,7 +244,7 @@ namespace ServerLobby.Workers
                     player.IsReady = request.IAmReady;
                     data.Complete();
 
-                    var updateMessage = GenerateRoomPlayerUpdate(player.CurrentRoom.Id, player.Id, RoomPlayerUpdateType.ChangedStatus);
+                    var updateMessage = GenerateRoomPlayerUpdate(player, RoomPlayerUpdateType.ChangedStatus);
 
                     Log($"[SUCCESS] Status changed for player {request.RequesterId}");
                     NotifyAll(updateMessage);
@@ -370,7 +302,7 @@ namespace ServerLobby.Workers
                     joiner.Score = 0;
                     data.Complete();
 
-                    var updateMessage = GenerateRoomPlayerUpdate(room.Id, joiner.Id, RoomPlayerUpdateType.Joined);
+                    var updateMessage = GenerateRoomPlayerUpdate(joiner, RoomPlayerUpdateType.Joined);
                     NotifyAll(updateMessage);
 
                     if (room.ListOfPlayers.Count == room.MaxPlayers)
@@ -431,7 +363,7 @@ namespace ServerLobby.Workers
 
 
                     Log($"[SUCCESS] Player {request.RequesterId} successfully left room {request.RoomId}");
-                    var updateMessage = GenerateRoomPlayerUpdate(request.RoomId, player.Id, RoomPlayerUpdateType.LeftRoom);
+                    var updateMessage = GenerateRoomPlayerUpdate(player, RoomPlayerUpdateType.LeftRoom);
                     NotifyAll(updateMessage);
                     
                     return new LeaveRoomResponse()
@@ -572,26 +504,25 @@ namespace ServerLobby.Workers
             Log($"NOTIFY_ALL: {routingKey}");
         }
 
-        public void NotifyAll(RoomReadyUpdate message)
-        {
-            string routingKey = $"Room.{message.RoomId}.IsReady";
-            Communicator.Publish<RoomReadyUpdate>(message, routingKey);
-        }
-
         #endregion
 
 
         #region Utils
 
-        private RoomPlayerUpdate GenerateRoomPlayerUpdate(int roomId, int playerId, RoomPlayerUpdateType updateType)
+        private RoomPlayerUpdate GenerateRoomPlayerUpdate(Player player, RoomPlayerUpdateType updateType)
         {
             return new RoomPlayerUpdate
             {
                 Status = OperationStatus.Successfull,
                 Details = "Room is updated.",
                 UpdateType = updateType,
-                PlayerId = playerId,
-                RoomId = roomId
+                Player = new DTOLibrary.SubDTOs.Player()
+                {
+                    Username = player.Username,
+                    IsReady = player.IsReady,
+                    PlayerId = player.Id
+                },
+                RoomId = player.CurrentRoom.Id
             };
         }
 

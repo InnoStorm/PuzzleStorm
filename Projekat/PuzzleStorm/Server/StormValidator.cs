@@ -40,6 +40,12 @@ namespace Server
                 throw new Exception("ID is not valid. ID <= 0!");
         }
         //Prelogin
+
+        public static void ValidateRequest(LoadGameRequest request)
+        {
+            //TODO
+        }
+
         public static void ValidateRequest(RegistrationRequest request)
         {
             ValidateUsernameFormat(request.Username);
@@ -115,9 +121,14 @@ namespace Server
             ValidateRequesterIdFormat(request);
         }
 
-        public static void ValidateRequest(GameCurrentStatusRequest request)
+        public static void ValidateRequest(StartGameRequest request)
         {
-            ValidateRequesterIdFormat(request);
+            
+        }
+
+        public static void ValidateRequest(StartRoomRequest request)
+        {
+            
         }
     }
 }

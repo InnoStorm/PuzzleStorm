@@ -199,23 +199,20 @@ namespace Communicator
         public async Task<LeaveRoomResponse> LeaveRoomAsync(LeaveRoomRequest request)
             => await RequestAsync<LeaveRoomRequest, LeaveRoomResponse>(request);
 
-        public async Task<GameCurrentStatusResponse> GameInitAsync(GameCurrentStatusRequest request)
-        {
-            return await RequestAsync <GameCurrentStatusRequest, GameCurrentStatusResponse>(request);
-        }
+
+        public LoadGameResponse LoadGame(LoadGameRequest request)
+            => Request<LoadGameRequest, LoadGameResponse>(request);
+
+        public async Task<LoadGameResponse> LoadGameAsync(LoadGameRequest request)
+            => await RequestAsync<LoadGameRequest, LoadGameResponse>(request);
 
 
-        public StartGameResponse StartRoom(StartGameRequest request)
-            => Request<StartGameRequest, StartGameResponse>(request);
+        public StartRoomResponse StartRoom(StartRoomRequest request)
+            => Request<StartRoomRequest, StartRoomResponse>(request);
 
-        public async Task<StartGameResponse> StartRoomAsync(StartGameRequest request)
-            => await RequestAsync<StartGameRequest, StartGameResponse>(request);
-
-        public async Task<GameCurrentStatusResponse> StartRoomAsync(GameCurrentStatusRequest request)
-        {
-            return await RequestAsync <GameCurrentStatusRequest, GameCurrentStatusResponse>(request);
-        }
-
+        public async Task<StartRoomResponse> StartRoomAsync(StartRoomRequest request)
+            => await RequestAsync<StartRoomRequest, StartRoomResponse>(request);
+                
 
         //Puzzle
         public AddPuzzlesResponse AddPuzzle(AddPuzzlesRequest request)

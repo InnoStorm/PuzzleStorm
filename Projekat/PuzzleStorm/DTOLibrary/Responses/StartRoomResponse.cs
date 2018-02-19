@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DTOLibrary.Requests
+namespace DTOLibrary.Responses
 {
-    public class GameCurrentStatusRequest : PostLoginRequest
+    public class StartRoomResponse : Response
     {
-        public int RoomId { get; set; }
+        public StartGameResponse CreatedGame { get; set; }
     }
 }
