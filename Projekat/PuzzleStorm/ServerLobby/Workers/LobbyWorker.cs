@@ -468,6 +468,13 @@ namespace ServerLobby.Workers
                         response.Players.Add(playerDTO);
                     }
 
+                    response.Creator = new DTOLibrary.SubDTOs.Player()
+                    {
+                        PlayerId = room.Owner.Id,
+                        Username = room.Owner.Username,
+                        IsReady = room.Owner.IsReady,
+                    };
+
                     Log($"[SUCCESS] Current state for room: { request.RoomId }");
 
                     return response;

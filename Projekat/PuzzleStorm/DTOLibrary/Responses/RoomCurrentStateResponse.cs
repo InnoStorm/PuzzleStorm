@@ -14,6 +14,7 @@ namespace DTOLibrary.Responses
         public int NumberOfRounds { get; set; }
         public int MaxPlayers { get; set; }
         public List<Player> Players { get; set; }
+        public Player Creator { get; set; }
 
         public RoomCurrentStateResponse()
         {
