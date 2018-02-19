@@ -8,6 +8,7 @@ namespace StormCommonData.Enums
 {
     public enum GamePlayUpdateType
     {
+        Playing,
         RoundOver,
         GameOver
     }
