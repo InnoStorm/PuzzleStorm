@@ -85,6 +85,9 @@ namespace ServerAuth.Workers
                     if (player.Password != request.Password)
                         throw new Exception("Wrong password");
 
+                    if (player.IsLogged)
+                        throw new Exception($"Player with username {request.Username} is already logged!");
+
                     player.IsLogged = true;
                     player.AuthToken = Guid.NewGuid().ToString();
                     player.CurrentRoom = null;
