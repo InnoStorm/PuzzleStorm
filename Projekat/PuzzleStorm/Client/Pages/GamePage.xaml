@@ -29,7 +29,7 @@
             </Grid.RowDefinitions>
 
             <!--  Grid za gornje delove  -->
-            <Grid Grid.Row="0" Margin="5">
+            <Grid Grid.Row="0" Margin="0,5,0,20">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition />
@@ -46,19 +46,29 @@
                     CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
                     <Button.Template>
                         <ControlTemplate>
-                            <Image
-                                Name="SourceSlika"
-                                RenderTransformOrigin="0.5,0.5"
-                                Source="{Binding ListaShuffleSlika[0]}">
-                                <Image.RenderTransform>
+                            <Grid x:Name="bg" RenderTransformOrigin="0.5,0.5">
+                                <Image
+                                    Name="SourceSlika"
+                                    RenderTransformOrigin="0.5,0.5"
+                                    Source="{Binding ListaShuffleSlika[0]}">
+                                    <Image.RenderTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform ScaleX="0.95" ScaleY="0.95" />
+                                            <SkewTransform />
+                                            <RotateTransform Angle="0" />
+                                            <TranslateTransform />
+                                        </TransformGroup>
+                                    </Image.RenderTransform>
+                                </Image>
+                                <Grid.RenderTransform>
                                     <TransformGroup>
                                         <ScaleTransform />
                                         <SkewTransform />
-                                        <RotateTransform Angle="22" />
+                                        <RotateTransform Angle="0" />
                                         <TranslateTransform />
                                     </TransformGroup>
-                                </Image.RenderTransform>
-                            </Image>
+                                </Grid.RenderTransform>
+                            </Grid>
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
@@ -66,24 +76,26 @@
                 <Button
                     Grid.Column="1"
                     Width="120"
-                    Height="100"
+                    Height="120"
                     Command="{Binding ClickPieceCommand}"
                     CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
                     <Button.Template>
                         <ControlTemplate>
-                            <Image
-                                Name="SourceSlika"
-                                RenderTransformOrigin="0.5,0.5"
-                                Source="{Binding ListaShuffleSlika[1]}">
-                                <Image.RenderTransform>
-                                    <TransformGroup>
-                                        <ScaleTransform />
-                                        <SkewTransform />
-                                        <RotateTransform Angle="-20" />
-                                        <TranslateTransform />
-                                    </TransformGroup>
-                                </Image.RenderTransform>
-                            </Image>
+                            <Grid x:Name="bg" RenderTransformOrigin="0.5,0.5">
+                                <Image
+                                    Name="SourceSlika"
+                                    RenderTransformOrigin="0.5,0.5"
+                                    Source="{Binding ListaShuffleSlika[1]}">
+                                    <Image.RenderTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform ScaleX="0.95" ScaleY="0.95" />
+                                            <SkewTransform />
+                                            <RotateTransform Angle="0" />
+                                            <TranslateTransform />
+                                        </TransformGroup>
+                                    </Image.RenderTransform>
+                                </Image>
+                            </Grid>
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
@@ -91,24 +103,34 @@
                 <Button
                     Grid.Column="2"
                     Width="120"
-                    Height="150"
+                    Height="120"
                     Command="{Binding ClickPieceCommand}"
                     CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
                     <Button.Template>
                         <ControlTemplate>
-                            <Image
-                                Name="SourceSlika"
-                                RenderTransformOrigin="0.5,0.5"
-                                Source="{Binding ListaShuffleSlika[2]}">
-                                <Image.RenderTransform>
+                            <Grid x:Name="bg" RenderTransformOrigin="0.5,0.5">
+                                <Image
+                                    Name="SourceSlika"
+                                    RenderTransformOrigin="0.5,0.5"
+                                    Source="{Binding ListaShuffleSlika[2]}">
+                                    <Image.RenderTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform ScaleX="0.95" ScaleY="0.95" />
+                                            <SkewTransform />
+                                            <RotateTransform Angle="0" />
+                                            <TranslateTransform />
+                                        </TransformGroup>
+                                    </Image.RenderTransform>
+                                </Image>
+                                <Grid.RenderTransform>
                                     <TransformGroup>
                                         <ScaleTransform />
                                         <SkewTransform />
-                                        <RotateTransform Angle="70" />
+                                        <RotateTransform Angle="0" />
                                         <TranslateTransform />
                                     </TransformGroup>
-                                </Image.RenderTransform>
-                            </Image>
+                                </Grid.RenderTransform>
+                            </Grid>
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
@@ -121,19 +143,29 @@
                     CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
                     <Button.Template>
                         <ControlTemplate>
-                            <Image
-                                Name="SourceSlika"
-                                RenderTransformOrigin="0.5,0.5"
-                                Source="{Binding ListaShuffleSlika[3]}">
-                                <Image.RenderTransform>
+                            <Grid x:Name="bg" RenderTransformOrigin="0.5,0.5">
+                                <Image
+                                    Name="SourceSlika"
+                                    RenderTransformOrigin="0.5,0.5"
+                                    Source="{Binding ListaShuffleSlika[3]}">
+                                    <Image.RenderTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform ScaleX="0.95" ScaleY="0.95" />
+                                            <SkewTransform />
+                                            <RotateTransform Angle="0" />
+                                            <TranslateTransform />
+                                        </TransformGroup>
+                                    </Image.RenderTransform>
+                                </Image>
+                                <Grid.RenderTransform>
                                     <TransformGroup>
                                         <ScaleTransform />
                                         <SkewTransform />
-                                        <RotateTransform Angle="15" />
+                                        <RotateTransform Angle="0" />
                                         <TranslateTransform />
                                     </TransformGroup>
-                                </Image.RenderTransform>
-                            </Image>
+                                </Grid.RenderTransform>
+                            </Grid>
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
@@ -146,19 +178,29 @@
                     CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
                     <Button.Template>
                         <ControlTemplate>
-                            <Image
-                                Name="SourceSlika"
-                                RenderTransformOrigin="0.5,0.5"
-                                Source="{Binding ListaShuffleSlika[4]}">
-                                <Image.RenderTransform>
+                            <Grid x:Name="bg" RenderTransformOrigin="0.5,0.5">
+                                <Image
+                                    Name="SourceSlika"
+                                    RenderTransformOrigin="0.5,0.5"
+                                    Source="{Binding ListaShuffleSlika[4]}">
+                                    <Image.RenderTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform ScaleX="0.95" ScaleY="0.95" />
+                                            <SkewTransform />
+                                            <RotateTransform Angle="0" />
+                                            <TranslateTransform />
+                                        </TransformGroup>
+                                    </Image.RenderTransform>
+                                </Image>
+                                <Grid.RenderTransform>
                                     <TransformGroup>
                                         <ScaleTransform />
                                         <SkewTransform />
-                                        <RotateTransform Angle="-45" />
+                                        <RotateTransform Angle="0" />
                                         <TranslateTransform />
                                     </TransformGroup>
-                                </Image.RenderTransform>
-                            </Image>
+                                </Grid.RenderTransform>
+                            </Grid>
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
@@ -167,13 +209,13 @@
             <!--  Grid za delove sa strane i slagalicu  -->
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
                 <!--  Grid za leve delove  -->
-                <Grid Grid.Column="0" Margin="20">
+                <Grid Grid.Column="0" Margin="10">
                     <Grid.RowDefinitions>
                         <RowDefinition />
                         <RowDefinition />
@@ -188,19 +230,29 @@
                         CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
                         <Button.Template>
                             <ControlTemplate>
-                                <Image
-                                    Name="SourceSlika"
-                                    RenderTransformOrigin="0.5,0.5"
-                                    Source="{Binding ListaShuffleSlika[5]}">
-                                    <Image.RenderTransform>
+                                <Grid x:Name="bg" RenderTransformOrigin="0.5,0.5">
+                                    <Image
+                                        Name="SourceSlika"
+                                        RenderTransformOrigin="0.5,0.5"
+                                        Source="{Binding ListaShuffleSlika[5]}">
+                                        <Image.RenderTransform>
+                                            <TransformGroup>
+                                                <ScaleTransform ScaleX="0.95" ScaleY="0.95" />
+                                                <SkewTransform />
+                                                <RotateTransform Angle="0" />
+                                                <TranslateTransform />
+                                            </TransformGroup>
+                                        </Image.RenderTransform>
+                                    </Image>
+                                    <Grid.RenderTransform>
                                         <TransformGroup>
                                             <ScaleTransform />
                                             <SkewTransform />
-                                            <RotateTransform Angle="-45" />
+                                            <RotateTransform Angle="0" />
                                             <TranslateTransform />
                                         </TransformGroup>
-                                    </Image.RenderTransform>
-                                </Image>
+                                    </Grid.RenderTransform>
+                                </Grid>
                             </ControlTemplate>
                         </Button.Template>
                     </Button>
@@ -213,19 +265,29 @@
                         CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
                         <Button.Template>
                             <ControlTemplate>
-                                <Image
-                                    Name="SourceSlika"
-                                    RenderTransformOrigin="0.5,0.5"
-                                    Source="{Binding ListaShuffleSlika[6]}">
-                                    <Image.RenderTransform>
+                                <Grid x:Name="bg" RenderTransformOrigin="0.5,0.5">
+                                    <Image
+                                        Name="SourceSlika"
+                                        RenderTransformOrigin="0.5,0.5"
+                                        Source="{Binding ListaShuffleSlika[6]}">
+                                        <Image.RenderTransform>
+                                            <TransformGroup>
+                                                <ScaleTransform ScaleX="0.95" ScaleY="0.95" />
+                                                <SkewTransform />
+                                                <RotateTransform Angle="0" />
+                                                <TranslateTransform />
+                                            </TransformGroup>
+                                        </Image.RenderTransform>
+                                    </Image>
+                                    <Grid.RenderTransform>
                                         <TransformGroup>
                                             <ScaleTransform />
                                             <SkewTransform />
-                                            <RotateTransform Angle="30" />
+                                            <RotateTransform Angle="0" />
                                             <TranslateTransform />
                                         </TransformGroup>
-                                    </Image.RenderTransform>
-                                </Image>
+                                    </Grid.RenderTransform>
+                                </Grid>
                             </ControlTemplate>
                         </Button.Template>
                     </Button>
@@ -238,19 +300,29 @@
                         CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
                         <Button.Template>
                             <ControlTemplate>
-                                <Image
-                                    Name="SourceSlika"
-                                    RenderTransformOrigin="0.5,0.5"
-                                    Source="{Binding ListaShuffleSlika[7]}">
-                                    <Image.RenderTransform>
+                                <Grid x:Name="bg" RenderTransformOrigin="0.5,0.5">
+                                    <Image
+                                        Name="SourceSlika"
+                                        RenderTransformOrigin="0.5,0.5"
+                                        Source="{Binding ListaShuffleSlika[7]}">
+                                        <Image.RenderTransform>
+                                            <TransformGroup>
+                                                <ScaleTransform ScaleX="0.95" ScaleY="0.95" />
+                                                <SkewTransform />
+                                                <RotateTransform Angle="0" />
+                                                <TranslateTransform />
+                                            </TransformGroup>
+                                        </Image.RenderTransform>
+                                    </Image>
+                                    <Grid.RenderTransform>
                                         <TransformGroup>
                                             <ScaleTransform />
                                             <SkewTransform />
-                                            <RotateTransform Angle="60" />
+                                            <RotateTransform Angle="0" />
                                             <TranslateTransform />
                                         </TransformGroup>
-                                    </Image.RenderTransform>
-                                </Image>
+                                    </Grid.RenderTransform>
+                                </Grid>
                             </ControlTemplate>
                         </Button.Template>
                     </Button>
@@ -275,7 +347,6 @@
                     <Border
                         Grid.Row="0"
                         Grid.Column="0"
-                        BorderBrush="Black"
                         BorderThickness="1">
                         <Canvas Name="Canvas00">
                             <Button
@@ -295,12 +366,21 @@
                                 </Button.Template>
                             </Button>
                         </Canvas>
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="BorderBrush" Value="Black" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="BorderBrush" Value="Red" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
                     </Border>
 
                     <Border
                         Grid.Row="0"
                         Grid.Column="1"
-                        BorderBrush="Black"
                         BorderThickness="1">
                         <Canvas>
                             <Button
@@ -320,12 +400,21 @@
                                 </Button.Template>
                             </Button>
                         </Canvas>
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="BorderBrush" Value="Black" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="BorderBrush" Value="Red" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
                     </Border>
 
                     <Border
                         Grid.Row="0"
                         Grid.Column="2"
-                        BorderBrush="Black"
                         BorderThickness="1">
                         <Canvas>
                             <Button
@@ -345,12 +434,21 @@
                                 </Button.Template>
                             </Button>
                         </Canvas>
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="BorderBrush" Value="Black" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="BorderBrush" Value="Red" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
                     </Border>
 
                     <Border
                         Grid.Row="0"
                         Grid.Column="3"
-                        BorderBrush="Black"
                         BorderThickness="1">
                         <Canvas>
                             <Button
@@ -370,12 +468,21 @@
                                 </Button.Template>
                             </Button>
                         </Canvas>
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="BorderBrush" Value="Black" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="BorderBrush" Value="Red" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
                     </Border>
 
                     <Border
                         Grid.Row="1"
                         Grid.Column="0"
-                        BorderBrush="Black"
                         BorderThickness="1">
                         <Canvas>
                             <Button
@@ -395,12 +502,21 @@
                                 </Button.Template>
                             </Button>
                         </Canvas>
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="BorderBrush" Value="Black" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="BorderBrush" Value="Red" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
                     </Border>
 
                     <Border
                         Grid.Row="1"
                         Grid.Column="1"
-                        BorderBrush="Black"
                         BorderThickness="1">
                         <Canvas>
                             <Button
@@ -420,12 +536,21 @@
                                 </Button.Template>
                             </Button>
                         </Canvas>
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="BorderBrush" Value="Black" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="BorderBrush" Value="Red" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
                     </Border>
 
                     <Border
                         Grid.Row="1"
                         Grid.Column="2"
-                        BorderBrush="Black"
                         BorderThickness="1">
                         <Canvas>
                             <Button
@@ -445,12 +570,21 @@
                                 </Button.Template>
                             </Button>
                         </Canvas>
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="BorderBrush" Value="Black" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="BorderBrush" Value="Red" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
                     </Border>
 
                     <Border
                         Grid.Row="1"
                         Grid.Column="3"
-                        BorderBrush="Black"
                         BorderThickness="1">
                         <Canvas>
                             <Button
@@ -470,12 +604,21 @@
                                 </Button.Template>
                             </Button>
                         </Canvas>
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="BorderBrush" Value="Black" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="BorderBrush" Value="Red" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
                     </Border>
 
                     <Border
                         Grid.Row="2"
                         Grid.Column="0"
-                        BorderBrush="Black"
                         BorderThickness="1">
                         <Canvas>
                             <Button
@@ -495,12 +638,21 @@
                                 </Button.Template>
                             </Button>
                         </Canvas>
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="BorderBrush" Value="Black" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="BorderBrush" Value="Red" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
                     </Border>
 
                     <Border
                         Grid.Row="2"
                         Grid.Column="1"
-                        BorderBrush="Black"
                         BorderThickness="1">
                         <Canvas>
                             <Button
@@ -520,12 +672,21 @@
                                 </Button.Template>
                             </Button>
                         </Canvas>
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="BorderBrush" Value="Black" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="BorderBrush" Value="Red" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
                     </Border>
 
                     <Border
                         Grid.Row="2"
                         Grid.Column="2"
-                        BorderBrush="Black"
                         BorderThickness="1">
                         <Canvas>
                             <Button
@@ -545,12 +706,21 @@
                                 </Button.Template>
                             </Button>
                         </Canvas>
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="BorderBrush" Value="Black" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="BorderBrush" Value="Red" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
                     </Border>
 
                     <Border
                         Grid.Row="2"
                         Grid.Column="3"
-                        BorderBrush="Black"
                         BorderThickness="1">
                         <Canvas>
                             <Button
@@ -570,12 +740,21 @@
                                 </Button.Template>
                             </Button>
                         </Canvas>
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="BorderBrush" Value="Black" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="BorderBrush" Value="Red" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
                     </Border>
 
                     <Border
                         Grid.Row="3"
                         Grid.Column="0"
-                        BorderBrush="Black"
                         BorderThickness="1">
                         <Canvas>
                             <Button
@@ -595,12 +774,21 @@
                                 </Button.Template>
                             </Button>
                         </Canvas>
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="BorderBrush" Value="Black" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="BorderBrush" Value="Red" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
                     </Border>
 
                     <Border
                         Grid.Row="3"
                         Grid.Column="1"
-                        BorderBrush="Black"
                         BorderThickness="1">
                         <Canvas>
                             <Button
@@ -620,12 +808,21 @@
                                 </Button.Template>
                             </Button>
                         </Canvas>
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="BorderBrush" Value="Black" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="BorderBrush" Value="Red" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
                     </Border>
 
                     <Border
                         Grid.Row="3"
                         Grid.Column="2"
-                        BorderBrush="Black"
                         BorderThickness="1">
                         <Canvas>
                             <Button
@@ -645,12 +842,21 @@
                                 </Button.Template>
                             </Button>
                         </Canvas>
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="BorderBrush" Value="Black" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="BorderBrush" Value="Red" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
                     </Border>
 
                     <Border
                         Grid.Row="3"
                         Grid.Column="3"
-                        BorderBrush="Black"
                         BorderThickness="1">
                         <Canvas>
                             <Button
@@ -670,11 +876,21 @@
                                 </Button.Template>
                             </Button>
                         </Canvas>
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="BorderBrush" Value="Black" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="BorderBrush" Value="Red" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
                     </Border>
                 </Grid>
 
                 <!--  Grid za desne delove  -->
-                <Grid Grid.Column="2" Margin="20">
+                <Grid Grid.Column="2" Margin="10">
                     <Grid.RowDefinitions>
                         <RowDefinition />
                         <RowDefinition />
@@ -689,19 +905,29 @@
                         CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
                         <Button.Template>
                             <ControlTemplate>
-                                <Image
-                                    Name="SourceSlika"
-                                    RenderTransformOrigin="0.5,0.5"
-                                    Source="{Binding ListaShuffleSlika[8]}">
-                                    <Image.RenderTransform>
+                                <Grid x:Name="bg" RenderTransformOrigin="0.5,0.5">
+                                    <Image
+                                        Name="SourceSlika"
+                                        RenderTransformOrigin="0.5,0.5"
+                                        Source="{Binding ListaShuffleSlika[8]}">
+                                        <Image.RenderTransform>
+                                            <TransformGroup>
+                                                <ScaleTransform ScaleX="0.95" ScaleY="0.95" />
+                                                <SkewTransform />
+                                                <RotateTransform Angle="0" />
+                                                <TranslateTransform />
+                                            </TransformGroup>
+                                        </Image.RenderTransform>
+                                    </Image>
+                                    <Grid.RenderTransform>
                                         <TransformGroup>
                                             <ScaleTransform />
                                             <SkewTransform />
-                                            <RotateTransform Angle="-45" />
+                                            <RotateTransform Angle="0" />
                                             <TranslateTransform />
                                         </TransformGroup>
-                                    </Image.RenderTransform>
-                                </Image>
+                                    </Grid.RenderTransform>
+                                </Grid>
                             </ControlTemplate>
                         </Button.Template>
                     </Button>
@@ -714,19 +940,29 @@
                         CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
                         <Button.Template>
                             <ControlTemplate>
-                                <Image
-                                    Name="SourceSlika"
-                                    RenderTransformOrigin="0.5,0.5"
-                                    Source="{Binding ListaShuffleSlika[9]}">
-                                    <Image.RenderTransform>
+                                <Grid x:Name="bg" RenderTransformOrigin="0.5,0.5">
+                                    <Image
+                                        Name="SourceSlika"
+                                        RenderTransformOrigin="0.5,0.5"
+                                        Source="{Binding ListaShuffleSlika[9]}">
+                                        <Image.RenderTransform>
+                                            <TransformGroup>
+                                                <ScaleTransform ScaleX="0.95" ScaleY="0.95" />
+                                                <SkewTransform />
+                                                <RotateTransform Angle="0" />
+                                                <TranslateTransform />
+                                            </TransformGroup>
+                                        </Image.RenderTransform>
+                                    </Image>
+                                    <Grid.RenderTransform>
                                         <TransformGroup>
                                             <ScaleTransform />
                                             <SkewTransform />
-                                            <RotateTransform Angle="30" />
+                                            <RotateTransform Angle="0" />
                                             <TranslateTransform />
                                         </TransformGroup>
-                                    </Image.RenderTransform>
-                                </Image>
+                                    </Grid.RenderTransform>
+                                </Grid>
                             </ControlTemplate>
                         </Button.Template>
                     </Button>
@@ -739,19 +975,29 @@
                         CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
                         <Button.Template>
                             <ControlTemplate>
-                                <Image
-                                    Name="SourceSlika"
-                                    RenderTransformOrigin="0.5,0.5"
-                                    Source="{Binding ListaShuffleSlika[10]}">
-                                    <Image.RenderTransform>
+                                <Grid x:Name="bg" RenderTransformOrigin="0.5,0.5">
+                                    <Image
+                                        Name="SourceSlika"
+                                        RenderTransformOrigin="0.5,0.5"
+                                        Source="{Binding ListaShuffleSlika[10]}">
+                                        <Image.RenderTransform>
+                                            <TransformGroup>
+                                                <ScaleTransform ScaleX="0.95" ScaleY="0.95" />
+                                                <SkewTransform />
+                                                <RotateTransform Angle="0" />
+                                                <TranslateTransform />
+                                            </TransformGroup>
+                                        </Image.RenderTransform>
+                                    </Image>
+                                    <Grid.RenderTransform>
                                         <TransformGroup>
                                             <ScaleTransform />
                                             <SkewTransform />
-                                            <RotateTransform Angle="60" />
+                                            <RotateTransform Angle="0" />
                                             <TranslateTransform />
                                         </TransformGroup>
-                                    </Image.RenderTransform>
-                                </Image>
+                                    </Grid.RenderTransform>
+                                </Grid>
                             </ControlTemplate>
                         </Button.Template>
                     </Button>
@@ -759,7 +1005,7 @@
             </Grid>
 
             <!--  Grid za donje delove  -->
-            <Grid Grid.Row="2" Margin="5">
+            <Grid Grid.Row="2" Margin="0,20,0,5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition />
@@ -776,19 +1022,29 @@
                     CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
                     <Button.Template>
                         <ControlTemplate>
-                            <Image
-                                Name="SourceSlika"
-                                RenderTransformOrigin="0.5,0.5"
-                                Source="{Binding ListaShuffleSlika[11]}">
-                                <Image.RenderTransform>
+                            <Grid x:Name="bg" RenderTransformOrigin="0.5,0.5">
+                                <Image
+                                    Name="SourceSlika"
+                                    RenderTransformOrigin="0.5,0.5"
+                                    Source="{Binding ListaShuffleSlika[11]}">
+                                    <Image.RenderTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform ScaleX="0.95" ScaleY="0.95" />
+                                            <SkewTransform />
+                                            <RotateTransform Angle="0" />
+                                            <TranslateTransform />
+                                        </TransformGroup>
+                                    </Image.RenderTransform>
+                                </Image>
+                                <Grid.RenderTransform>
                                     <TransformGroup>
                                         <ScaleTransform />
                                         <SkewTransform />
-                                        <RotateTransform Angle="22" />
+                                        <RotateTransform Angle="0" />
                                         <TranslateTransform />
                                     </TransformGroup>
-                                </Image.RenderTransform>
-                            </Image>
+                                </Grid.RenderTransform>
+                            </Grid>
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
@@ -796,24 +1052,34 @@
                 <Button
                     Grid.Column="1"
                     Width="120"
-                    Height="100"
+                    Height="120"
                     Command="{Binding ClickPieceCommand}"
                     CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
                     <Button.Template>
                         <ControlTemplate>
-                            <Image
-                                Name="SourceSlika"
-                                RenderTransformOrigin="0.5,0.5"
-                                Source="{Binding ListaShuffleSlika[12]}">
-                                <Image.RenderTransform>
+                            <Grid x:Name="bg" RenderTransformOrigin="0.5,0.5">
+                                <Image
+                                    Name="SourceSlika"
+                                    RenderTransformOrigin="0.5,0.5"
+                                    Source="{Binding ListaShuffleSlika[12]}">
+                                    <Image.RenderTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform ScaleX="0.95" ScaleY="0.95" />
+                                            <SkewTransform />
+                                            <RotateTransform Angle="0" />
+                                            <TranslateTransform />
+                                        </TransformGroup>
+                                    </Image.RenderTransform>
+                                </Image>
+                                <Grid.RenderTransform>
                                     <TransformGroup>
                                         <ScaleTransform />
                                         <SkewTransform />
-                                        <RotateTransform Angle="-20" />
+                                        <RotateTransform Angle="0" />
                                         <TranslateTransform />
                                     </TransformGroup>
-                                </Image.RenderTransform>
-                            </Image>
+                                </Grid.RenderTransform>
+                            </Grid>
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
@@ -821,24 +1087,34 @@
                 <Button
                     Grid.Column="2"
                     Width="120"
-                    Height="150"
+                    Height="120"
                     Command="{Binding ClickPieceCommand}"
                     CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
                     <Button.Template>
                         <ControlTemplate>
-                            <Image
-                                Name="SourceSlika"
-                                RenderTransformOrigin="0.5,0.5"
-                                Source="{Binding ListaShuffleSlika[13]}">
-                                <Image.RenderTransform>
+                            <Grid x:Name="bg" RenderTransformOrigin="0.5,0.5">
+                                <Image
+                                    Name="SourceSlika"
+                                    RenderTransformOrigin="0.5,0.5"
+                                    Source="{Binding ListaShuffleSlika[13]}">
+                                    <Image.RenderTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform ScaleX="0.95" ScaleY="0.95" />
+                                            <SkewTransform />
+                                            <RotateTransform Angle="0" />
+                                            <TranslateTransform />
+                                        </TransformGroup>
+                                    </Image.RenderTransform>
+                                </Image>
+                                <Grid.RenderTransform>
                                     <TransformGroup>
                                         <ScaleTransform />
                                         <SkewTransform />
-                                        <RotateTransform Angle="70" />
+                                        <RotateTransform Angle="0" />
                                         <TranslateTransform />
                                     </TransformGroup>
-                                </Image.RenderTransform>
-                            </Image>
+                                </Grid.RenderTransform>
+                            </Grid>
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
@@ -851,19 +1127,29 @@
                     CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
                     <Button.Template>
                         <ControlTemplate>
-                            <Image
-                                Name="SourceSlika"
-                                RenderTransformOrigin="0.5,0.5"
-                                Source="{Binding ListaShuffleSlika[14]}">
-                                <Image.RenderTransform>
+                            <Grid x:Name="bg" RenderTransformOrigin="0.5,0.5">
+                                <Image
+                                    Name="SourceSlika"
+                                    RenderTransformOrigin="0.5,0.5"
+                                    Source="{Binding ListaShuffleSlika[14]}">
+                                    <Image.RenderTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform ScaleX="0.95" ScaleY="0.95" />
+                                            <SkewTransform />
+                                            <RotateTransform Angle="0" />
+                                            <TranslateTransform />
+                                        </TransformGroup>
+                                    </Image.RenderTransform>
+                                </Image>
+                                <Grid.RenderTransform>
                                     <TransformGroup>
                                         <ScaleTransform />
                                         <SkewTransform />
-                                        <RotateTransform Angle="15" />
+                                        <RotateTransform Angle="0" />
                                         <TranslateTransform />
                                     </TransformGroup>
-                                </Image.RenderTransform>
-                            </Image>
+                                </Grid.RenderTransform>
+                            </Grid>
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
@@ -876,19 +1162,29 @@
                     CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
                     <Button.Template>
                         <ControlTemplate>
-                            <Image
-                                Name="SourceSlika"
-                                RenderTransformOrigin="0.5,0.5"
-                                Source="{Binding ListaShuffleSlika[15]}">
-                                <Image.RenderTransform>
+                            <Grid x:Name="bg" RenderTransformOrigin="0.5,0.5">
+                                <Image
+                                    Name="SourceSlika"
+                                    RenderTransformOrigin="0.5,0.5"
+                                    Source="{Binding ListaShuffleSlika[15]}">
+                                    <Image.RenderTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform ScaleX="0.95" ScaleY="0.95" />
+                                            <SkewTransform />
+                                            <RotateTransform Angle="0" />
+                                            <TranslateTransform />
+                                        </TransformGroup>
+                                    </Image.RenderTransform>
+                                </Image>
+                                <Grid.RenderTransform>
                                     <TransformGroup>
                                         <ScaleTransform />
                                         <SkewTransform />
-                                        <RotateTransform Angle="-45" />
+                                        <RotateTransform Angle="0" />
                                         <TranslateTransform />
                                     </TransformGroup>
-                                </Image.RenderTransform>
-                            </Image>
+                                </Grid.RenderTransform>
+                            </Grid>
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
@@ -952,7 +1248,7 @@
                     FontWeight="ExtraBold" />
 
                 <!--  SCORE controla  -->
-                <local:GameScoreControl Grid.Row="1" Margin="15 15"/>
+                <local:GameScoreControl Grid.Row="1" Margin="15,15" />
             </Grid>
         </Grid>
     </Grid>

@@ -20,6 +20,20 @@ namespace Client.Helpers.Enums
 
         HomeToHome, //three dots thing
         
-        HomeToLogin
+        HomeToLogin,
+
+
+
+
+        //proba
+
+        HomeEnter,
+        HomeExit,
+        AllRoomsEnter,
+        AllRoomsExit,
+        LobbyEnter,
+        LobbyExit,
+        GameEnter,
+        GameExit
     }
 }

@@ -85,7 +85,7 @@ namespace Client {
 
             //TODO DETECT transition
             //Demo
-            ActivateTransition(WindowTransition.LoginToHome);
+            ActivateTransition(WindowTransition.HomeEnter);
         }
 
 
@@ -94,6 +94,15 @@ namespace Client {
             //Samo prelazi ToHome (To-this-view)
             switch (transition)
             {
+
+                case WindowTransition.HomeEnter:
+                    ClientUtils.SwitchState.HomeEnter();
+                    ClientUtils.RoomChanged += OnRoomChange;
+                    break;
+                case WindowTransition.HomeExit:
+                    ClientUtils.SwitchState.HomeExit();
+                    ClientUtils.RoomChanged -= OnRoomChange;
+                    break;
                 case WindowTransition.LoginToHome:
                     ClientUtils.SwitchState.LoginToHome();
                     break;
@@ -112,7 +121,7 @@ namespace Client {
                     return;
             }
 
-            ClientUtils.RoomChanged += OnRoomChange;
+            //ClientUtils.RoomChanged += OnRoomChange;
             //ClientUtils.InRoomChange += OnInRoomChange;
         }
 
@@ -184,10 +193,18 @@ namespace Client {
                         break;
 
                     case RoomUpdateType.Modified:
-                        var room = RoomsItemsList.Single(x => x.RoomId == update.RoomId);
-                        room.Difficulty = update.Level.ToString();
-                        room.MaxPlayers = update.MaxPlayers.ToString();
-                        room.Rounds = update.NumberOfRounds.ToString();
+                        var room = RoomsItemsList.FirstOrDefault(x => x.RoomId == update.RoomId);
+                        int i = RoomsItemsList.IndexOf(room);
+                        RoomsItemsList[i] = new RoomsPropsViewModel()
+                        {
+                            By = update.Creator.Username,
+                            RoomId = update.RoomId,
+                            MaxPlayers = update.MaxPlayers.ToString(),
+                            Difficulty = update.Level.ToString(),
+                            Locked = !update.IsPublic,
+                            Name = update.Creator.Username,
+                            Rounds = update.NumberOfRounds.ToString()
+                        };
                         break;
 
                     case RoomUpdateType.Deleted:
@@ -208,6 +225,9 @@ namespace Client {
         /// F-ja kad klikne dugme tri tacke ili na all rooms dugme
         /// </summary>
         public void TriTackeButton() {
+
+            ActivateTransition(WindowTransition.HomeExit);
+            
             ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new RoomsListPage();
         }
 
@@ -219,6 +239,8 @@ namespace Client {
         /// </summary>
         public async Task LogOutButtonAsync() {
 
+            ActivateTransition(WindowTransition.HomeExit);
+            
             SignOutRequest request = new SignOutRequest() {
                 RequesterId = Player.Instance.Id
             };
@@ -247,6 +269,9 @@ namespace Client {
         /// F-ja za novu sobu
         /// </summary>
         public void CreateNewRoom() {
+
+            ActivateTransition(WindowTransition.HomeExit);
+            
             ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new CreateRoomPage(); ;
         }
 
