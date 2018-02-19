@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DTOLibrary.SubDTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,8 +9,6 @@ namespace DTOLibrary.Requests
 {
     public class MakeAMoveRequest : PostLoginRequest
     {
-        public int RoomId;
-        public int SelectedPartNumber;
-        public int TablePlaceNumber;
+        public Move MoveToPlay;
     }
 }

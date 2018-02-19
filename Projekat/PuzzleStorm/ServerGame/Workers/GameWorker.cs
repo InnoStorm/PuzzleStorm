@@ -184,45 +184,45 @@ namespace ServerGame.Workers
 
         }
 
-        public MakeAMoveResponse MakeAMove(MakeAMoveRequest request)
-        {
-            try
-            {
-                using (var data = WorkersUnitOfWork)
-                {
-                    var player = data.Players.Get(request.RequesterId);
+        //public MakeAMoveResponse MakeAMove(MakeAMoveRequest request)
+        //{
+        //    try
+        //    {
+        //        using (var data = WorkersUnitOfWork)
+        //        {
+        //            var player = data.Players.Get(request.RequesterId);
 
-                    MakeAMoveResponse response = new MakeAMoveResponse
-                    {
-                        Status = OperationStatus.Successfull,
-                        Details = "Successfull"
-                    };
+        //            MakeAMoveResponse response = new MakeAMoveResponse
+        //            {
+        //                Status = OperationStatus.Successfull,
+        //                Details = "Successfull"
+        //            };
 
-                    if (request.SelectedPartNumber != request.TablePlaceNumber)
-                        response.CurrentPlayerId = NextPlayer(request.RoomId, request.RequesterId);
-                    else
-                    {
-                        response.CurrentPlayerId = request.RequesterId;
-                        //player.Score += 5;
-                        //AddPointsToPlayer(player, request.RoomId);
-                    }
-                    //response.ScoreBoard = 
+        //            if (request.SelectedPartNumber != request.TablePlaceNumber)
+        //                response.CurrentPlayerId = NextPlayer(request.RoomId, request.RequesterId);
+        //            else
+        //            {
+        //                response.CurrentPlayerId = request.RequesterId;
+        //                //player.Score += 5;
+        //                //AddPointsToPlayer(player, request.RoomId);
+        //            }
+        //            //response.ScoreBoard = 
 
-                    Log($"[SUCCESS] Making move. Requester: {request.RequesterId}");
-                    return response;
-                }
-            }
-            catch (Exception ex)
-            {
-                Log($"[FAILED] Making move. Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
+        //            Log($"[SUCCESS] Making move. Requester: {request.RequesterId}");
+        //            return response;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Log($"[FAILED] Making move. Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
 
-                return new MakeAMoveResponse()
-                {
-                    Status = OperationStatus.Failed,
-                    Details = ex.Message
-                };
-            }
-        }
+        //        return new MakeAMoveResponse()
+        //        {
+        //            Status = OperationStatus.Failed,
+        //            Details = ex.Message
+        //        };
+        //    }
+        //}
 
         #endregion
 

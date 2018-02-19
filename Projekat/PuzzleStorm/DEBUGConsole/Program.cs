@@ -335,9 +335,9 @@ namespace DEBUGConsole
             MakeAMoveResponse response = rabbit.Request<MakeAMoveRequest, MakeAMoveResponse>(new MakeAMoveRequest()
             {
                 RequesterId = 14,
-                RoomId = 136,
-                SelectedPartNumber = 10,
-                TablePlaceNumber = 100
+                //RoomId = 136,
+                //SelectedPartNumber = 10,
+                //TablePlaceNumber = 100
             });
 
             Console.WriteLine(response.CurrentPlayerId);

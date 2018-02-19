@@ -57,19 +57,19 @@ namespace ServerGame
         {
             Log("Binding workers...");
 
-            Communicator.RespondAsync<MakeAMoveRequest, MakeAMoveResponse>(request =>
-                 Task.Factory.StartNew(() =>
-                 {
-                     var worker = _gameWorkerPool.Take();
-                     try
-                     {
-                         return worker.MakeAMove(request);
-                     }
-                     finally
-                     {
-                         _gameWorkerPool.Add(worker);
-                     }
-                 }));
+            //Communicator.RespondAsync<MakeAMoveRequest, MakeAMoveResponse>(request =>
+            //     Task.Factory.StartNew(() =>
+            //     {
+            //         var worker = _gameWorkerPool.Take();
+            //         try
+            //         {
+            //             return worker.MakeAMove(request);
+            //         }
+            //         finally
+            //         {
+            //             _gameWorkerPool.Add(worker);
+            //         }
+            //     }));
 
             Communicator.RespondAsync<LoadGameRequest, LoadGameResponse>(request =>
                  Task.Factory.StartNew(() =>
