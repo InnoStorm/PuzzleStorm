@@ -8,7 +8,7 @@ using StormCommonData.Enums;
 
 namespace DTOLibrary.Broadcasts
 {
-    public class GameUpdate
+    public class GameUpdate : BroadcastMessage
     {
         public GamePlayUpdateType UpdateType { get; set; }
         public Player CurrentPlayer { get; set; }
