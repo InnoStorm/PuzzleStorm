@@ -11,7 +11,6 @@ namespace DTOLibrary.Broadcasts
     public class GameUpdate
     {
         public GamePlayUpdateType UpdateType { get; set; }
-
         public Player CurrentPlayer { get; set; }
         public Move PlayedMove { get; set; }
         public Scoreboard Scoreboard { get; set; }

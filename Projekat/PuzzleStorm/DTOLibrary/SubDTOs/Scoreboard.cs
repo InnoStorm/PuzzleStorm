@@ -8,6 +8,6 @@ namespace DTOLibrary.SubDTOs
 {
     public class Scoreboard
     {
-        public List<Tuple<Player, int>> List { get; set; }
+        public List<Tuple<Player, int>> Scores { get; set; }
     }
 }

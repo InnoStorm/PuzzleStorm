@@ -10,7 +10,7 @@ namespace DTOLibrary.SubDTOs
     {
         public int PositionFrom { get; set; }
         public int PositionTo { get; set; }
-        public int PlayedById { get; set; }
+        public Player PlayedBy { get; set; }
         public bool IsSuccessfull { get; set; }
     }
 }
