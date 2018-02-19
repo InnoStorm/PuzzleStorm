@@ -94,9 +94,10 @@ namespace ServerGame.Workers
 
                 using (UnitOfWork data = WorkersUnitOfWork)
                 {
-                    var game = data.Games.Get(request.GameId);
+                    var room = data.Rooms.Get(request.RoomId);
+                    var game = room.CurrentGame;
                     if (game == null)
-                        throw new Exception($"Game with ID {request.GameId} not found!");
+                        throw new Exception($"Game for room {request.RoomId} not found!");
    
                     List<String> partsPaths = game.PuzzleForGame.ListOfPieces.Select(x => x.PartPath).ToList();
 
@@ -122,13 +123,13 @@ namespace ServerGame.Workers
                         CurrentPlayerId = game.RoomForThisGame.Owner.Id,
                         ListOfPlayers = list,
                         Status = OperationStatus.Successfull,
-                        Details = $"Room {request.GameId} successfully started."
+                        Details = $"Room {request.RoomId} successfully started."
                     };
                 }
             }
             catch (Exception ex)
             {
-                Log($"[FAILED] Starting room {request.GameId}, Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
+                Log($"[FAILED] Starting room {request.RoomId}, Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
 
                 return new LoadGameResponse()
                 {
