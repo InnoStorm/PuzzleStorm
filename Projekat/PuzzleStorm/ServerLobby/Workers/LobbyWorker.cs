@@ -244,7 +244,7 @@ namespace ServerLobby.Workers
                     player.IsReady = request.IAmReady;
                     data.Complete();
 
-                    var updateMessage = GenerateRoomPlayerUpdate(player.CurrentRoom.Id, player.Id, RoomPlayerUpdateType.ChangedStatus);
+                    var updateMessage = GenerateRoomPlayerUpdate(player, RoomPlayerUpdateType.ChangedStatus);
 
                     Log($"[SUCCESS] Status changed for player {request.RequesterId}");
                     NotifyAll(updateMessage);
@@ -302,7 +302,7 @@ namespace ServerLobby.Workers
                     joiner.Score = 0;
                     data.Complete();
 
-                    var updateMessage = GenerateRoomPlayerUpdate(room.Id, joiner.Id, RoomPlayerUpdateType.Joined);
+                    var updateMessage = GenerateRoomPlayerUpdate(joiner, RoomPlayerUpdateType.Joined);
                     NotifyAll(updateMessage);
 
                     if (room.ListOfPlayers.Count == room.MaxPlayers)
@@ -363,7 +363,7 @@ namespace ServerLobby.Workers
 
 
                     Log($"[SUCCESS] Player {request.RequesterId} successfully left room {request.RoomId}");
-                    var updateMessage = GenerateRoomPlayerUpdate(request.RoomId, player.Id, RoomPlayerUpdateType.LeftRoom);
+                    var updateMessage = GenerateRoomPlayerUpdate(player, RoomPlayerUpdateType.LeftRoom);
                     NotifyAll(updateMessage);
                     
                     return new LeaveRoomResponse()
@@ -509,15 +509,20 @@ namespace ServerLobby.Workers
 
         #region Utils
 
-        private RoomPlayerUpdate GenerateRoomPlayerUpdate(int roomId, int playerId, RoomPlayerUpdateType updateType)
+        private RoomPlayerUpdate GenerateRoomPlayerUpdate(Player player, RoomPlayerUpdateType updateType)
         {
             return new RoomPlayerUpdate
             {
                 Status = OperationStatus.Successfull,
                 Details = "Room is updated.",
                 UpdateType = updateType,
-                PlayerId = playerId,
-                RoomId = roomId
+                Player = new DTOLibrary.SubDTOs.Player()
+                {
+                    Username = player.Username,
+                    IsReady = player.IsReady,
+                    PlayerId = player.Id
+                },
+                RoomId = player.CurrentRoom.Id
             };
         }
 

@@ -14,7 +14,8 @@ namespace DTOLibrary.Broadcasts
     public class RoomPlayerUpdate : BroadcastMessage
     {
         public RoomPlayerUpdateType UpdateType { get; set; }
-        public int PlayerId { get; set; }
         public int RoomId { get; set; }
+        public Player Player { get; set; }
+        
     }
 }
