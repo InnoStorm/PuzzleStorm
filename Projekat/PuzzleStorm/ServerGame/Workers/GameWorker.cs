@@ -51,6 +51,8 @@ namespace ServerGame.Workers
                 x.Add<MakeAMoveRequest>(OnReceivedMessage);
                 x.Add<LoadGameRequest>(OnReceivedMessage);
             });
+
+            
         }
 
         private void RespondDirectly(int playerId, LoadGameResponse response)
@@ -214,14 +216,10 @@ namespace ServerGame.Workers
             }
         }
         
-        
-
-        public ContinueGameResponse ContinueGame(ContinueGameRequest request)
+        private async void ContinueGame()
         {
             try
             {
-                StormValidator.ValidateRequest(request);
-
                 using (UnitOfWork data = WorkersUnitOfWork)
                 {
                     var puzzle = data.Puzzles.Get(HandledRoom.CurrentGame.Id + 3); //vraca sledcu puzzluuuuu :D
@@ -238,26 +236,36 @@ namespace ServerGame.Workers
                     data.Games.Add(game);
                     data.Complete();
 
-                    Log($"[SUCCESS] Player {request.RequesterId} successfully continued room {request.RoomId}");
+                    Log($"[SUCCESS] Room {HandledRoom.Id} successfully continued");
 
-                    return new ContinueGameResponse()
-                    {
-                        Details = $"Room {HandledRoom.Id} successfully continued.",
-                        Status = OperationStatus.Successfull,
-                        GameId = game.Id,
-                    };
+                    await Task.Delay(5000);
+                    NotifyAllToContinue();
                 }
             }
             catch (Exception ex)
             {
-                Log($"[FAILED] Starting room {request.RoomId}, Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
-
-                return new ContinueGameResponse()
-                {
-                    Status = OperationStatus.Failed,
-                    Details = ex.Message
-                };
+                Log($"[FAILED] Continuing room {HandledRoom.Id}, Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
             }
+        }
+
+        private void NotifyAllToContinue()
+        {
+            string routingKey = RouteGenerator.RoomUpdates.Room.Set.FromEnum(RoomUpdateType.Continued, HandledRoom.Id);
+            Communicator.Publish<RoomsStateUpdate>(new RoomsStateUpdate()
+            {
+                RoomId = HandledRoom.Id,
+                UpdateType = RoomUpdateType.Continued,
+                MaxPlayers = HandledRoom.MaxPlayers,
+                Details = "RoomContinued",
+                NumberOfRounds = HandledRoom.NumberOfRounds,
+                Status = OperationStatus.Successfull,
+                Level = HandledRoom.Difficulty,
+                IsPublic = HandledRoom.IsPublic,
+                Creator = ConvertPlayerToSubDTOPlayer(HandledRoom.Owner),
+                CommunicationKey = String.Empty
+            }, routingKey);
+
+            Log($"NOTIFY_ALL: {routingKey}");
         }
 
         #endregion
@@ -365,6 +373,11 @@ namespace ServerGame.Workers
             Log($"Player {move.RequesterId} played move.");
 
             NotifyAll(gameUpdate);
+
+            if (EndOfTheRound())
+            {
+                ContinueGame();
+            }
         }
 
         private Player NextPlayer()

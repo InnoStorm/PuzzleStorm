@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace DTOLibrary.Responses
 {
-    public class ContinueGameResponse : Response
-    {
-        public int GameId { get; set; }
-    }
+    //public class ContinueGameResponse : Response
+    //{
+    //    public int GameId { get; set; }
+    //}
 }

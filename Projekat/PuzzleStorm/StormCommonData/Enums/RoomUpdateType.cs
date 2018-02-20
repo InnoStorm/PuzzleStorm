@@ -13,6 +13,7 @@ namespace StormCommonData.Enums
         Deleted,
         Started,
         Filled,
-        BecameAvailable
+        BecameAvailable,
+        Continued
     }
 }

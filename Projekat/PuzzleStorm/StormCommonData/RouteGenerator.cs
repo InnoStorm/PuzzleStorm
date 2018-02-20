@@ -40,6 +40,10 @@ namespace StormCommonData
                     public static string Deleted()               => $"{BaseRoute}.Deleted.#";
                     public static string Deleted(int id)         => $"{BaseRoute}.Deleted.{id}";
 
+                    public static string Continued() => FromEnum(RoomUpdateType.Continued);
+                    public static string Continued(int id) => FromEnum(RoomUpdateType.Continued, id);
+
+
                     public static string FromEnum(RoomUpdateType updateType)             => $"{BaseRoute}.{updateType.ToString()}.#";
                     public static string FromEnum(RoomUpdateType updateType, int roomId) => $"{BaseRoute}.{updateType.ToString()}.{roomId}";
                 }
@@ -52,6 +56,8 @@ namespace StormCommonData
                     public static string Started(int id) => $"{BaseRoute}.Started.{id}";
                     public static string Filled(int id) => $"{BaseRoute}.Filled.{id}";
                     public static string Deleted(int id) => $"{BaseRoute}.Deleted.{id}";
+                    public static string Continued(int id) => FromEnum(RoomUpdateType.Continued, id);
+
                     public static string FromEnum(RoomUpdateType updateType, int roomId) => $"{BaseRoute}.{updateType.ToString()}.{roomId}";
                 }
             }

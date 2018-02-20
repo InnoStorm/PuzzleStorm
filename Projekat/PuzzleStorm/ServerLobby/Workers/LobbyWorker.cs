@@ -233,51 +233,6 @@ namespace ServerLobby.Workers
             }
         }
 
-        public ContinueRoomResponse ContinueRoom(ContinueRoomRequest request) // Trazi sledecu igru od ContinueGame da mi napravi i vraca je
-        {
-            try
-            {
-                //StormValidator.ValidateRequest(request);
-
-                using (UnitOfWork data = WorkersUnitOfWork)
-                {
-                    var room = data.Rooms.Get(request.RoomId);
-
-                    if (room.Owner.Id != request.RequesterId)
-                        throw new Exception("[FAILED] Only owner cant continue room!");
-
-                   
-                    ContinueGameRequest newGameRequest = new ContinueGameRequest()
-                    {
-                        RequesterId = request.RequesterId,
-                        RoomId = room.Id
-                    };
-
-                    //todo handle timeout
-                    var response = Communicator.Request<ContinueGameRequest, ContinueGameResponse>(newGameRequest);
-                    if (response.Status != OperationStatus.Successfull)
-                        throw new Exception("Failed to continue! Reason: " + response.Details);
-
-                    return new ContinueRoomResponse()
-                    {
-                        Status = OperationStatus.Successfull,
-                        Details = $"Room {request.RoomId} is continued.",
-                        CreatedGame = response
-                    };
-                }
-            }
-            catch (Exception ex)
-            {
-                Log($"[FAILED] Room can not be continued.", LogMessageType.Error);
-
-                return new ContinueRoomResponse()
-                {
-                    Status = OperationStatus.Failed,
-                    Details = $"{ex.Message}"
-                };
-            }
-        }
-
         public ChangeStatusResponse PlayerChangeStatus(ChangeStatusRequest request)
         {
             try

@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace DTOLibrary.Requests
 {
-    public class ContinueRoomRequest : PostLoginRequest
-    {
-        public int RoomId { get; set; }
-    }
+    //public class ContinueRoomRequest : PostLoginRequest
+    //{
+    //    public int RoomId { get; set; }
+    //    public string CommunicationKey { get; set; }
+    //}
 }

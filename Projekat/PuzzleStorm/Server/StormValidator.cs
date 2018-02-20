@@ -131,9 +131,14 @@ namespace Server
             
         }
 
-        public static void ValidateRequest(ContinueGameRequest request)
-        {
+        //public static void ValidateRequest(ContinueGameRequest request)
+        //{
             
-        }
+        //}
+
+        //public static void ValidateRequest(ContinueRoomRequest request)
+        //{
+            
+        //}
     }
 }
