@@ -20,5 +20,7 @@ namespace DTOLibrary.Broadcasts
         public int NumberOfRounds { get; set; }
         public int MaxPlayers { get; set; }
         public bool IsPublic { get; set; }
+
+        public string CommunicationKey { get; set; }
     }
 }

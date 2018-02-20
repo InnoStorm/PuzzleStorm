@@ -305,14 +305,14 @@ namespace Communicator
 
         #region Send
 
-        public void Send(MakeAMoveRequest request)
+        public void Send(MakeAMoveRequest request, string communicationKey)
         {
-            _bus.Send(RouteGenerator.GameUpdates.GamePlay.Set.Playing(request.RoomId), request);
+            _bus.Send(communicationKey, request);
         }
 
-        public Task SendAsync(MakeAMoveRequest request)
+        public Task SendAsync(MakeAMoveRequest request, string communicationKey)
         {
-            return _bus.SendAsync(RouteGenerator.GameUpdates.GamePlay.Set.Playing(request.RoomId), request);
+            return _bus.SendAsync(communicationKey, request);
         }
 
         public void Send(LoadGameRequest request, string communicationKey)

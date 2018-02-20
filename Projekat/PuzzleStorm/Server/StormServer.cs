@@ -59,8 +59,10 @@ namespace Server
         protected virtual void StartupInit()
         {
             Log("Connecting to RabbitMQ system...");
-
-            Communicator = RabbitHutch.CreateBus(Config.ConnectionString);
+            
+            var logger = new ConsoleLogger();
+            Communicator = RabbitHutch.CreateBus(Config.ConnectionString, 
+                x => x.Register<IEasyNetQLogger>(_ => logger));
 
             Log("Connected");
         }

@@ -36,6 +36,7 @@ namespace ServerGame.Workers
         public GameWorker(IBus communicator, ServerGame server) : base(communicator)
         {
             Server = server;
+            
         }
         
         #region Communication
@@ -51,10 +52,10 @@ namespace ServerGame.Workers
             });
         }
 
-        private void RespondDirectly(Player player, LoadGameResponse response)
+        private void RespondDirectly(int playerId, LoadGameResponse response)
         {
             Communicator.Send<LoadGameResponse>(
-                RouteGenerator.GameUpdates.GamePlay.DirectMessageQueue(player.Id),
+                RouteGenerator.GameUpdates.GamePlay.DirectMessageQueue(playerId),
                 response
             );
         }
@@ -91,7 +92,15 @@ namespace ServerGame.Workers
         {
             return Task.Factory.StartNew(() =>
             {
-                LoadGame(loadRequest);
+                try
+                {
+                    var response = LoadGame(loadRequest);
+                    RespondDirectly(loadRequest.RequesterId, response);
+                }
+                catch (Exception ex)
+                {
+                    Log($"Failed to respond directly to {loadRequest.RequesterId} for LoadGameRequest!\n{ex.Message}");
+                }
             });
         }
 
@@ -129,7 +138,8 @@ namespace ServerGame.Workers
 
                     NumberOfSolvedPieces = 0;
                     CurrentRound = 1;
-                    
+                    LoadedPlayers = new List<Player>(HandledRoom.ListOfPlayers.Count);
+
                     PrepareComunication();
                     
                     Log($"[SUCCESS] Player {request.RequesterId} successfully started room {request.RoomId}");
@@ -176,6 +186,8 @@ namespace ServerGame.Workers
                         LoadedPlayers.Add(room.ListOfPlayers.Single(x => x.Id == request.RequesterId));
                         NotifyAllAboutLoadedUser();
                     }
+                    
+                    Log($"Player {request.RequesterId} successfully loaded");
 
                     return new LoadGameResponse()
                     {
@@ -201,10 +213,7 @@ namespace ServerGame.Workers
             }
         }
         
-
-
-
-
+        
 
         public ContinueGameResponse ContinueGame(ContinueGameRequest request)
         {
@@ -317,8 +326,14 @@ namespace ServerGame.Workers
             return CurrentRound == HandledRoom.NumberOfRounds + 1;
         }
 
-        public void HandleMove(MakeAMoveRequest move)
+        private void HandleMove(MakeAMoveRequest move)
         {
+            if (move.RequesterId != CurrentPlayer.Id)
+            {
+                Log($"Failed to play move. Player {move.RequesterId} is not on a move", LogMessageType.Warning);
+                return;
+            }
+
             Move playedMove = move.MoveToPlay;
             playedMove.IsSuccessfull = (move.MoveToPlay.PositionFrom == move.MoveToPlay.PositionTo);
             if (playedMove.IsSuccessfull)
@@ -329,27 +344,24 @@ namespace ServerGame.Workers
             if (EndOfTheRound())
             {
                 ++CurrentRound;
-                if (EndOfTheGame())
-                    gameUpdate = GenerateGameUpdate(null, playedMove, GamePlayUpdateType.GameOver);
-                gameUpdate = GenerateGameUpdate(null, playedMove, GamePlayUpdateType.RoundOver);
+                gameUpdate = GenerateGameUpdate(null, playedMove, EndOfTheGame() ? 
+                    GamePlayUpdateType.GameOver : GamePlayUpdateType.RoundOver);
             }
-
-            Player currentPlayer = playedMove.IsSuccessfull ? CurrentPlayer : NextPlayer(move.RoomId, CurrentPlayer);
-            gameUpdate = GenerateGameUpdate(currentPlayer, playedMove, GamePlayUpdateType.Playing);
-
+            else
+            {
+                CurrentPlayer = playedMove.IsSuccessfull ? CurrentPlayer : NextPlayer();
+                gameUpdate = GenerateGameUpdate(CurrentPlayer, playedMove, GamePlayUpdateType.Playing);
+            }
+            Log($"Player {move.RequesterId} played move.");
             NotifyAll(gameUpdate);
         }
 
-        public Player NextPlayer(int roomId, Player currentPlayer)
+        private Player NextPlayer()
         {
-            //var playingRoom = playingRooms.Find(x => x.Room.Id == roomId);
-            //Player currentPlayer = playingRoom.Room.ListOfPlayers.First(x => x.Id == currentPlayerId);
-            //int indexOfNext = (playingRoom.Room.ListOfPlayers.IndexOf(currentPlayer) + 1) % playingRoom.Room.ListOfPlayers.Count;
-            //playingRoom.CurrentPlayerId = playingRoom.Room.ListOfPlayers.ElementAt(indexOfNext).Id;
-            //return playingRoom.CurrentPlayerId;
-
-            return null;
+            int indexOfNext = (HandledRoom.ListOfPlayers.IndexOf(CurrentPlayer) + 1) % HandledRoom.ListOfPlayers.Count;
+            return HandledRoom.ListOfPlayers[indexOfNext];
         }
+
         #endregion
 
 

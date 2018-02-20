@@ -262,7 +262,7 @@ namespace Client {
                 };
 
                 //SEND REQUEST
-                API.Instance.Send(request);
+                API.Instance.Send(request, Player.Instance.CommKey);
 
                 /*
                 if (sourceSlikaParametar.Source.ToString().Equals(sourceSlikaSelected.Source.ToString()))

@@ -28,7 +28,7 @@ namespace ServerGame
         #region Worker Pools
 
         private List<GameWorker> ActiveWorkerPool { get; set; }
-
+        private readonly object _lockpad = new object();
         #endregion
 
         #region StartupProcess
@@ -44,7 +44,7 @@ namespace ServerGame
         private void InitWorkerPool()
         {
             Log("Initializing game worker pool...");
-            lock (ActiveWorkerPool)
+            lock (_lockpad)
             {
                 ActiveWorkerPool = new List<GameWorker>();
             }
@@ -69,7 +69,7 @@ namespace ServerGame
 
         private void HireWorker(GameWorker worker)
         {
-            lock (ActiveWorkerPool)
+            lock (_lockpad)
             {
                 ActiveWorkerPool.Add(worker);
             }
@@ -77,7 +77,7 @@ namespace ServerGame
 
         private void ReleaseWorker(GameWorker worker)
         {
-            lock (ActiveWorkerPool)
+            lock (_lockpad)
             {
                 ActiveWorkerPool.Remove(worker);
             }

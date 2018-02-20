@@ -98,6 +98,9 @@ namespace ServerLobby.Workers
 
                     room.ListOfPlayers.Clear();
                     data.Complete();
+                    data.Games.Remove(room.CurrentGame);
+                    data.Complete();
+
                     data.Rooms.Remove(room);
                     data.Complete();
 
@@ -207,6 +210,7 @@ namespace ServerLobby.Workers
                     data.Complete();
 
                     var updateMessagePlaying = GenerateRoomStateUpdate(room, RoomUpdateType.Started);
+                    updateMessagePlaying.CommunicationKey = response.CommunicationKey;
                     NotifyAll(updateMessagePlaying);
 
                     return new StartRoomResponse()
@@ -558,7 +562,7 @@ namespace ServerLobby.Workers
 
         #endregion
 
-
+        
         #region Utils
 
         private RoomPlayerUpdate GenerateRoomPlayerUpdate(Player player, RoomPlayerUpdateType updateType)
