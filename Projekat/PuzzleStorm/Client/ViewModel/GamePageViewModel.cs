@@ -328,7 +328,8 @@ namespace Client {
             int i = ListaShuffleSlika.IndexOf(slika);
             ListaShuffleSlika[i] = "../Images/qm2.png";
 
-            //SelectedPiece.Opacity = 0;
+            if (SelectedPiece != null)
+                SelectedPiece.Opacity = 0;
         }
 
         private async void PrikaziPotez(Move potez)
