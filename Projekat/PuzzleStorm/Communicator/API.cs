@@ -293,6 +293,15 @@ namespace Communicator
                 });
         }
 
+        public IDisposable ActivateReceiveLoadGameResponse(int playerId)
+        {
+            return _bus.Receive(
+                RouteGenerator.GameUpdates.GamePlay.DirectMessageQueue(playerId),
+                x =>
+                {
+                    x.Add<LoadGameResponse>(respond => { RaiseLoadGameresponded(respond); });
+                });
+        }
         #endregion
 
         #region Unsubscribe
@@ -316,6 +325,16 @@ namespace Communicator
             return _bus.SendAsync(RouteGenerator.GameUpdates.GamePlay.Set.Playing(request.RoomId), request);
         }
 
+        public void Send(LoadGameRequest request, string communicationKey)
+        {
+            _bus.Send(communicationKey, request);
+        }
+
+        public void SendAsync(LoadGameRequest request, string communicationKey)
+        {
+            _bus.SendAsync(communicationKey, request);
+        }
+        
         #endregion
 
         #region Events
@@ -337,7 +356,12 @@ namespace Communicator
         {
             GameUpdated?.Invoke(this, new StormEventArgs<GameUpdate>(updateMessage));
         }
-        
+
+        public event EventHandler<StormEventArgs<LoadGameResponse>> LoadGameResponded;
+        private void RaiseLoadGameresponded(LoadGameResponse response)
+        {
+            LoadGameResponded?.Invoke(this, new StormEventArgs<LoadGameResponse>(response));
+        }
         #endregion
 
         #endregion

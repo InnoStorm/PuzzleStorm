@@ -121,21 +121,24 @@ namespace StormCommonData
 
                     public static string RoundOver(int roomId) => $"{BaseRoute}.{roomId}.RoundOver";
 
-                    
                     public static string FromEnum(GamePlayUpdateType type, int roomId) =>
                         $"{BaseRoute}.{roomId}.{type.ToString()}";
+
                 }
 
-                public static string GenerateMovesQueueName()
+                public static string GenerateReceiveQueueName()
                 {
                     var queueId = Guid.NewGuid().ToString().ToUpper().Substring(0,8);
                     return $"GameQueue_{queueId}";
                 }
 
-                public static string GenerateMovesQueueName(int customId)
+                public static string GenerateReceiveQueueName(int customId)
                 {
                     return $"GameQueue_{customId}";
                 }
+
+                public static string DirectMessageQueue(int playerId)
+                    => $"DirectMessage_client_{playerId}";
             }
         }
     }

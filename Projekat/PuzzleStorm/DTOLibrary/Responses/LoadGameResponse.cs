@@ -13,7 +13,7 @@ namespace DTOLibrary.Responses
         public List<String> PiecesPaths { get; set; }
         public int CurrentPlayerId { get; set; }
         public List<Player> ListOfPlayers { get; set; }
-        public List<Tuple<Player, int>> ScoreBoard { get; set; }
+        public Scoreboard ScoreBoard { get; set; }
         
         public LoadGameResponse()
         {

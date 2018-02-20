@@ -13,6 +13,7 @@ using DTOLibrary.Requests;
 using DTOLibrary.Responses;
 using Server;
 using DTOLibrary.Broadcasts;
+using StormCommonData.Enums;
 
 namespace ServerGame
 {
@@ -26,7 +27,7 @@ namespace ServerGame
 
         #region Worker Pools
 
-        private BlockingCollection<GameWorker> _gameWorkerPool;
+        private List<GameWorker> ActiveWorkerPool { get; set; }
 
         #endregion
 
@@ -43,61 +44,47 @@ namespace ServerGame
         private void InitWorkerPool()
         {
             Log("Initializing game worker pool...");
-
-            _gameWorkerPool = new BlockingCollection<GameWorker>();
-            for (int i = 0; i < Config.DefaultWorkerPoolSize; i++)
-                _gameWorkerPool.Add(new GameWorker(Communicator)
-                {
-                    Id = i,
-                    NewWorkerLogMessage = OnNewWorkerLogMessage
-                });
+            lock (ActiveWorkerPool)
+            {
+                ActiveWorkerPool = new List<GameWorker>();
+            }
         }
 
         private void BindWorkerMethods()
         {
             Log("Binding workers...");
 
-            //Communicator.RespondAsync<MakeAMoveRequest, MakeAMoveResponse>(request =>
-            //     Task.Factory.StartNew(() =>
-            //     {
-            //         var worker = _gameWorkerPool.Take();
-            //         try
-            //         {
-            //             return worker.MakeAMove(request);
-            //         }
-            //         finally
-            //         {
-            //             _gameWorkerPool.Add(worker);
-            //         }
-            //     }));
-
-            Communicator.RespondAsync<LoadGameRequest, LoadGameResponse>(request =>
-                 Task.Factory.StartNew(() => GameWorker.LoadGame(request)));
-
             Communicator.RespondAsync<StartGameRequest, StartGameResponse>(request =>
-                 Task.Factory.StartNew(() =>
-                 {
-                     var worker = _gameWorkerPool.Take();
-                     try
-                     {
-                         return worker.StartGame(request);
-                     }
-                     finally
-                     {
-                         _gameWorkerPool.Add(worker);
-                     }
-                 }));
+                Task.Factory.StartNew(() =>
+                {
+                    var worker = new GameWorker(Communicator, this);
+                    var response = worker.StartGame(request);
+
+                    if (response.Status == OperationStatus.Successfull)
+                        HireWorker(worker);
+                    
+                    return response;
+                }));
+        }
+
+        private void HireWorker(GameWorker worker)
+        {
+            lock (ActiveWorkerPool)
+            {
+                ActiveWorkerPool.Add(worker);
+            }
+        }
+
+        private void ReleaseWorker(GameWorker worker)
+        {
+            lock (ActiveWorkerPool)
+            {
+                ActiveWorkerPool.Remove(worker);
+            }
         }
         #endregion
 
         #region Disposable
-
-        public override void Dispose()
-        {
-            _gameWorkerPool?.Dispose();
-
-            base.Dispose();
-        }
 
         #endregion
     }

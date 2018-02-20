@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Broadcasts\BroadcastMessage.cs" />
     <Compile Include="Broadcasts\GameUpdate.cs" />
+    <Compile Include="Broadcasts\LoadingGameUpdate.cs" />
     <Compile Include="Broadcasts\RoomsStateUpdate.cs" />
     <Compile Include="Broadcasts\RoomPlayerUpdate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
