@@ -210,8 +210,11 @@ namespace Client {
                     case RoomUpdateType.Deleted:
                     case RoomUpdateType.Started:
                     case RoomUpdateType.Filled:
-                        RoomsItemsList.Remove(RoomsItemsList.Single(x => x.RoomId == update.RoomId));
-                        ListRooms.Instance.RoomsItemsList = RoomsItemsList;
+                        if (RoomsItemsList.Any(x => x.RoomId == update.RoomId))
+                        {
+                            RoomsItemsList.Remove(RoomsItemsList.Single(x => x.RoomId == update.RoomId));
+                            ListRooms.Instance.RoomsItemsList = RoomsItemsList;
+                        }
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
