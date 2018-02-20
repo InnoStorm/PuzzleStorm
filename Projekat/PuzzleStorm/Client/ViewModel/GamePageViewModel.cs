@@ -303,6 +303,8 @@ namespace Client {
             var player = PlayersItems.FirstOrDefault(x => x.UserName == currentPlayer.Username);
             if (player != null && !player.OnTheMove) //ako je taj isti onda nista
             {
+                Player.Instance.OnTheMove = Player.Instance.Id == currentPlayer.PlayerId;
+                
                 //skinemo starog da ne igra
                 var stari = PlayersItems.FirstOrDefault(x => x.OnTheMove);
                 int i = PlayersItems.IndexOf(stari);
@@ -320,9 +322,6 @@ namespace Client {
                     UserName = currentPlayer.Username
                 };
             }
-
-            if (Player.Instance.Id == currentPlayer.PlayerId)
-                Player.Instance.OnTheMove = true;
         }
 
         private void OdigrajPotez(Move potez)

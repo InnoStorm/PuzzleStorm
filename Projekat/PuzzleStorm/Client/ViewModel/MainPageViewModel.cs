@@ -72,12 +72,15 @@ namespace Client {
             RoomsItemsList = new ObservableCollection<RoomsPropsViewModel>();
 
             if (ListRooms.Instance.RoomsItemsList.Count == 0)
+            {
                 Application.Current.Dispatcher.InvokeAsync(InitRooms);
-                //InitializingAsync();
+            }
+            //InitializingAsync();
             else
+            {
                 RoomsItemsList = ListRooms.Instance.RoomsItemsList;
-
-            NoRoomLabel = false;
+                NoRoomLabel = false;
+            }
 
             WelcomeMessage = "Welcome to PuzzleStorm, " + Player.Instance.UserName + "!";
 
@@ -155,7 +158,9 @@ namespace Client {
             }
 
             RoomsItemsList = ListRooms.Instance.RoomsItemsList;
-            NoRoomLabel = false;
+
+            if (RoomsItemsList.Count != 0)
+                NoRoomLabel = false;
         }
 
         #endregion
@@ -190,6 +195,8 @@ namespace Client {
                                 Rounds = update.NumberOfRounds.ToString(),
                             });
                         ListRooms.Instance.RoomsItemsList = RoomsItemsList;
+                        NoRoomLabel = false;
+
                         break;
 
                     case RoomUpdateType.Modified:
@@ -214,6 +221,9 @@ namespace Client {
                         {
                             RoomsItemsList.Remove(RoomsItemsList.Single(x => x.RoomId == update.RoomId));
                             ListRooms.Instance.RoomsItemsList = RoomsItemsList;
+
+                            if (RoomsItemsList.Count == 0)
+                                NoRoomLabel = true;
                         }
                         break;
                     default:

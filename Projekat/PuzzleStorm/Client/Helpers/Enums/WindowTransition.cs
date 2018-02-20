@@ -34,6 +34,8 @@ namespace Client.Helpers.Enums
         LobbyEnter,
         LobbyExit,
         GameEnter,
-        GameExit
+        GameExit,
+        GameOverEnter,
+        GameOverExit
     }
 }

@@ -4,7 +4,12 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.Eventing.Reader;
 using System.Windows;
 using System.Windows.Input;
+using Client.Helpers.Communication;
+using Client.Helpers.Enums;
+using DTOLibrary.Broadcasts;
 using MaterialDesignThemes.Wpf;
+using StormCommonData.Enums;
+using StormCommonData.Events;
 
 namespace Client {
 
@@ -30,30 +35,7 @@ namespace Client {
 
         public GameOverPageViewModel()
         {
-
-            /*
-            GameOverScoreItems = new List<GameOverItemViewModel>()
-            {
-                new GameOverItemViewModel()
-                {
-                    No = "#1",
-                    UserName = "Pera1",
-                    Score = "185"
-                },
-                new GameOverItemViewModel()
-                {
-                    No = "#2",
-                    UserName = "Pera2",
-                    Score = "170"
-                },
-                new GameOverItemViewModel()
-                {
-                    No = "#3",
-                    UserName = "Pera3",
-                    Score = "155"
-                }
-            };
-            */
+            ActivateTransition(WindowTransition.GameOverEnter);
 
             GameOverScoreItems = new ObservableCollection<GameOverItemViewModel>();
 
@@ -82,17 +64,8 @@ namespace Client {
             else
             {
                 Title = "ROUND OVER";
-
-                if (Player.Instance.Creator)
-                {
-                    BackOrStartCommand = new RelayCommand(StartNewRound);
-                    ButtonText = "START NEW ROUND";
-                }
-                else
-                {
-                    BackOrStartCommand = new RelayCommand(WaitForRoundAsync);
-                    ButtonText = "WAIT FOR NEW ROUND";
-                }
+                BackOrStartCommand = new RelayCommand(WaitForRoundAsync);
+                ButtonText = "NEW ROUND IN 5 SECONDS!";
             }
         }
 
@@ -100,19 +73,42 @@ namespace Client {
 
         #region Metods
 
+        private void ActivateTransition(WindowTransition transition)
+        {
+            switch (transition)
+            {
+                case WindowTransition.GameOverEnter:
+                    ClientUtils.SwitchState.LobbyEnter(Player.Instance.RoomId);
+                    ClientUtils.RoomChanged += OnRoomChange;
+                    break;
+
+                case WindowTransition.GameOverExit:
+                    ClientUtils.SwitchState.LobbyExit();
+                    ClientUtils.RoomChanged -= OnRoomChange;
+                    break;
+            }
+        }
+
+        private void OnRoomChange(object o, StormEventArgs<RoomsStateUpdate> stormEventArgs) {
+            ClientUtils.UpdateGUI(() => {
+                var update = stormEventArgs.Data;
+
+                switch (update.UpdateType) {
+                    
+                    
+                }
+            });
+        }
+
         public void BackToMain()
         {
+            ActivateTransition(WindowTransition.GameOverExit);
+
             ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new MainPage();
         }
 
-        public void StartNewRound() {
-            
-        }
-
         public async void WaitForRoundAsync() {
-            await DialogHost.Show(new SampleMessageDialog {
-                Message = { Text = "Waiting for creator to start a new round!" }
-            });
+            
         }
         #endregion
     }
