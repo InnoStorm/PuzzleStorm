@@ -238,8 +238,16 @@ namespace Client {
 
                 SelectedPiece = ((Button) parameter);
 
-                Grid g = (Grid) (SelectedPiece.Template.FindName("bg", SelectedPiece));
-                g.Background = Brushes.DarkRed;
+                Image sourceSlikaSelected = (Image)SelectedPiece.Template.FindName("SourceSlika", SelectedPiece);
+
+                string selected = sourceSlikaSelected.Source.ToString();
+
+                if (!selected.Contains("part"))
+                    SelectedPiece = null;
+                else { 
+                    Grid g = (Grid) (SelectedPiece.Template.FindName("bg", SelectedPiece));
+                    g.Background = Brushes.DarkRed;
+                }
             }
             else
             {
