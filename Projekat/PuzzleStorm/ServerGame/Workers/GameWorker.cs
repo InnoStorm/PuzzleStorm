@@ -337,6 +337,8 @@ namespace ServerGame.Workers
 
             Move playedMove = move.MoveToPlay;
             playedMove.IsSuccessfull = (move.MoveToPlay.PositionFrom == move.MoveToPlay.PositionTo);
+            playedMove.PlayedBy = ConvertPlayerToSubDTOPlayer(CurrentPlayer);
+
             if (playedMove.IsSuccessfull)
             {
                 ++NumberOfSolvedPieces;
