@@ -357,7 +357,9 @@
                                 Width="{Binding Path=ActualWidth, ElementName=Canvas00}"
                                 Height="{Binding Path=ActualHeight, ElementName=Canvas00}"
                                 Command="{Binding ClickGridCommand}"
-                                CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
+                                CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
+                                Opacity="0"
+                                Tag="0">
                                 <Button.Template>
                                     <ControlTemplate>
                                         <Image
@@ -391,7 +393,8 @@
                                 Height="{Binding Path=ActualHeight, ElementName=Canvas00}"
                                 Command="{Binding ClickGridCommand}"
                                 CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
-                                Opacity="0">
+                                Opacity="0"
+                                Tag="1">
                                 <Button.Template>
                                     <ControlTemplate>
                                         <Image
@@ -425,7 +428,8 @@
                                 Height="{Binding Path=ActualHeight, ElementName=Canvas00}"
                                 Command="{Binding ClickGridCommand}"
                                 CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
-                                Opacity="0">
+                                Opacity="0"
+                                Tag="2">
                                 <Button.Template>
                                     <ControlTemplate>
                                         <Image
@@ -459,7 +463,8 @@
                                 Height="{Binding Path=ActualHeight, ElementName=Canvas00}"
                                 Command="{Binding ClickGridCommand}"
                                 CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
-                                Opacity="0">
+                                Opacity="0"
+                                Tag="3">
                                 <Button.Template>
                                     <ControlTemplate>
                                         <Image
@@ -493,7 +498,8 @@
                                 Height="{Binding Path=ActualHeight, ElementName=Canvas00}"
                                 Command="{Binding ClickGridCommand}"
                                 CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
-                                Opacity="0">
+                                Opacity="0"
+                                Tag="4">
                                 <Button.Template>
                                     <ControlTemplate>
                                         <Image
@@ -527,7 +533,8 @@
                                 Height="{Binding Path=ActualHeight, ElementName=Canvas00}"
                                 Command="{Binding ClickGridCommand}"
                                 CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
-                                Opacity="0">
+                                Opacity="0"
+                                Tag="5">
                                 <Button.Template>
                                     <ControlTemplate>
                                         <Image
@@ -561,7 +568,8 @@
                                 Height="{Binding Path=ActualHeight, ElementName=Canvas00}"
                                 Command="{Binding ClickGridCommand}"
                                 CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
-                                Opacity="0">
+                                Opacity="0"
+                                Tag="6">
                                 <Button.Template>
                                     <ControlTemplate>
                                         <Image
@@ -595,7 +603,8 @@
                                 Height="{Binding Path=ActualHeight, ElementName=Canvas00}"
                                 Command="{Binding ClickGridCommand}"
                                 CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
-                                Opacity="0">
+                                Opacity="0"
+                                Tag="7">
                                 <Button.Template>
                                     <ControlTemplate>
                                         <Image
@@ -629,7 +638,8 @@
                                 Height="{Binding Path=ActualHeight, ElementName=Canvas00}"
                                 Command="{Binding ClickGridCommand}"
                                 CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
-                                Opacity="0">
+                                Opacity="0"
+                                Tag="8">
                                 <Button.Template>
                                     <ControlTemplate>
                                         <Image
@@ -663,7 +673,8 @@
                                 Height="{Binding Path=ActualHeight, ElementName=Canvas00}"
                                 Command="{Binding ClickGridCommand}"
                                 CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
-                                Opacity="0">
+                                Opacity="0"
+                                Tag="9">
                                 <Button.Template>
                                     <ControlTemplate>
                                         <Image
@@ -697,7 +708,8 @@
                                 Height="{Binding Path=ActualHeight, ElementName=Canvas00}"
                                 Command="{Binding ClickGridCommand}"
                                 CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
-                                Opacity="0">
+                                Opacity="0"
+                                Tag="10">
                                 <Button.Template>
                                     <ControlTemplate>
                                         <Image
@@ -731,7 +743,8 @@
                                 Height="{Binding Path=ActualHeight, ElementName=Canvas00}"
                                 Command="{Binding ClickGridCommand}"
                                 CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
-                                Opacity="0">
+                                Opacity="0"
+                                Tag="11">
                                 <Button.Template>
                                     <ControlTemplate>
                                         <Image
@@ -765,7 +778,8 @@
                                 Height="{Binding Path=ActualHeight, ElementName=Canvas00}"
                                 Command="{Binding ClickGridCommand}"
                                 CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
-                                Opacity="0">
+                                Opacity="0"
+                                Tag="12">
                                 <Button.Template>
                                     <ControlTemplate>
                                         <Image
@@ -799,7 +813,8 @@
                                 Height="{Binding Path=ActualHeight, ElementName=Canvas00}"
                                 Command="{Binding ClickGridCommand}"
                                 CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
-                                Opacity="0">
+                                Opacity="0"
+                                Tag="13">
                                 <Button.Template>
                                     <ControlTemplate>
                                         <Image
@@ -833,7 +848,8 @@
                                 Height="{Binding Path=ActualHeight, ElementName=Canvas00}"
                                 Command="{Binding ClickGridCommand}"
                                 CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
-                                Opacity="0">
+                                Opacity="0"
+                                Tag="14">
                                 <Button.Template>
                                     <ControlTemplate>
                                         <Image
@@ -867,7 +883,8 @@
                                 Height="{Binding Path=ActualHeight, ElementName=Canvas00}"
                                 Command="{Binding ClickGridCommand}"
                                 CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
-                                Opacity="0">
+                                Opacity="0"
+                                Tag="15">
                                 <Button.Template>
                                     <ControlTemplate>
                                         <Image

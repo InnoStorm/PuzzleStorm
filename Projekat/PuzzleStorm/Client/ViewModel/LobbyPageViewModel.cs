@@ -48,7 +48,7 @@ namespace Client
 
         public LobbyPageViewModel()
         {
-            StartReadyCommand = new RelayCommand(StartReadyGameAsync);
+            StartReadyCommand = new RelayCommand(async () => await StartReadyGameAsync());
             StartReadyLabel = Player.Instance.Creator ? "START" : "READY";
 
             if (Player.Instance.Creator)
@@ -101,7 +101,8 @@ namespace Client
                         break;
 
                     case RoomUpdateType.Started:
-                        ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new GamePage();
+                        if (!Player.Instance.Creator)
+                            ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new GamePage();
                         break;
                 }
             });
@@ -198,7 +199,9 @@ namespace Client
         }
 
         //Create button f-ja
-        public async void StartReadyGameAsync() {
+        public async 
+        //Create button f-ja
+        Task StartReadyGameAsync() {
             //this.JoinedPlayersItems[0] = new LobbyJoinedPlayerViewModel() { Username = JoinedPlayersItems[0].Username, Ready = true};
 
             if (Player.Instance.Creator) {
