@@ -20,73 +20,11 @@ using System.IO;
 
 namespace ServerGame.Workers
 {
-    class PlayingRoom
-    {
-        public Room Room;
-        public int CurrentPlayerId;
-        public List<int> ScoreBoard;
-        public int NumberOfWellPlacedPieces;
-    }
-
     class GameWorker : Worker
     {
-        List<PlayingRoom> playingRooms = new List<PlayingRoom>();
+        #region Static
 
-        public GameWorker(IBus communicator) : base(communicator)
-        {
-            InitializeGameWorker();
-        }
-        
-        public void InitializeGameWorker()
-        {
-            try
-            {
-                using (var data = WorkersUnitOfWork)
-                {
-                    List<Room> rooms = data.Rooms.GetAllPlaying().ToList();
-                    foreach (Room r in rooms)
-                    {
-                        var playingRoom = new PlayingRoom();
-                        playingRoom.Room = r;
-                        playingRoom.CurrentPlayerId = r.ListOfPlayers.First().Id;
-                        playingRoom.ScoreBoard = new List<int>();
-                        for (int i = 0; i < r.ListOfPlayers.Count; ++i)
-                            playingRoom.ScoreBoard.Add(0);
-
-                        playingRooms.Add(playingRoom);
-                    }
-
-                    Log($"[SUCCESS] Initializing game worker.");
-                }
-            }
-            catch (Exception ex)
-            {
-                Log($"[FAILED] Initializing game worker. Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
-            }
-        }
-        
-        public int NextPlayer(int roomId, int currentPlayerId)
-        {
-            var playingRoom = playingRooms.Find(x => x.Room.Id == roomId);
-            Player currentPlayer = playingRoom.Room.ListOfPlayers.Where(x => x.Id == currentPlayerId).First();
-            int indexOfNext = (playingRoom.Room.ListOfPlayers.IndexOf(currentPlayer) + 1) % playingRoom.Room.ListOfPlayers.Count;
-            playingRoom.CurrentPlayerId = playingRoom.Room.ListOfPlayers.ElementAt(indexOfNext).Id;
-            return playingRoom.CurrentPlayerId;
-        }
-       
-        public void AddPointsToPlayer(Player p, int roomId)
-        {
-            var playingRoom = playingRooms.Find(x => x.Room.Id == roomId);
-            int index = playingRoom.Room.ListOfPlayers.IndexOf(p);
-
-            var points = playingRoom.ScoreBoard.ElementAt(index);
-            points += 5;
-        }
-
-
-        #region Worker Functions
-
-        public LoadGameResponse LoadGame(LoadGameRequest request)
+        public static LoadGameResponse LoadGame(LoadGameRequest request)
         {
             try
             {
@@ -98,13 +36,13 @@ namespace ServerGame.Workers
                     var game = room.CurrentGame;
                     if (game == null)
                         throw new Exception($"Game for room {request.RoomId} not found!");
-   
+
                     List<String> partsPaths = game.PuzzleForGame.ListOfPieces.Select(x => x.PartPath).ToList();
 
                     //List<String> partsPaths = new List<String>();
                     //foreach (PieceData piece in puzzle.ListOfPieces)
                     //    partsPaths.Add(piece.PartPath);
-                    
+
                     List<DTOLibrary.SubDTOs.Player> list = new List<DTOLibrary.SubDTOs.Player>();
                     foreach (Player p in game.RoomForThisGame.ListOfPlayers)
                     {
@@ -115,7 +53,7 @@ namespace ServerGame.Workers
                             Username = p.Username
                         });
                     }
-                                       
+
                     return new LoadGameResponse()
                     {
                         GameId = game.Id,
@@ -129,7 +67,7 @@ namespace ServerGame.Workers
             }
             catch (Exception ex)
             {
-                Log($"[FAILED] Starting room {request.RoomId}, Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
+                //Log($"[FAILED] Starting room {request.RoomId}, Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
 
                 return new LoadGameResponse()
                 {
@@ -138,6 +76,23 @@ namespace ServerGame.Workers
                 };
             }
         }
+        
+        #endregion
+
+
+        private Room HandledRoom { get; set; }
+        private Player CurrentPlayer { get; set; }
+        private List<Tuple<Player,int>> Scoreboard { get; set; }
+        private int NumberOfSolvedPieces { get; set; }
+        private int CurrentRound { get; set; }
+        private string MovesQueueName { get; set; }
+
+        public GameWorker(IBus communicator) : base(communicator)
+        {
+            
+        }
+
+        #region Worker Functions
 
         public StartGameResponse StartGame(StartGameRequest request)
         {
@@ -151,7 +106,9 @@ namespace ServerGame.Workers
                     if (room == null)
                         throw new Exception($"Room with ID {request.RoomId} not found!");
 
-                    var puzzle = data.Puzzles.GetPuzzle(ConvertDifficultyToInt(room.Difficulty)); //todo randomize //za sad vraca prvu odgovarajucu puzzlu koju nadje u bazi
+                    HandledRoom = room;
+
+                    var puzzle = data.Puzzles.GetPuzzle(ConvertDifficultyToInt(room.Difficulty));
                     var game = new Game
                     {
                         PuzzleForGame = puzzle,
@@ -159,6 +116,21 @@ namespace ServerGame.Workers
                     };
                     data.Games.Add(game);
                     data.Complete();
+
+
+                    CurrentPlayer = HandledRoom.Owner;
+                    Scoreboard = new List<Tuple<Player, int>>(HandledRoom.MaxPlayers);
+                    foreach (Player player in HandledRoom.ListOfPlayers)
+                    {
+                        Scoreboard.Add(new Tuple<Player, int>(player, 0));
+                    }
+
+                    NumberOfSolvedPieces = 0;
+                    CurrentRound = 1;
+                    MovesQueueName = RouteGenerator.GameUpdates.GamePlay.GenerateMovesQueueName();
+
+                    //TODO comunicator receive init
+                   
 
                     Log($"[SUCCESS] Player {request.RequesterId} successfully started room {request.RoomId}");
 
@@ -167,14 +139,14 @@ namespace ServerGame.Workers
                         Details = $"Room {room.Id} successfully started.",
                         Status = OperationStatus.Successfull,
                         GameId = game.Id,
-                        CommunicationKey = "NOT IMPLEMENTED YET"
+                        CommunicationKey = MovesQueueName
                     };
                 }
             }
             catch (Exception ex)
             {
                 Log($"[FAILED] Starting room {request.RoomId}, Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
-
+                //ReleaseWorker()
                 return new StartGameResponse()
                 {
                     Status = OperationStatus.Failed,
@@ -183,29 +155,26 @@ namespace ServerGame.Workers
             }
 
         }
-
+ 
         public ContinueGameResponse ContinueGame(ContinueGameRequest request)
         {
             try
             {
-                //StormValidator.ValidateRequest(request);
+                StormValidator.ValidateRequest(request);
 
                 using (UnitOfWork data = WorkersUnitOfWork)
                 {
-                    var room = data.Rooms.Get(request.RoomId);
-                    if (room == null)
-                        throw new Exception($"Room with ID {request.RoomId} not found!");
+                    var puzzle = data.Puzzles.Get(HandledRoom.CurrentGame.Id + 3); //vraca sledcu puzzluuuuu :D
 
-                    var puzzle = data.Puzzles.Get(room.CurrentGame.Id + 3); //vraca sledcu puzzluuuuu :D
-
-                    data.Games.Remove(room.CurrentGame);
+                    data.Games.Remove(HandledRoom.CurrentGame);
                     data.Complete();
                     
                     var game = new Game
                     {
                         PuzzleForGame = puzzle,
-                        RoomForThisGame = room
+                        RoomForThisGame = HandledRoom
                     };
+
                     data.Games.Add(game);
                     data.Complete();
 
@@ -213,7 +182,7 @@ namespace ServerGame.Workers
 
                     return new ContinueGameResponse()
                     {
-                        Details = $"Room {room.Id} successfully continued.",
+                        Details = $"Room {HandledRoom.Id} successfully continued.",
                         Status = OperationStatus.Successfull,
                         GameId = game.Id,
                     };
@@ -232,6 +201,24 @@ namespace ServerGame.Workers
 
         }
 
+
+        //public int NextPlayer(int roomId, int currentPlayerId)
+        //{
+        //    var playingRoom = playingRooms.Find(x => x.Room.Id == roomId);
+        //    Player currentPlayer = playingRoom.Room.ListOfPlayers.First(x => x.Id == currentPlayerId);
+        //    int indexOfNext = (playingRoom.Room.ListOfPlayers.IndexOf(currentPlayer) + 1) % playingRoom.Room.ListOfPlayers.Count;
+        //    playingRoom.CurrentPlayerId = playingRoom.Room.ListOfPlayers.ElementAt(indexOfNext).Id;
+        //    return playingRoom.CurrentPlayerId;
+        //}
+
+        //public void AddPointsToPlayer(Player p, int roomId)
+        //{
+        //    var playingRoom = playingRooms.Find(x => x.Room.Id == roomId);
+        //    int index = playingRoom.Room.ListOfPlayers.IndexOf(p);
+
+        //    var points = playingRoom.ScoreBoard.ElementAt(index);
+        //    points += 5;
+        //}
         //public MakeAMoveResponse MakeAMove(MakeAMoveRequest request)
         //{
         //    try
@@ -274,6 +261,8 @@ namespace ServerGame.Workers
 
         #endregion
 
+        #region Helper Functions
+
         private int ConvertDifficultyToInt(PuzzleDifficulty diff)
         {
             switch (diff)
@@ -289,5 +278,9 @@ namespace ServerGame.Workers
             }
 
         }
+
+        #endregion
+
+
     }
 }

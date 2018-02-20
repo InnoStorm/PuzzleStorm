@@ -130,5 +130,10 @@ namespace Server
         {
             
         }
+
+        public static void ValidateRequest(ContinueGameRequest request)
+        {
+            
+        }
     }
 }

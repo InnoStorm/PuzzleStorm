@@ -125,6 +125,17 @@ namespace StormCommonData
                     public static string FromEnum(GamePlayUpdateType type, int roomId) =>
                         $"{BaseRoute}.{roomId}.{type.ToString()}";
                 }
+
+                public static string GenerateMovesQueueName()
+                {
+                    var queueId = Guid.NewGuid().ToString().ToUpper().Substring(0,8);
+                    return $"GameQueue_{queueId}";
+                }
+
+                public static string GenerateMovesQueueName(int customId)
+                {
+                    return $"GameQueue_{customId}";
+                }
             }
         }
     }

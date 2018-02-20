@@ -36,7 +36,7 @@ namespace Server.Workers
 
         protected readonly IBus Communicator;
         
-        protected UnitOfWork WorkersUnitOfWork => new UnitOfWork(new StormContext());
+        protected static UnitOfWork WorkersUnitOfWork => new UnitOfWork(new StormContext());
 
         #endregion
 

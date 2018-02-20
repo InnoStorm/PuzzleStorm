@@ -240,7 +240,7 @@ namespace Communicator
                 $"client_{subscriptionId}",
                 message => Task.Factory.StartNew(() =>
                 {
-                    RiseRoomChanged(message);
+                    RaiseRoomChanged(message);
                     
                 }),x =>
                 {
@@ -263,7 +263,7 @@ namespace Communicator
                 $"client_{subscriptionId}",
                 message => Task.Factory.StartNew(() =>
                 {
-                    RiseInRoomChange(message);
+                    RaiseInRoomChange(message);
 
                 }), x =>
                 {
@@ -284,7 +284,7 @@ namespace Communicator
                 $"client_{subscriptionId}",
                 message => Task.Factory.StartNew(() =>
                 {
-                    RiseGamePlayUpdated(message);
+                    RaiseGamePlayUpdated(message);
 
                 }), x =>
                 {
@@ -321,19 +321,19 @@ namespace Communicator
         #region Events
 
         public event EventHandler<StormEventArgs<RoomsStateUpdate>> RoomChanged;
-        private void RiseRoomChanged(RoomsStateUpdate updateMessage)
+        private void RaiseRoomChanged(RoomsStateUpdate updateMessage)
         {
             RoomChanged?.Invoke(this, new StormEventArgs<RoomsStateUpdate>(updateMessage));
         }
 
         public event EventHandler<StormEventArgs<RoomPlayerUpdate>> InRoomChange;
-        private void RiseInRoomChange(RoomPlayerUpdate updateMessage)
+        private void RaiseInRoomChange(RoomPlayerUpdate updateMessage)
         {
             InRoomChange?.Invoke(this, new StormEventArgs<RoomPlayerUpdate>(updateMessage));
         }
 
         public event EventHandler<StormEventArgs<GameUpdate>> GameUpdated;
-        private void RiseGamePlayUpdated(GameUpdate updateMessage)
+        private void RaiseGamePlayUpdated(GameUpdate updateMessage)
         {
             GameUpdated?.Invoke(this, new StormEventArgs<GameUpdate>(updateMessage));
         }

@@ -72,18 +72,7 @@ namespace ServerGame
             //     }));
 
             Communicator.RespondAsync<LoadGameRequest, LoadGameResponse>(request =>
-                 Task.Factory.StartNew(() =>
-                 {
-                     var worker = _gameWorkerPool.Take();
-                     try
-                     {
-                         return worker.LoadGame(request);
-                     }
-                     finally
-                     {
-                         _gameWorkerPool.Add(worker);
-                     }
-                 }));
+                 Task.Factory.StartNew(() => GameWorker.LoadGame(request)));
 
             Communicator.RespondAsync<StartGameRequest, StartGameResponse>(request =>
                  Task.Factory.StartNew(() =>
