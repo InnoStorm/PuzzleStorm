@@ -215,6 +215,8 @@ namespace Client
 
                 if (response == null) return;
 
+                Player.Instance.CommKey = response.CreatedGame.CommunicationKey;
+
                 ((MainWindow) Application.Current.MainWindow).MainFrame.Content = new GamePage();
             }
             else {
@@ -316,6 +318,7 @@ namespace Client
             await DialogHost.Show(sampleMessageDialog);
 
             Player.Instance.Creator = false; //vise nije creator sobe
+            Player.Instance.RoomId = -1;
 
             ActivateTransition(WindowTransition.LobbyExit);
             
@@ -336,6 +339,8 @@ namespace Client
                 "Leaving.. :(");
 
             if (response == null) return;
+
+            Player.Instance.RoomId = -1;
 
             ActivateTransition(WindowTransition.LobbyExit);
             

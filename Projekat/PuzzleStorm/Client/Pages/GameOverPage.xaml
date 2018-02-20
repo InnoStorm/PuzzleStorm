@@ -26,7 +26,7 @@
             Grid.Row="0"
             Margin="0,30,0,0"
             HorizontalAlignment="Center"
-            Content="GAME OVER"
+            Content="{Binding Title, FallbackValue=X}"
             FontSize="50"
             FontWeight="ExtraBold" />
 
@@ -56,12 +56,11 @@
             Margin="350,30"
             materialDesign:ShadowAssist.ShadowDepth="Depth3"
             Background="#9A8F78"
-            Command="{Binding BackToMainPage}"
+            Command="{Binding BackOrStartCommand}"
+            Content="{Binding ButtonText, FallbackValue=X}"
             FontSize="32"
             FontWeight="Bold"
-            Foreground="Black">
-            BACK TO MAIN PAGE
-        </Button>
+            Foreground="Black" />
     </Grid>
 </local:BasePage>
 

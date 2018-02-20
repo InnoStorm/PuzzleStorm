@@ -258,6 +258,8 @@ namespace Client {
 
             await DialogHost.Show(sampleMessageDialog);
 
+            Player.Instance.Id = -1;
+
             ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new LoginPage();
         }
 

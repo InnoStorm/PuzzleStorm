@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics.Eventing.Reader;
 using System.Windows;
 using System.Windows.Input;
 
@@ -8,13 +11,17 @@ namespace Client {
 
         #region Properties
 
-        public List<GameOverItemViewModel> GameOverScoreItems { get; set; }
+        public ObservableCollection<GameOverItemViewModel> GameOverScoreItems { get; set; }
+
+        public string ButtonText { get; set; }
+
+        public string Title { get; set; }
 
         #endregion
 
         #region Commands
 
-        public ICommand BackToMainPage { get; set; }
+        public ICommand BackOrStartCommand { get; set; }
 
         #endregion
 
@@ -22,6 +29,8 @@ namespace Client {
 
         public GameOverPageViewModel()
         {
+
+            /*
             GameOverScoreItems = new List<GameOverItemViewModel>()
             {
                 new GameOverItemViewModel()
@@ -43,9 +52,46 @@ namespace Client {
                     Score = "155"
                 }
             };
+            */
 
-            BackToMainPage = new RelayCommand(BackToMain);
+            GameOverScoreItems = new ObservableCollection<GameOverItemViewModel>();
 
+            Player.Instance.InGame.Score.Scores.Sort((x, y) => x.Item2.CompareTo(y.Item2));
+
+            int i = 1;
+
+            foreach (var s in Player.Instance.InGame.Score.Scores)
+            {
+                GameOverScoreItems.Add(new GameOverItemViewModel()
+                {
+                    No = "#" + i,
+                    Score = s.Item2.ToString(),
+                    UserName = s.Item1.Username
+                });
+
+                i++;
+            }
+
+            if (Player.Instance.InGame.Over)
+            {
+                Title = "GAME OVER";
+                BackOrStartCommand = new RelayCommand(BackToMain);
+            }
+            else
+            {
+                Title = "ROUND OVER";
+
+                if (Player.Instance.Creator)
+                {
+                    BackOrStartCommand = new RelayCommand(StartNewRound);
+                    ButtonText = "START NEW ROUND";
+                }
+                else
+                {
+                    BackOrStartCommand = new RelayCommand(WaitForRound);
+                    ButtonText = "WAIT FOR NEW ROUND";
+                }
+            }
         }
 
         #endregion
@@ -57,6 +103,13 @@ namespace Client {
             ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new MainPage();
         }
 
+        public void StartNewRound() {
+            
+        }
+
+        public void WaitForRound() {
+            
+        }
         #endregion
     }
 }

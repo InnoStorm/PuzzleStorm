@@ -108,17 +108,7 @@ namespace Client.Helpers.Communication
             remove => API.Instance.GameUpdated -= value;
         }
 
-        public static event EventHandler<StormEventArgs<LoadGameResponse>> LoadGameResponded
-        {
-            add
-            {
-                API.Instance.LoadGameResponded -= value;
-                API.Instance.LoadGameResponded += value;
-            }
-            remove => API.Instance.LoadGameResponded -= value;
-        }
-        
-        #endregion
+       #endregion
 
         #region States
 
@@ -127,21 +117,16 @@ namespace Client.Helpers.Communication
             private static ISubscriptionResult _roomChangesSubscription;
             private static ISubscriptionResult _inRoomChangesSubscription;
             private static ISubscriptionResult _gameUpdatesSubscription;
-            private static IDisposable _loadGameResponseActivation;
 
-            public static void GamePlayDemo()
+            public static void GameEnter()
             {
                 ResubscribeGameUpdates(RouteGenerator.GameUpdates.GamePlay.Filter.All(Player.Instance.RoomId));
             }
 
-            public static void ActivateLoadGameResponse(int playerId)
-            {
-                _loadGameResponseActivation = API.Instance.ActivateReceiveLoadGameResponse(playerId);
-            }
 
-            public static void DeactivateLoadGameResponse()
+            public static void GameExit()
             {
-                _loadGameResponseActivation.Dispose();
+                Unsubscribe(_gameUpdatesSubscription);
             }
 
             //PROBA

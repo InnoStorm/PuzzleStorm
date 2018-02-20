@@ -146,6 +146,7 @@
       <DependentUpon>SimpleTextBoxDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="DataModels\ApplicationPage.cs" />
+    <Compile Include="DataModels\Game.cs" />
     <Compile Include="DataModels\ListRooms.cs" />
     <Compile Include="DataModels\Player.cs" />
     <Compile Include="Helpers\Communication\ClientUtils.cs" />

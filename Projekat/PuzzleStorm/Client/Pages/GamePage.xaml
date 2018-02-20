@@ -38,6 +38,7 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
 
+
                 <Button
                     Grid.Column="0"
                     Width="120"
@@ -73,6 +74,9 @@
                     </Button.Template>
                 </Button>
 
+                <!--
+                <Button Grid.Column="0" Content="{Binding Proba}"></Button>
+                -->
                 <Button
                     Grid.Column="1"
                     Width="120"
@@ -353,8 +357,7 @@
                                 Width="{Binding Path=ActualWidth, ElementName=Canvas00}"
                                 Height="{Binding Path=ActualHeight, ElementName=Canvas00}"
                                 Command="{Binding ClickGridCommand}"
-                                CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
-                                Opacity="0">
+                                CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
                                 <Button.Template>
                                     <ControlTemplate>
                                         <Image

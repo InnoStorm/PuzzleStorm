@@ -38,6 +38,7 @@ namespace Client {
 
         private void DisposeRabbitBus() {
             //TODO REMOVE
+            Player.Instance.Clean();
            
             Communicator.API.Instance.Dispose();
         }
