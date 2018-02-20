@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.Eventing.Reader;
 using System.Windows;
 using System.Windows.Input;
+using MaterialDesignThemes.Wpf;
 
 namespace Client {
 
@@ -75,6 +76,7 @@ namespace Client {
             if (Player.Instance.InGame.Over)
             {
                 Title = "GAME OVER";
+                ButtonText = "BACK TO MAIN MANU";
                 BackOrStartCommand = new RelayCommand(BackToMain);
             }
             else
@@ -88,7 +90,7 @@ namespace Client {
                 }
                 else
                 {
-                    BackOrStartCommand = new RelayCommand(WaitForRound);
+                    BackOrStartCommand = new RelayCommand(WaitForRoundAsync);
                     ButtonText = "WAIT FOR NEW ROUND";
                 }
             }
@@ -107,8 +109,10 @@ namespace Client {
             
         }
 
-        public void WaitForRound() {
-            
+        public async void WaitForRoundAsync() {
+            await DialogHost.Show(new SampleMessageDialog {
+                Message = { Text = "Waiting for creator to start a new round!" }
+            });
         }
         #endregion
     }

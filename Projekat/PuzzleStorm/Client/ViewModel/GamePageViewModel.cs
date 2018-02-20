@@ -336,12 +336,16 @@ namespace Client {
             int i = ListaShuffleSlika.IndexOf(slika);
             ListaShuffleSlika[i] = "../Images/qm2.png";
 
-            if (SelectedPiece != null && Player.Instance.OnTheMove)
-                SelectedPiece.Opacity = 0;
+            if (Player.Instance.OnTheMove)
+                if (SelectedPiece != null)
+                    SelectedPiece.Opacity = 0;
         }
 
         private async void PrikaziPotez(Move potez)
         {
+            if (SelectedPiece != null)
+                ((Grid)SelectedPiece.Template.FindName("bg", SelectedPiece)).Background = Brushes.Transparent;
+            
             string fromSlika = ListaSlika[potez.PositionFrom];
             
             ListaSourceSlika[potez.PositionTo] = fromSlika;
@@ -354,6 +358,8 @@ namespace Client {
             ListaSourceSlika[potez.PositionTo] = "../Images/qm2.png";
             ListaShuffleSlika[indexSh] = fromSlika;
 
+            if (SelectedPiece != null)
+                ((Grid)SelectedPiece.Template.FindName("bg", SelectedPiece)).Background = Brushes.DarkRed;
         }
 
 
