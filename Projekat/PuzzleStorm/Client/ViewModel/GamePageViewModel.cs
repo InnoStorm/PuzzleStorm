@@ -239,7 +239,7 @@ namespace Client {
                 SelectedPiece = ((Button) parameter);
 
                 Grid g = (Grid) (SelectedPiece.Template.FindName("bg", SelectedPiece));
-                g.Background = Brushes.Red;
+                g.Background = Brushes.DarkRed;
             }
             else
             {
@@ -328,7 +328,7 @@ namespace Client {
             int i = ListaShuffleSlika.IndexOf(slika);
             ListaShuffleSlika[i] = "../Images/qm2.png";
 
-            SelectedPiece.Opacity = 0;
+            //SelectedPiece.Opacity = 0;
         }
 
         private async void PrikaziPotez(Move potez)
