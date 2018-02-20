@@ -76,20 +76,20 @@ namespace ServerGame.Workers
                 };
             }
         }
-        
+
         #endregion
 
 
         private Room HandledRoom { get; set; }
         private Player CurrentPlayer { get; set; }
-        private List<Tuple<Player,int>> Scoreboard { get; set; }
+        private List<Tuple<Player, int>> Scoreboard { get; set; }
         private int NumberOfSolvedPieces { get; set; }
         private int CurrentRound { get; set; }
         private string MovesQueueName { get; set; }
 
         public GameWorker(IBus communicator) : base(communicator)
         {
-            
+
         }
 
         #region Worker Functions
@@ -130,7 +130,7 @@ namespace ServerGame.Workers
                     MovesQueueName = RouteGenerator.GameUpdates.GamePlay.GenerateMovesQueueName();
 
                     //TODO comunicator receive init
-                   
+
 
                     Log($"[SUCCESS] Player {request.RequesterId} successfully started room {request.RoomId}");
 
@@ -155,7 +155,7 @@ namespace ServerGame.Workers
             }
 
         }
- 
+
         public ContinueGameResponse ContinueGame(ContinueGameRequest request)
         {
             try
@@ -168,7 +168,7 @@ namespace ServerGame.Workers
 
                     data.Games.Remove(HandledRoom.CurrentGame);
                     data.Complete();
-                    
+
                     var game = new Game
                     {
                         PuzzleForGame = puzzle,
@@ -201,15 +201,6 @@ namespace ServerGame.Workers
 
         }
 
-
-        //public int NextPlayer(int roomId, int currentPlayerId)
-        //{
-        //    var playingRoom = playingRooms.Find(x => x.Room.Id == roomId);
-        //    Player currentPlayer = playingRoom.Room.ListOfPlayers.First(x => x.Id == currentPlayerId);
-        //    int indexOfNext = (playingRoom.Room.ListOfPlayers.IndexOf(currentPlayer) + 1) % playingRoom.Room.ListOfPlayers.Count;
-        //    playingRoom.CurrentPlayerId = playingRoom.Room.ListOfPlayers.ElementAt(indexOfNext).Id;
-        //    return playingRoom.CurrentPlayerId;
-        //}
 
         //public void AddPointsToPlayer(Player p, int roomId)
         //{
@@ -261,6 +252,35 @@ namespace ServerGame.Workers
 
         #endregion
 
+        #region NotifyClients
+
+        private void NotifyAll(GameUpdate message, int RoomId)
+        {
+            string routingKey = RouteGenerator.GameUpdates.GamePlay.Set.FromEnum(message.UpdateType, RoomId);
+            Communicator.Publish<GameUpdate>(message, routingKey);
+
+            Log($"NOTIFY_ALL: {routingKey}");
+        }
+
+        #endregion
+
+        #region Utils
+
+        private GameUpdate GenerateGameUpdate(Player currentPlayer, Move playedMove, GamePlayUpdateType updateType)
+        {
+            return new GameUpdate
+            {
+                Status = OperationStatus.Successfull,
+                Details = "Room is updated.",
+                UpdateType = updateType,
+                CurrentPlayer = ConvertPlayerToSubDTOPlayer(currentPlayer),
+                PlayedMove = playedMove,
+                Scoreboard = ConvertScoreboardToSmallScoreboard(Scoreboard)
+            };
+        }
+
+        #endregion
+
         #region Helper Functions
 
         private int ConvertDifficultyToInt(PuzzleDifficulty diff)
@@ -277,6 +297,70 @@ namespace ServerGame.Workers
                     return 0;
             }
 
+        }
+
+        private DTOLibrary.SubDTOs.Player ConvertPlayerToSubDTOPlayer(Player player)
+        {
+            return new DTOLibrary.SubDTOs.Player()
+            {
+                Username = player.Username,
+                IsReady = player.IsReady,
+                PlayerId = player.Id
+            };
+        }
+
+        private Scoreboard ConvertScoreboardToSmallScoreboard(List<Tuple<Player, int>> sb)
+        {
+            Scoreboard sc = new DTOLibrary.SubDTOs.Scoreboard();
+            foreach (Tuple<Player, int> t in sb)
+            {
+                sc.Scores.Add(new Tuple<DTOLibrary.SubDTOs.Player, int>(ConvertPlayerToSubDTOPlayer(t.Item1), t.Item2));
+            }
+            return sc;
+        }
+
+        private bool EndOfTheRound()
+        {
+            return NumberOfSolvedPieces == HandledRoom.CurrentGame.PuzzleForGame.NumberOfPieces;
+        }
+
+        private bool EndOfTheGame()
+        {
+            return CurrentRound == HandledRoom.NumberOfRounds + 1;
+        }
+
+        public void HandleMove(MakeAMoveRequest move)
+        {
+            Move playedMove = move.MoveToPlay;
+            playedMove.IsSuccessfull = (move.MoveToPlay.PositionFrom == move.MoveToPlay.PositionTo);
+            if (playedMove.IsSuccessfull)
+                ++NumberOfSolvedPieces;
+
+            GameUpdate gameUpdate;
+
+            if (EndOfTheRound())
+            {
+                ++CurrentRound;
+                if (EndOfTheGame())
+                    gameUpdate = GenerateGameUpdate(null, playedMove, GamePlayUpdateType.GameOver);
+                gameUpdate = GenerateGameUpdate(null, playedMove, GamePlayUpdateType.RoundOver);
+            }
+
+            Player currentPlayer = playedMove.IsSuccessfull ? CurrentPlayer : NextPlayer(move.RoomId, CurrentPlayer);
+            gameUpdate = GenerateGameUpdate(currentPlayer, playedMove, GamePlayUpdateType.Playing);
+
+            NotifyAll(gameUpdate, move.RoomId);
+        }
+
+        public Player NextPlayer(int roomId, Player currentPlayer)
+        {
+            //var playingRoom = playingRooms.Find(x => x.Room.Id == roomId);
+            //Player currentPlayer = playingRoom.Room.ListOfPlayers.First(x => x.Id == currentPlayerId);
+            //int indexOfNext = (playingRoom.Room.ListOfPlayers.IndexOf(currentPlayer) + 1) % playingRoom.Room.ListOfPlayers.Count;
+            //playingRoom.CurrentPlayerId = playingRoom.Room.ListOfPlayers.ElementAt(indexOfNext).Id;
+            //return playingRoom.CurrentPlayerId;
+
+            return null;
         }
 
         #endregion
