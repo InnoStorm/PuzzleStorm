@@ -23,7 +23,7 @@ namespace Client {
 
         public bool Creator { get; set; } = false; // kad napravi sobu setuje mu se na true
 
-        public Game InGame { get; set; }
+        public Game InGame { get; set; } = new Game();
 
         public string CommKey { get; set; }
 

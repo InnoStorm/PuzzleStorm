@@ -192,17 +192,18 @@ namespace Client {
                 }
 
                 // prebace se u shuffle listu
-                foreach (string s in ListaSourceSlika)
+                foreach (string s in ListaSlika)
                     ListaShuffleSlika.Add(s);
 
                 ListaShuffleSlika.Shuffle();
 
                 // napravi se mesta u listu source slika
                 for (int i = 0; i < ListaSlika.Count; ++i)
-                    ListaSourceSlika.Add(null);
+                    ListaSourceSlika.Add("../Images/qm2.png");
 
                 //PrezumiSlike();
 
+                //preuzimanje igraca
                 foreach (var p in response.ListOfPlayers) {
                     PlayersItems.Add(new GameWhoPlaysItemViewModel() {
                         UserName = p.Username,
@@ -210,6 +211,7 @@ namespace Client {
                     });
                 }
 
+                //preuzimanje scoreboarda
                 foreach (var s in response.ScoreBoard.Scores) {
                     ScoreItems.Add(new GameScoreItemViewModel() {
                         UserName = s.Item1.Username,
@@ -218,7 +220,7 @@ namespace Client {
                 }
 
                 // sacuva se score globalno
-                Player.Instance.InGame.Score.Scores = response.ScoreBoard.Scores;
+                Player.Instance.InGame.Score = response.ScoreBoard;
                 Player.Instance.InGame.Over = false;
             });
         }
@@ -238,17 +240,13 @@ namespace Client {
         {
             if (SelectedPiece != null)
             {
-                Image sourceSlikaParametar =
-                    (Image) ((Button) parameter).Template.FindName("SourceSlika", ((Button) parameter));
+                int indexTo = Int32.Parse((string) ((Button) parameter).Tag);
+
                 Image sourceSlikaSelected = (Image) SelectedPiece.Template.FindName("SourceSlika", SelectedPiece);
-
-                string source = sourceSlikaParametar.Source.ToString();
-
-                int indexTo = Int32.Parse(source.Substring(source.Length - 6, 2));
 
                 string selected = sourceSlikaSelected.Source.ToString();
 
-                int indexFrom = Int32.Parse(selected.Substring(source.Length - 6, 2));
+                int indexFrom = Int32.Parse(selected.Substring(selected.Length - 6, 2)) - 1;
 
                 MakeAMoveRequest request = new MakeAMoveRequest()
                 {
