@@ -117,12 +117,6 @@ namespace Client {
 
             if (response == null) return;
 
-            var sampleMessageDialog = new SampleMessageDialog {
-                Message = { Text = "Room created successfully!" }
-            };
-
-            await DialogHost.Show(sampleMessageDialog);
-
             Player.Instance.RoomId = response.RoomId;
             Player.Instance.Creator = true;
 

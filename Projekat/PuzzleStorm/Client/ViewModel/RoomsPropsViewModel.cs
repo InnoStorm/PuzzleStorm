@@ -86,12 +86,6 @@ namespace Client {
 
             if (response == null) return;
 
-            var sampleMessageDialog = new SampleMessageDialog {
-                Message = { Text = "Joining Successfull!" }
-            };
-
-            await DialogHost.Show(sampleMessageDialog);
-
             Player.Instance.RoomId = this.RoomId;
 
             ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new LobbyPage();

@@ -90,14 +90,37 @@ namespace Client {
             {
                 case WindowTransition.GameEnter:
                     ClientUtils.SwitchState.GameEnter();
+                    ClientUtils.SwitchState.LobbyEnter(Player.Instance.RoomId);
+                    ClientUtils.RoomChanged += OnRoomChange;
                     ClientUtils.GameUpdated += GameChanged;
                     break;
 
-                case WindowTransition.HomeExit:
+                case WindowTransition.GameExit:
                     ClientUtils.SwitchState.GameExit();
+                    ClientUtils.SwitchState.LobbyExit();
+                    ClientUtils.RoomChanged -= OnRoomChange;
                     ClientUtils.GameUpdated -= GameChanged;
                     break;
             }
+        }
+
+        private void OnRoomChange(object o, StormEventArgs<RoomsStateUpdate> stormEventArgs) {
+            ClientUtils.UpdateGUI(async () => {
+
+                await DialogHost.Show(new SampleMessageDialog {
+                    Message = { Text = "Room has been destroyed!" }
+                });
+
+                ActivateTransition(WindowTransition.GameExit);
+
+                Player.Instance.CommKey = null;
+                Player.Instance.OnTheMove = false;
+                Player.Instance.RoomId = -1;
+                Player.Instance.Creator = false;
+
+                ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new MainPage();
+
+            });
         }
 
         private void GameChanged(object sender, StormEventArgs<GameUpdate> stormEventArgs)

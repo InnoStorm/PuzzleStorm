@@ -318,12 +318,6 @@ namespace Client
 
             if (response == null) return;
 
-            var sampleMessageDialog = new SampleMessageDialog {
-                Message = { Text = "Room deleted Successfull!" }
-            };
-
-            await DialogHost.Show(sampleMessageDialog);
-
             Player.Instance.Creator = false; //vise nije creator sobe
             Player.Instance.RoomId = -1;
 
