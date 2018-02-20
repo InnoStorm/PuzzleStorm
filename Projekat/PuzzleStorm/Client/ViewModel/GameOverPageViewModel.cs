@@ -95,7 +95,11 @@ namespace Client {
 
                 switch (update.UpdateType) {
                     
-                    
+                    case RoomUpdateType.Continued:
+                        ActivateTransition(WindowTransition.GameOverExit);
+
+                        ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new GamePage();
+                        break;
                 }
             });
         }
