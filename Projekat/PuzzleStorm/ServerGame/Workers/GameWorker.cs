@@ -353,7 +353,7 @@ namespace ServerGame.Workers
             if (EndOfTheRound())
             {
                 ++CurrentRound;
-                gameUpdate = GenerateGameUpdate(null, playedMove, EndOfTheGame() ? 
+                gameUpdate = GenerateGameUpdate(CurrentPlayer, playedMove, EndOfTheGame() ? 
                     GamePlayUpdateType.GameOver : GamePlayUpdateType.RoundOver);
             }
             else
