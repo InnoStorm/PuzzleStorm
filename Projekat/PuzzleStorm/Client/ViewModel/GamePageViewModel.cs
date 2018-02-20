@@ -109,16 +109,16 @@ namespace Client {
                 switch (update.UpdateType)
                 {
                     case GamePlayUpdateType.Playing:
-                        
-                        //promeni ko igra
-                        PromeniTrenutnogIgraca(update.CurrentPlayer);
-
+                       
                         //obradi potez
                         if (update.PlayedMove.IsSuccessfull)
                             OdigrajPotez(update.PlayedMove);
                         else
                             PrikaziPotez(update.PlayedMove);
-                        
+
+                        //promeni ko igra
+                        PromeniTrenutnogIgraca(update.CurrentPlayer);
+
                         //update-uj score
                         PromeniScore(update.Scoreboard);
                         
@@ -328,7 +328,7 @@ namespace Client {
             int i = ListaShuffleSlika.IndexOf(slika);
             ListaShuffleSlika[i] = "../Images/qm2.png";
 
-            if (SelectedPiece != null)
+            if (SelectedPiece != null && Player.Instance.OnTheMove)
                 SelectedPiece.Opacity = 0;
         }
 
