@@ -27,6 +27,8 @@ namespace Client {
 
         public string CommKey { get; set; }
 
+        public bool OnTheMove { get; set; } = false;
+
         private Player() {
             
         }

@@ -101,8 +101,12 @@ namespace Client
                         break;
 
                     case RoomUpdateType.Started:
+
                         if (!Player.Instance.Creator)
-                            ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new GamePage();
+                        {
+                            Player.Instance.CommKey = update.CommunicationKey;
+                            ((MainWindow) Application.Current.MainWindow).MainFrame.Content = new GamePage();
+                        }
                         break;
                 }
             });
