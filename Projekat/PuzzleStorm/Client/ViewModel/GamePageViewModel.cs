@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -209,6 +210,9 @@ namespace Client {
                         UserName = p.Username,
                         OnTheMove = response.CurrentPlayerId == p.PlayerId
                     });
+
+                    if (response.CurrentPlayerId == Player.Instance.Id)
+                        Player.Instance.OnTheMove = true;
                 }
 
                 //preuzimanje scoreboarda
@@ -225,52 +229,62 @@ namespace Client {
             });
         }
 
-        public void SelectPiece(object parameter)
+        public async void SelectPiece(object parameter)
         {
-            if (SelectedPiece != null)
-                ((Grid)SelectedPiece.Template.FindName("bg", SelectedPiece)).Background = Brushes.Transparent;
+            if (Player.Instance.OnTheMove)
+            {
+                if (SelectedPiece != null)
+                    ((Grid) SelectedPiece.Template.FindName("bg", SelectedPiece)).Background = Brushes.Transparent;
 
-            SelectedPiece = ((Button) parameter);
+                SelectedPiece = ((Button) parameter);
 
-            Grid g = (Grid) (SelectedPiece.Template.FindName("bg", SelectedPiece));
-            g.Background = Brushes.Red;
+                Grid g = (Grid) (SelectedPiece.Template.FindName("bg", SelectedPiece));
+                g.Background = Brushes.Red;
+            }
+            else
+            {
+                await DialogHost.Show(new SampleMessageDialog
+                {
+                    Message = {Text = "Niste na potezu!"}
+                });
+            }
         }
 
-        private void GridPiece(object parameter)
+        private async void GridPiece(object parameter)
         {
-            if (SelectedPiece != null)
+            if (Player.Instance.OnTheMove)
             {
-                int indexTo = Int32.Parse((string) ((Button) parameter).Tag);
-
-                Image sourceSlikaSelected = (Image) SelectedPiece.Template.FindName("SourceSlika", SelectedPiece);
-
-                string selected = sourceSlikaSelected.Source.ToString();
-
-                int indexFrom = Int32.Parse(selected.Substring(selected.Length - 6, 2)) - 1;
-
-                MakeAMoveRequest request = new MakeAMoveRequest()
+                if (SelectedPiece != null)
                 {
-                    MoveToPlay = new Move()
+                    int indexTo = Int32.Parse((string) ((Button) parameter).Tag);
+
+                    Image sourceSlikaSelected = (Image) SelectedPiece.Template.FindName("SourceSlika", SelectedPiece);
+
+                    string selected = sourceSlikaSelected.Source.ToString();
+
+                    int indexFrom = Int32.Parse(selected.Substring(selected.Length - 6, 2)) - 1;
+
+                    MakeAMoveRequest request = new MakeAMoveRequest()
                     {
-                        PositionFrom = indexFrom,
-                        PositionTo = indexTo
-                    },
-                    RequesterId = Player.Instance.Id,
-                    RoomId = Player.Instance.Id
-                };
+                        MoveToPlay = new Move()
+                        {
+                            PositionFrom = indexFrom,
+                            PositionTo = indexTo
+                        },
+                        RequesterId = Player.Instance.Id,
+                        RoomId = Player.Instance.RoomId
+                    };
 
-                //SEND REQUEST
-                API.Instance.Send(request, Player.Instance.CommKey);
+                    //SEND REQUEST
+                    API.Instance.Send(request, Player.Instance.CommKey);
 
-                /*
-                if (sourceSlikaParametar.Source.ToString().Equals(sourceSlikaSelected.Source.ToString()))
-                {
-                    SelectedPiece.Visibility = Visibility.Hidden;
-                    ((Button) parameter).Opacity = 100;
-
-                    SelectedPiece = null;
+                    Player.Instance.OnTheMove = false;
                 }
-                */
+            }
+            else {
+                await DialogHost.Show(new SampleMessageDialog {
+                    Message = { Text = "Niste na potezu!" }
+                });
             }
         }
 
@@ -298,6 +312,9 @@ namespace Client {
                     UserName = currentPlayer.Username
                 };
             }
+
+            if (Player.Instance.Id == currentPlayer.PlayerId)
+                Player.Instance.OnTheMove = true;
         }
 
         private void OdigrajPotez(Move potez)
@@ -309,24 +326,27 @@ namespace Client {
 
             //nadjemo je u shuffle i izbacimo
             int i = ListaShuffleSlika.IndexOf(slika);
-            ListaShuffleSlika[i] = null;
+            ListaShuffleSlika[i] = "../Images/qm2.png";
+
+            SelectedPiece.Opacity = 0;
         }
 
-        private void PrikaziPotez(Move potez)
+        private async void PrikaziPotez(Move potez)
         {
             string fromSlika = ListaSlika[potez.PositionFrom];
-
-            int indexSh = ListaShuffleSlika.IndexOf(fromSlika);
-            ListaShuffleSlika[indexSh] = null;
-
+            
             ListaSourceSlika[potez.PositionTo] = fromSlika;
 
-            Thread.Sleep(1500);
+            int indexSh = ListaShuffleSlika.IndexOf(fromSlika);
+            ListaShuffleSlika[indexSh] = "../Images/qm2.png";
 
-            ListaSourceSlika[potez.PositionTo] = null;
+            await Task.Delay(1000);
 
+            ListaSourceSlika[potez.PositionTo] = "../Images/qm2.png";
             ListaShuffleSlika[indexSh] = fromSlika;
+
         }
+
 
         private void PromeniScore(Scoreboard scoreboard) {
 
