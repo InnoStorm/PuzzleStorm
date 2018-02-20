@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using DataLayer.Core.Domain;
 using DataLayer.Persistence;
@@ -337,7 +338,13 @@ namespace ServerGame.Workers
             Move playedMove = move.MoveToPlay;
             playedMove.IsSuccessfull = (move.MoveToPlay.PositionFrom == move.MoveToPlay.PositionTo);
             if (playedMove.IsSuccessfull)
+            {
                 ++NumberOfSolvedPieces;
+                var score = Scoreboard.FindIndex(x => x.Item1.Id == move.RequesterId);
+                var newScore = new Tuple<Player, int>(Scoreboard[score].Item1, Scoreboard[score].Item2 + 5);
+                Scoreboard.RemoveAt(score);
+                Scoreboard.Insert(score, newScore);
+            }
 
             GameUpdate gameUpdate;
 
@@ -352,7 +359,9 @@ namespace ServerGame.Workers
                 CurrentPlayer = playedMove.IsSuccessfull ? CurrentPlayer : NextPlayer();
                 gameUpdate = GenerateGameUpdate(CurrentPlayer, playedMove, GamePlayUpdateType.Playing);
             }
+
             Log($"Player {move.RequesterId} played move.");
+
             NotifyAll(gameUpdate);
         }
 

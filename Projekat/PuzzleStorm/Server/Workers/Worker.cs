@@ -25,7 +25,7 @@ namespace Server.Workers
 
         public EventHandler<LogMessageArgs> NewWorkerLogMessage;
 
-        protected virtual void OnNewLogMessage(LogMessageArgs msg)
+        protected virtual void RaiseNewWorkerLogMessage(LogMessageArgs msg)
             => NewWorkerLogMessage?.Invoke(this, msg);
 
         #endregion
@@ -35,14 +35,14 @@ namespace Server.Workers
         public int Id { get; set; }
 
         protected readonly IBus Communicator;
-        
+
         protected static UnitOfWork WorkersUnitOfWork => new UnitOfWork(new StormContext());
 
         #endregion
 
         protected void Log(string message, LogMessageType type = LogMessageType.Info)
         {
-            OnNewLogMessage(new LogMessageArgs(
+            RaiseNewWorkerLogMessage(new LogMessageArgs(
                 message: $@"[{DateTime.Now}][WORKER {Id}] {message}",
                 type: type
                 ));

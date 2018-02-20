@@ -101,7 +101,10 @@ namespace ServerAdminPanel
             }
 
             if (txtBoxOutput.InvokeRequired)
-                txtBoxOutput.Invoke(new Action(() => { OutputWriter(logMessageArgs.Message, textColor); }));
+                txtBoxOutput.Invoke(new Action(() =>
+                {
+                    OutputWriter(logMessageArgs.Message, textColor);
+                }));
             else
                 OutputWriter(logMessageArgs.Message, textColor);
         }
