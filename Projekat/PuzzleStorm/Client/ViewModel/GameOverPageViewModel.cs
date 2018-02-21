@@ -39,7 +39,7 @@ namespace Client {
 
             GameOverScoreItems = new ObservableCollection<GameOverItemViewModel>();
 
-            Player.Instance.InGame.Score.Scores.Sort((x, y) => x.Item2.CompareTo(y.Item2));
+            Player.Instance.InGame.Score.Scores.Sort((x, y) => -(x.Item2.CompareTo(y.Item2)));
 
             int i = 1;
 
@@ -90,15 +90,31 @@ namespace Client {
         }
 
         private void OnRoomChange(object o, StormEventArgs<RoomsStateUpdate> stormEventArgs) {
-            ClientUtils.UpdateGUI(() => {
+            ClientUtils.UpdateGUI(async () => {
                 var update = stormEventArgs.Data;
 
                 switch (update.UpdateType) {
-                    
+
                     case RoomUpdateType.Continued:
                         ActivateTransition(WindowTransition.GameOverExit);
 
                         ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new GamePage();
+                        break;
+
+                    default:
+                        await DialogHost.Show(new SampleMessageDialog {
+                            Message = { Text = "Room has been destroyed!" }
+                        });
+
+                        ActivateTransition(WindowTransition.GameExit);
+
+                        Player.Instance.CommKey = null;
+                        Player.Instance.OnTheMove = false;
+                        Player.Instance.RoomId = -1;
+                        Player.Instance.Creator = false;
+
+                        ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new MainPage();
+
                         break;
                 }
             });
