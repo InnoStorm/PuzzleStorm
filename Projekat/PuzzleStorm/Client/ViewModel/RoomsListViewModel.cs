@@ -84,17 +84,25 @@ namespace Client {
                             MaxPlayers = update.MaxPlayers.ToString(),
                             Difficulty = update.Level.ToString(),
                             Locked = !update.IsPublic,
-                            Name = update.Creator.Username,
+                            Name = "Room #" + update.RoomId,
                             Rounds = update.NumberOfRounds.ToString(),
                         });
                         ListRooms.Instance.RoomsItemsList = RoomsItemsList;
                         break;
 
                     case RoomUpdateType.Modified:
-                        var room = RoomsItemsList.Single(x => x.RoomId == update.RoomId);
-                        room.Difficulty = update.Level.ToString();
-                        room.MaxPlayers = update.MaxPlayers.ToString();
-                        room.Rounds = update.NumberOfRounds.ToString();
+                        var room = RoomsItemsList.FirstOrDefault(x => x.RoomId == update.RoomId);
+                        int i = RoomsItemsList.IndexOf(room);
+                        RoomsItemsList[i] = new RoomsPropsViewModel()
+                        {
+                            By = update.Creator.Username,
+                            RoomId = update.RoomId,
+                            MaxPlayers = update.MaxPlayers.ToString(),
+                            Difficulty = update.Level.ToString(),
+                            Locked = !update.IsPublic,
+                            Name = "Room #" + update.RoomId,
+                            Rounds = update.NumberOfRounds.ToString()
+                        };
                         break;
 
                     case RoomUpdateType.Deleted:

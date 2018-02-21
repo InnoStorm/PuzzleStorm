@@ -191,7 +191,7 @@ namespace Client {
                                 MaxPlayers = update.MaxPlayers.ToString(),
                                 Difficulty = update.Level.ToString(),
                                 Locked = !update.IsPublic,
-                                Name = update.Creator.Username,
+                                Name = "Room #" + update.RoomId,
                                 Rounds = update.NumberOfRounds.ToString(),
                             });
                         ListRooms.Instance.RoomsItemsList = RoomsItemsList;
@@ -209,7 +209,7 @@ namespace Client {
                             MaxPlayers = update.MaxPlayers.ToString(),
                             Difficulty = update.Level.ToString(),
                             Locked = !update.IsPublic,
-                            Name = update.Creator.Username,
+                            Name = "Room #" + update.RoomId,
                             Rounds = update.NumberOfRounds.ToString()
                         };
                         break;
