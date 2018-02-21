@@ -266,6 +266,7 @@ namespace Client {
             ((MainWindow) Application.Current.MainWindow).Title = "PuzzleStorm!";
 
             Player.Instance.Id = -1;
+            ListRooms.Instance.RoomsItemsList.Clear();
 
             ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new LoginPage();
         }
