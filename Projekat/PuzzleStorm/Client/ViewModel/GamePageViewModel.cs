@@ -294,8 +294,8 @@ namespace Client {
                     string selected = sourceSlikaSelected.Source.ToString();
 
                     if (!selected.Contains("part"))
+                    {
                         SelectedPiece = null;
-                    else {
                         return;
                     }
 
