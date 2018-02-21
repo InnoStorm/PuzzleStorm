@@ -395,15 +395,15 @@ namespace ServerGame.Workers
                 gameUpdate = GenerateGameUpdate(CurrentPlayer, playedMove, GamePlayUpdateType.Playing);
             }
 
-            //DEBUG ONLY
-            gameUpdate = GenerateGameUpdate(CurrentPlayer, playedMove, GamePlayUpdateType.RoundOver);
-            NumberOfSolvedPieces = NumberOfPieces;
+            ////DEBUG ONLY
+            //gameUpdate = GenerateGameUpdate(CurrentPlayer, playedMove, GamePlayUpdateType.GameOver);
+            //NumberOfSolvedPieces = NumberOfPieces;
 
             Log($"Player {move.RequesterId} played move.");
 
             NotifyAll(gameUpdate);
 
-            if (EndOfTheRound())
+            if (!EndOfTheGame() && EndOfTheRound())
             {
                 ContinueGame();
             }
