@@ -149,12 +149,18 @@ namespace Client {
 
                     case GamePlayUpdateType.RoundOver:
 
+                        //update-uj score
+                        PromeniScore(update.Scoreboard);
+
                         //prebaci se stranicu za prikaz bodova 
                         ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new GameOverPage();
                         ActivateTransition(WindowTransition.GameExit);
                         break;
 
                     case GamePlayUpdateType.GameOver:
+
+                        //update-uj score
+                        PromeniScore(update.Scoreboard);
 
                         Player.Instance.InGame.Over = true;
                         //prebaci se na poslednju stranicu
