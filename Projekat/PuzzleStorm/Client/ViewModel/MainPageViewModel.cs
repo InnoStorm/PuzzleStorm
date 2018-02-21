@@ -142,19 +142,22 @@ namespace Client {
 
             foreach (RoomInfo room in response.List)
             {
-                ListRooms.Instance.RoomsItemsList.Add(
-                    new RoomsPropsViewModel()
-                    {
-                        RoomId = room.RoomId,
-                        Name = "Room #" + room.RoomId,
-                        By = room.CreatorUsername,
-                        Difficulty = room.Difficulty.ToString(),
-                        MaxPlayers = room.MaxPlayers.ToString(),
-                        Rounds = room.NumberOfRounds.ToString(),
-                        Visibility = Visibility.Visible,
-                        Locked = !room.IsPublic
-                    }
-                );
+                if (RoomsItemsList.All(x => x.RoomId != room.RoomId))
+                {
+                    ListRooms.Instance.RoomsItemsList.Add(
+                        new RoomsPropsViewModel()
+                        {
+                            RoomId = room.RoomId,
+                            Name = "Room #" + room.RoomId,
+                            By = room.CreatorUsername,
+                            Difficulty = room.Difficulty.ToString(),
+                            MaxPlayers = room.MaxPlayers.ToString(),
+                            Rounds = room.NumberOfRounds.ToString(),
+                            Visibility = Visibility.Visible,
+                            Locked = !room.IsPublic
+                        }
+                    );
+                }
             }
 
             RoomsItemsList = ListRooms.Instance.RoomsItemsList;
@@ -184,7 +187,9 @@ namespace Client {
                 {
                     case RoomUpdateType.Created:
                     case RoomUpdateType.BecameAvailable:
-                        RoomsItemsList.Add(new RoomsPropsViewModel()
+                        if (RoomsItemsList.All(x => x.RoomId != update.RoomId))
+                        {
+                            RoomsItemsList.Add(new RoomsPropsViewModel()
                             {
                                 By = update.Creator.Username,
                                 RoomId = update.RoomId,
@@ -194,9 +199,9 @@ namespace Client {
                                 Name = "Room #" + update.RoomId,
                                 Rounds = update.NumberOfRounds.ToString(),
                             });
-                        ListRooms.Instance.RoomsItemsList = RoomsItemsList;
-                        NoRoomLabel = false;
-
+                            ListRooms.Instance.RoomsItemsList = RoomsItemsList;
+                            NoRoomLabel = false;
+                        }
                         break;
 
                     case RoomUpdateType.Modified:
@@ -217,14 +222,11 @@ namespace Client {
                     case RoomUpdateType.Deleted:
                     case RoomUpdateType.Started:
                     case RoomUpdateType.Filled:
-                        if (RoomsItemsList.Any(x => x.RoomId == update.RoomId))
-                        {
                             RoomsItemsList.Remove(RoomsItemsList.SingleOrDefault(x => x.RoomId == update.RoomId));
                             ListRooms.Instance.RoomsItemsList = RoomsItemsList;
 
                             if (RoomsItemsList.Count == 0)
                                 NoRoomLabel = true;
-                        }
                         break;
                     default:
                     break;    

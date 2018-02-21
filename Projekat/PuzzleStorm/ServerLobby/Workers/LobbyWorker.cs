@@ -155,6 +155,15 @@ namespace ServerLobby.Workers
                     Log($"[SUCCESS] Room properties changed for room {request.RoomId}");
                     NotifyAll(updateMessage);
 
+                    if (data.Players.Get(request.RequesterId).CurrentRoom.State == RoomState.Full) {
+                        data.Players.Get(request.RequesterId).CurrentRoom.State = RoomState.Available;
+                        data.Complete();
+
+                        Log($"[INFO] Room {request.RoomId} is available again [Not full]");
+                        var updateMessageRoomBecameAvailable = GenerateRoomStateUpdate(data.Players.Get(request.RequesterId).CurrentRoom, RoomUpdateType.BecameAvailable);
+                        NotifyAll(updateMessageRoomBecameAvailable);
+                    }
+
                     return new ChangeRoomPropertiesResponse()
                     {
                         Difficulty = room.Difficulty,
@@ -357,6 +366,7 @@ namespace ServerLobby.Workers
                     if (player.CurrentRoom.State == RoomState.Full)
                     {
                         player.CurrentRoom.State = RoomState.Available;
+                        data.Complete();
 
                         Log($"[INFO] Room {request.RoomId} is available again [Not full]");
                         var updateMessageRoomBecameAvailable = GenerateRoomStateUpdate(player.CurrentRoom, RoomUpdateType.BecameAvailable);
