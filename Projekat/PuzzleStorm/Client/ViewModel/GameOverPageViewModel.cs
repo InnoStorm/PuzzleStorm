@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Eventing.Reader;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Client.Helpers.Communication;
 using Client.Helpers.Enums;
+using Communicator;
 using DTOLibrary.Broadcasts;
 using MaterialDesignThemes.Wpf;
 using StormCommonData.Enums;
@@ -66,6 +69,8 @@ namespace Client {
                 Title = "ROUND OVER";
                 BackOrStartCommand = new RelayCommand(WaitForRoundAsync);
                 ButtonText = "NEW ROUND IN 5 SECONDS!";
+
+                WaitForRoundAsync();
             }
         }
 
@@ -127,8 +132,13 @@ namespace Client {
             ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new MainPage();
         }
 
-        public async void WaitForRoundAsync() {
-            
+        public async void WaitForRoundAsync()
+        {
+            await Task.Delay(5000);
+
+            ActivateTransition(WindowTransition.GameOverExit);
+
+            ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new GamePage();
         }
         #endregion
     }

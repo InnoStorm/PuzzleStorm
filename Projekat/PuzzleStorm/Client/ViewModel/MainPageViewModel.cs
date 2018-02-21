@@ -227,7 +227,7 @@ namespace Client {
                         }
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException();
+                    break;    
                 }
             });
         }
