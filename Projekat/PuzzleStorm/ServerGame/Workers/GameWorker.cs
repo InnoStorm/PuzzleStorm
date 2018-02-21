@@ -189,7 +189,7 @@ namespace ServerGame.Workers
                     lock (LoadedPlayers)
                     {
                         LoadedPlayers.Add(room.ListOfPlayers.Single(x => x.Id == request.RequesterId));
-                        NotifyAllAboutLoadedUser();
+                        //NotifyAllAboutLoadedUser();
                     }
                     
                     Log($"Player {request.RequesterId} successfully loaded");
@@ -243,13 +243,13 @@ namespace ServerGame.Workers
                     Log($"[SUCCESS] Room {HandledRoom.Id} successfully continued");
 
                     //await Task.Delay(5000);
-                    NotifyAllToContinue();
+                    //NotifyAllToContinue();
                 }
             }
             catch (Exception ex)
             {
                 Log($"[FAILED] Continuing room {HandledRoom.Id}, Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
-                NotifyAllFailedContinue();
+                //NotifyAllFailedContinue();
             }
         }
 
@@ -401,12 +401,13 @@ namespace ServerGame.Workers
 
             Log($"Player {move.RequesterId} played move.");
 
-            NotifyAll(gameUpdate);
 
             if (!EndOfTheGame() && EndOfTheRound())
             {
                 ContinueGame();
             }
+
+            NotifyAll(gameUpdate);
         }
 
         private Player NextPlayer()
