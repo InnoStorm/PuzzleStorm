@@ -265,12 +265,6 @@ namespace Client {
 
             ((MainWindow) Application.Current.MainWindow).Title = "PuzzleStorm!";
 
-            var sampleMessageDialog = new SampleMessageDialog {
-                Message = { Text = "Sign out Successfull!" }
-            };
-
-            await DialogHost.Show(sampleMessageDialog);
-
             Player.Instance.Id = -1;
 
             ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new LoginPage();
