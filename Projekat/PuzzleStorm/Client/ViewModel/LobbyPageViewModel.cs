@@ -105,6 +105,7 @@ namespace Client
                         if (!Player.Instance.Creator)
                         {
                             Player.Instance.CommKey = update.CommunicationKey;
+                            ActivateTransition(WindowTransition.LobbyExit);
                             ((MainWindow) Application.Current.MainWindow).MainFrame.Content = new GamePage();
                         }
                         break;
