@@ -33,6 +33,7 @@ namespace ServerGame.Workers
         private int CurrentRound { get; set; }
         private string ReceiveQueueName { get; set; }
         private List<Player> LoadedPlayers { get; set; }
+        private int NumberOfPieces { get; set; }
 
         public GameWorker(IBus communicator, ServerGame server) : base(communicator)
         {
@@ -142,6 +143,7 @@ namespace ServerGame.Workers
                     NumberOfSolvedPieces = 0;
                     CurrentRound = 1;
                     LoadedPlayers = new List<Player>(HandledRoom.ListOfPlayers.Count);
+                    NumberOfPieces = HandledRoom.CurrentGame.PuzzleForGame.NumberOfPieces;
 
                     PrepareComunication();
                     
@@ -222,7 +224,9 @@ namespace ServerGame.Workers
             {
                 using (UnitOfWork data = WorkersUnitOfWork)
                 {
-                    var puzzle = data.Puzzles.Get(HandledRoom.CurrentGame.Id + 3); //vraca sledcu puzzluuuuu :D
+                    HandledRoom = data.Rooms.Get(HandledRoom.Id);
+
+                    var puzzle = data.Puzzles.Get(HandledRoom.CurrentGame.PuzzleForGame.Id + 3); //vraca sledcu puzzluuuuu :D
 
                     data.Games.Remove(HandledRoom.CurrentGame);
                     data.Complete();
@@ -238,14 +242,35 @@ namespace ServerGame.Workers
 
                     Log($"[SUCCESS] Room {HandledRoom.Id} successfully continued");
 
-                    await Task.Delay(5000);
+                    //await Task.Delay(5000);
                     NotifyAllToContinue();
                 }
             }
             catch (Exception ex)
             {
                 Log($"[FAILED] Continuing room {HandledRoom.Id}, Reason: {StormUtils.FlattenException(ex)}", LogMessageType.Error);
+                NotifyAllFailedContinue();
             }
+        }
+
+        private void NotifyAllFailedContinue()
+        {
+            string routingKey = RouteGenerator.RoomUpdates.Room.Set.FromEnum(RoomUpdateType.Deleted, HandledRoom.Id);
+            Communicator.Publish<RoomsStateUpdate>(new RoomsStateUpdate()
+            {
+                RoomId = HandledRoom.Id,
+                UpdateType = RoomUpdateType.Deleted,
+                MaxPlayers = HandledRoom.MaxPlayers,
+                Details = "Failed to continue room",
+                NumberOfRounds = HandledRoom.NumberOfRounds,
+                Status = OperationStatus.Successfull,
+                Level = HandledRoom.Difficulty,
+                IsPublic = HandledRoom.IsPublic,
+                Creator = ConvertPlayerToSubDTOPlayer(HandledRoom.Owner),
+                CommunicationKey = String.Empty
+            }, routingKey);
+
+            Log($"NOTIFY_ALL: {routingKey}");
         }
 
         private void NotifyAllToContinue()
@@ -327,7 +352,7 @@ namespace ServerGame.Workers
 
         private bool EndOfTheRound()
         {
-            return NumberOfSolvedPieces == HandledRoom.CurrentGame.PuzzleForGame.NumberOfPieces;
+            return NumberOfSolvedPieces == NumberOfPieces;
         }
 
         private bool EndOfTheGame()
@@ -369,6 +394,10 @@ namespace ServerGame.Workers
                 CurrentPlayer = playedMove.IsSuccessfull ? CurrentPlayer : NextPlayer();
                 gameUpdate = GenerateGameUpdate(CurrentPlayer, playedMove, GamePlayUpdateType.Playing);
             }
+
+            //DEBUG ONLY
+            gameUpdate = GenerateGameUpdate(CurrentPlayer, playedMove, GamePlayUpdateType.RoundOver);
+            NumberOfSolvedPieces = NumberOfPieces;
 
             Log($"Player {move.RequesterId} played move.");
 
