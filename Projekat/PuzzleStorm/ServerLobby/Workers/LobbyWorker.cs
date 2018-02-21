@@ -351,6 +351,9 @@ namespace ServerLobby.Workers
                     if (player == null)
                         throw new Exception($"Player with ID {request.RequesterId} not found!");
 
+                    if (player.CurrentRoom == null)
+                        throw new Exception("Player is not in a room. Probably already left!");
+
                     if (player.CurrentRoom.State == RoomState.Full)
                     {
                         player.CurrentRoom.State = RoomState.Available;
