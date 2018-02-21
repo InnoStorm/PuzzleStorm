@@ -134,7 +134,7 @@ namespace Client {
 
         public async void WaitForRoundAsync()
         {
-            await Task.Delay(5000);
+            await Task.Delay(10000);
 
             //ActivateTransition(WindowTransition.GameOverExit);
 

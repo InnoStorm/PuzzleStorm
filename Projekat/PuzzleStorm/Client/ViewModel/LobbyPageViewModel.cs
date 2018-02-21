@@ -133,7 +133,7 @@ namespace Client
                         break;
 
                     case RoomPlayerUpdateType.LeftRoom:
-                        JoinedPlayersItems.Remove(JoinedPlayersItems.Single(x => x.Username == update.Player.Username));
+                        JoinedPlayersItems.Remove(JoinedPlayersItems.SingleOrDefault(x => x.Username == update.Player.Username));
                         break;
 
                     case RoomPlayerUpdateType.ChangedStatus:

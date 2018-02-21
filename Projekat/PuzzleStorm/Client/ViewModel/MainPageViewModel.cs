@@ -219,7 +219,7 @@ namespace Client {
                     case RoomUpdateType.Filled:
                         if (RoomsItemsList.Any(x => x.RoomId == update.RoomId))
                         {
-                            RoomsItemsList.Remove(RoomsItemsList.Single(x => x.RoomId == update.RoomId));
+                            RoomsItemsList.Remove(RoomsItemsList.SingleOrDefault(x => x.RoomId == update.RoomId));
                             ListRooms.Instance.RoomsItemsList = RoomsItemsList;
 
                             if (RoomsItemsList.Count == 0)
