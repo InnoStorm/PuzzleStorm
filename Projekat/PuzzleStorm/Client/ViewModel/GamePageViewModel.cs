@@ -293,6 +293,12 @@ namespace Client {
 
                     string selected = sourceSlikaSelected.Source.ToString();
 
+                    if (!selected.Contains("part"))
+                        SelectedPiece = null;
+                    else {
+                        return;
+                    }
+
                     int indexFrom = Int32.Parse(selected.Substring(selected.Length - 6, 2)) - 1;
 
                     MakeAMoveRequest request = new MakeAMoveRequest()
