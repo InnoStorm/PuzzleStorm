@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Threading;
 using StormCommonData.Enums;
 using StormCommonData.EventArgs;
 using StormCommonData.Interfaces;
@@ -42,6 +43,8 @@ namespace ServerAdminPanel
             listBoxRunningServers.DisplayMember = "Key";
             listBoxRunningServers.ValueMember = "Value";
             listBoxRunningServers.DataSource = runningServers;
+
+            Dispatcher.CurrentDispatcher.InvokeAsync(() => buttonStartAll_Click(this, null));
         }
 
         private void buttonStart_Click(object sender, EventArgs e)
