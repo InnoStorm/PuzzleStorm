@@ -38,7 +38,7 @@ namespace Client {
 
         public GameOverPageViewModel()
         {
-            ActivateTransition(WindowTransition.GameOverEnter);
+            //ActivateTransition(WindowTransition.GameOverEnter);
 
             GameOverScoreItems = new ObservableCollection<GameOverItemViewModel>();
 
@@ -127,7 +127,7 @@ namespace Client {
 
         public void BackToMain()
         {
-            ActivateTransition(WindowTransition.GameOverExit);
+            //ActivateTransition(WindowTransition.GameOverExit);
 
             ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new MainPage();
         }
@@ -136,7 +136,7 @@ namespace Client {
         {
             await Task.Delay(5000);
 
-            ActivateTransition(WindowTransition.GameOverExit);
+            //ActivateTransition(WindowTransition.GameOverExit);
 
             ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new GamePage();
         }
