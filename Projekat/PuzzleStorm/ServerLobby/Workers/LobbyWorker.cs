@@ -98,8 +98,8 @@ namespace ServerLobby.Workers
 
                     room.ListOfPlayers.Clear();
                     data.Complete();
-                    data.Games.Remove(room.CurrentGame);
-                    data.Complete();
+                    //data.Games.Remove(room.CurrentGame);
+                    //data.Complete();
 
                     data.Rooms.Remove(room);
                     data.Complete();
