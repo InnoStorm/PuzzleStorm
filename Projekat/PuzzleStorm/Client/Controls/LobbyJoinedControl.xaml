@@ -50,9 +50,17 @@
                 Margin="0,5"
                 Background="#4D1F1F" />
 
-            <ScrollViewer Grid.Row="2" CanContentScroll="True">
-                <local:LobbyJoinedPlayerControl />
-            </ScrollViewer>
+            <Grid Grid.Row="2" Margin="13,15">
+                <ScrollViewer VerticalScrollBarVisibility="Hidden">
+                    <ItemsControl ItemsSource="{Binding Path=JoinedPlayersItems, UpdateSourceTrigger=PropertyChanged}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <local:LobbyJoinedPlayerControl />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
         </Grid>
     </Border>
 </UserControl>

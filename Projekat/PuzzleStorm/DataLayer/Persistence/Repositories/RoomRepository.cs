@@ -1,5 +1,9 @@
-﻿using DataLayer.Core.Domain;
+﻿using System.Collections.Generic;
+using System.Linq;
+using DataLayer.Core.Domain;
 using DataLayer.Core.Repositories;
+using System.Data.Entity;
+using StormCommonData.Enums;
 
 namespace DataLayer.Persistence.Repositories
 {
@@ -9,14 +13,17 @@ namespace DataLayer.Persistence.Repositories
         {
 
         }
+        
+        public StormContext StormContext => Context as StormContext;
 
-
-
-
-
-        public StormContext StormContext
+        public IEnumerable<Room> GetAllAvailable()
         {
-            get { return Context as StormContext; }
+            return Find(x => x.State == RoomState.Available);
+        }
+
+        public IEnumerable<Room> GetAllPlaying()
+        {
+            return Find(x => x.State == RoomState.Playing);
         }
     }
 }

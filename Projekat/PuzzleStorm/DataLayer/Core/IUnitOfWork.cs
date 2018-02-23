@@ -6,12 +6,10 @@ namespace DataLayer.Core
     public interface IUnitOfWork : IDisposable
     {
         IGameRepository Games { get; }
-        IPieceRepository Pieces { get; }
+        IPieceDataRepository Pieces { get; }
         IPlayerRepository Players { get; }
-        IPuzzleRepository Puzzles { get; }
-        IRoomPropertiesRepository RoomProperties { get; }
+        IPuzzleDataRepository Puzzles { get; }
         IRoomRepository Rooms { get; }
-        IUserRepository Users { get; }
 
         int Complete();
     }

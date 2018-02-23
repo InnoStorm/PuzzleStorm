@@ -1,16 +1,22 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using MaterialDesignThemes.Wpf;
 using System.Windows;
 using System.Windows.Controls;
+using StormCommonData.Enums;
+using Client.Helpers.Communication;
+using Communicator;
+using DTOLibrary.Requests;
+using DTOLibrary.Responses;
 
 namespace Client {
     public class CreateRoomViewModel : BaseViewModel {
 
         #region Properties
 
-        public int Difficulty { get; set; } = 8;
+        public int Difficulty { get; set; } = 16;
 
         public int MaxPlayers { get; set; } = 2;
 
@@ -38,7 +44,7 @@ namespace Client {
         #region Constuctors
 
         public CreateRoomViewModel() {
-            CreateRoomCommand = new RelayCommandWithParameter(async (parameter) => { await CreateRoom(parameter); });
+            CreateRoomCommand = new RelayCommand(async () => await CreateRoom());
             CancelCommand = new RelayCommand(BackToMainPage);
 
             #region Inicijalizacija Combobox-ova
@@ -46,9 +52,9 @@ namespace Client {
             //Combobox za diff
             CmbDifficulty = new ObservableCollection<int>
             {
-                8,
                 16,
-                32
+                25,
+                36
             };
 
             //Combobox za max
@@ -78,24 +84,46 @@ namespace Client {
 
         #region Metods
 
-        // Login f-ja
-        public async Task CreateRoom(object parameter) {
+        #region Create
 
-            //SIMULACIJA KREIRANJA
-            Task.Delay(500);
-
-            var sampleMessageDialog = new SampleMessageDialog {
-                Message = { Text = "Uspesno ste kreirali sobu!" }
+        public async Task CreateRoom()
+        {
+            // Napravi se request
+            CreateRoomRequest request = new CreateRoomRequest()
+            {
+                RequesterId = Player.Instance.Id,
+                MaxPlayers = MaxPlayers,
+                NumberOfRounds = Rounds,
+                Password = Password
             };
+            // Dificulty za request
+            switch (Difficulty)
+            {
+                case 16:
+                    request.Difficulty = PuzzleDifficulty.Easy;
+                    break;
 
-            await DialogHost.Show(sampleMessageDialog);
+                case 25:
+                    request.Difficulty = PuzzleDifficulty.Medium;
+                    break;
 
-            //ZOVE SE F-ja NA SERVERU
-            //CREATEROOM ( Difficulty, MaxPlayers, Rounds, Password)
+                case 36:
+                    request.Difficulty = PuzzleDifficulty.Hard;
+                    break;
+            }
 
-            //((WindowViewModel)((MainWindow)Application.Current.MainWindow).DataContext).CurrentPage = ApplicationPage.;
+            CreateRoomResponse response = await ClientUtils.PerformRequestAsync(API.Instance.CreateRoomAsync, request,
+                "Creating a room..");
+
+            if (response == null) return;
+
+            Player.Instance.RoomId = response.RoomId;
+            Player.Instance.Creator = true;
+
             ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new LobbyPage();
         }
+
+        #endregion
 
         public void BackToMainPage() {
 

@@ -1,5 +1,7 @@
-﻿using DataLayer.Core.Domain;
+﻿using System.Linq;
+using DataLayer.Core.Domain;
 using DataLayer.Core.Repositories;
+using System.Data.Entity;
 
 namespace DataLayer.Persistence.Repositories
 {
@@ -7,16 +9,20 @@ namespace DataLayer.Persistence.Repositories
     {
         public PlayerRepository(StormContext context) : base(context)
         {
-
+            
         }
 
+        public StormContext StormContext => Context as StormContext;
 
-
-
-
-        public StormContext StormContext
+        public Player Get(string username)
         {
-            get { return Context as StormContext; }
+            return SingleOrDefault(x => x.Username == username);
         }
+
+        public bool IsUsernameAvailable(string username)
+        {
+            return !StormContext.Players.Any(x => x.Username == username);
+        }
+
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
+using System.Windows.Input;
 
 namespace Client {
     class WindowViewModel : BaseViewModel {
@@ -15,11 +17,30 @@ namespace Client {
 
         #endregion
 
+        #region Command
+
+        public ICommand CloseWindowCommand { get; set;  }
+
+        #endregion
+
         #region Constructors
 
         public WindowViewModel(Window window)
         {
             this.mWindow = window;
+
+            CloseWindowCommand = new RelayCommand(DisposeRabbitBus);
+        }
+
+        #endregion
+
+        #region Metods
+
+        private void DisposeRabbitBus() {
+            //TODO REMOVE
+            Player.Instance.Clean();
+           
+            Communicator.API.Instance.Dispose();
         }
 
         #endregion

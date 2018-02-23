@@ -9,6 +9,9 @@
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>if_puzzle_40829.ico</ApplicationIcon>
+  </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -48,6 +51,9 @@
     <Reference Include="EasyNetQ, Version=2.0.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\EasyNetQ.2.2.0\lib\net451\EasyNetQ.dll</HintPath>
     </Reference>
+    <Reference Include="FontAwesome.WPF, Version=4.7.0.37774, Culture=neutral, PublicKeyToken=0758b07a11a4f466, processorArchitecture=MSIL">
+      <HintPath>..\packages\FontAwesome.WPF.4.7.0.9\lib\net40\FontAwesome.WPF.dll</HintPath>
+    </Reference>
     <Reference Include="MaterialDesignColors, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialDesignColors.1.1.2\lib\net45\MaterialDesignColors.dll</HintPath>
     </Reference>
@@ -56,6 +62,9 @@
     </Reference>
     <Reference Include="Microsoft.Diagnostics.Tracing.EventSource, Version=1.1.28.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Diagnostics.Tracing.EventSource.Redist.1.1.28\lib\net46\Microsoft.Diagnostics.Tracing.EventSource.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\Microsoft.Expression.Interactions.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -70,6 +79,9 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -88,6 +100,30 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\ChangeRoomsPropsDialog.xaml.cs">
+      <DependentUpon>ChangeRoomsPropsDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ChangeSettingsControl.xaml.cs">
+      <DependentUpon>ChangeSettingsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\GameOverItemControl.xaml.cs">
+      <DependentUpon>GameOverItemControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\GameScoreControl.xaml.cs">
+      <DependentUpon>GameScoreControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\GameScoreItemControl.xaml.cs">
+      <DependentUpon>GameScoreItemControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\GameWhoPlaysControl.xaml.cs">
+      <DependentUpon>GameWhoPlaysControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\GameWhoPlaysItemControl.xaml.cs">
+      <DependentUpon>GameWhoPlaysItemControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\LoadingPopup.xaml.cs">
+      <DependentUpon>LoadingPopup.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\LobbyJoinedControl.xaml.cs">
       <DependentUpon>LobbyJoinedControl.xaml</DependentUpon>
     </Compile>
@@ -103,13 +139,31 @@
     <Compile Include="Controls\SampleMessageDialog.xaml.cs">
       <DependentUpon>SampleMessageDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\SimpleMessage.xaml.cs">
+      <DependentUpon>SimpleMessage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SimpleTextBoxDialog.xaml.cs">
+      <DependentUpon>SimpleTextBoxDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DataModels\ApplicationPage.cs" />
+    <Compile Include="DataModels\Game.cs" />
+    <Compile Include="DataModels\ListRooms.cs" />
+    <Compile Include="DataModels\Player.cs" />
+    <Compile Include="Helpers\Communication\ClientUtils.cs" />
+    <Compile Include="Helpers\Enums\WindowTransition.cs" />
+    <Compile Include="Helpers\MiniHelpFunctions.cs" />
     <Compile Include="Pages\Base\BasePage.cs" />
     <Compile Include="Pages\CreateAccount.xaml.cs">
       <DependentUpon>CreateAccount.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\CreateRoomPage.xaml.cs">
       <DependentUpon>CreateRoomPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\GameOverPage.xaml.cs">
+      <DependentUpon>GameOverPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\GamePage.xaml.cs">
+      <DependentUpon>GamePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\LobbyPage.xaml.cs">
       <DependentUpon>LobbyPage.xaml</DependentUpon>
@@ -120,18 +174,64 @@
     <Compile Include="Pages\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\RoomsListPage.xaml.cs">
+      <DependentUpon>RoomsListPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ValueConverters\ApplicationPageValueConverter.cs" />
     <Compile Include="ValueConverters\BaseValueConverter.cs" />
+    <Compile Include="ValueConverters\BoolToColorConverter.cs" />
+    <Compile Include="ValueConverters\MultiBindingsValueConverter.cs" />
+    <Compile Include="ValueConverters\OnTheMoveToVisibilityConverter.cs" />
     <Compile Include="ViewModel\Base\BaseViewModel.cs" />
     <Compile Include="ViewModel\Base\RelayCommand.cs" />
     <Compile Include="ViewModel\Base\RelayCommandWithParameter.cs" />
     <Compile Include="ViewModel\CreateAccViewModel.cs" />
     <Compile Include="ViewModel\CreateRoomViewModel.cs" />
+    <Compile Include="ViewModel\GameOverItemViewModel.cs" />
+    <Compile Include="ViewModel\GameOverPageViewModel.cs" />
+    <Compile Include="ViewModel\GamePageViewModel.cs" />
+    <Compile Include="ViewModel\GameScoreItemViewModel.cs" />
+    <Compile Include="ViewModel\GameWhoPlaysItemViewModel.cs" />
+    <Compile Include="ViewModel\LobbyJoinedPlayerViewModel.cs" />
     <Compile Include="ViewModel\LobbyPageViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\MainPageViewModel.cs" />
+    <Compile Include="ViewModel\RoomsListViewModel.cs" />
+    <Compile Include="ViewModel\RoomsPropsViewModel.cs" />
     <Compile Include="ViewModel\WindowViewModel.cs" />
+    <Page Include="Controls\ChangeRoomsPropsDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ChangeSettingsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\GameOverItemControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\GameScoreControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\GameScoreItemControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\GameWhoPlaysControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\GameWhoPlaysItemControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\LoadingPopup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\LobbyJoinedControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -149,6 +249,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\SampleMessageDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\SimpleMessage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\SimpleTextBoxDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -172,6 +280,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\GameOverPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\GamePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\LobbyPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -181,6 +297,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\MainPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\RoomsListPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -204,6 +324,25 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="ClassDiagram1.cd" />
+    <None Include="Images\.picasaoriginals\.picasa.ini" />
+    <None Include="Images\1\.picasa.ini" />
+    <None Include="Images\1\.picasaoriginals\.picasa.ini" />
+    <None Include="Images\1\16\.picasa.ini" />
+    <None Include="Images\1\36\.picasa.ini" />
+    <None Include="Images\2\.picasa.ini" />
+    <None Include="Images\2\.picasaoriginals\.picasa.ini" />
+    <None Include="Images\2\16\.picasa.ini" />
+    <None Include="Images\2\36\.picasa.ini" />
+    <None Include="Images\3\.picasa.ini" />
+    <None Include="Images\3\.picasaoriginals\.picasa.ini" />
+    <None Include="Images\3\16\.picasa.ini" />
+    <None Include="Images\3\36\.picasa.ini" />
+    <None Include="Images\4\.picasa.ini" />
+    <None Include="Images\4\.picasaoriginals\.picasa.ini" />
+    <None Include="Images\5\.picasa.ini" />
+    <None Include="Images\5\.picasaoriginals\.picasa.ini" />
+    <None Include="Images\5\16\.picasa.ini" />
+    <None Include="Images\5\36\.picasa.ini" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -211,7 +350,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Backgrounds\puzzlewall.jpg" />
@@ -220,16 +361,20 @@
     <None Include="FodyWeavers.xml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Communicator\Communicator.csproj">
+      <Project>{d9c3538d-d17d-485e-a34a-4b2a7d1a332f}</Project>
+      <Name>Communicator</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DTOLibrary\DTOLibrary.csproj">
       <Project>{495fb5c5-301c-438d-9ddb-6baa4ce0bedd}</Project>
       <Name>DTOLibrary</Name>
     </ProjectReference>
+    <ProjectReference Include="..\StormCommonData\StormCommonData.csproj">
+      <Project>{a13319c1-dba7-42c8-b5d2-6d96b3316b01}</Project>
+      <Name>StormCommonData</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup Condition="$(VisualStudioVersion) == '15.0'">
-    <Reference Include="Microsoft.Data.Tools.Schema.Sql, Version=13.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>$(SSDTPath)\Microsoft.Data.Tools.Schema.Sql.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Microsoft.Data.Tools.Schema.Sql.UnitTesting, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>$(SSDTUnitTestPath)\Microsoft.Data.Tools.Schema.Sql.UnitTesting.dll</HintPath>
       <Private>True</Private>
@@ -238,6 +383,434 @@
       <HintPath>$(SSDTUnitTestPath)\Microsoft.Data.Tools.Schema.Sql.UnitTestingAdapter.dll</HintPath>
       <Private>True</Private>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\PomocnaSlagalica\image_part_002.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\PomocnaSlagalica\image_part_001.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\PomocnaSlagalica\image_part_003.jpg" />
+    <Resource Include="Images\PomocnaSlagalica\image_part_004.jpg" />
+    <Resource Include="Images\PomocnaSlagalica\image_part_005.jpg" />
+    <Resource Include="Images\PomocnaSlagalica\image_part_006.jpg" />
+    <Resource Include="Images\PomocnaSlagalica\image_part_007.jpg" />
+    <Resource Include="Images\PomocnaSlagalica\image_part_008.jpg" />
+    <Resource Include="Images\PomocnaSlagalica\image_part_009.jpg" />
+    <Resource Include="Images\PomocnaSlagalica\image_part_010.jpg" />
+    <Resource Include="Images\PomocnaSlagalica\image_part_011.jpg" />
+    <Resource Include="Images\PomocnaSlagalica\image_part_012.jpg" />
+    <Resource Include="Images\PomocnaSlagalica\image_part_013.jpg" />
+    <Resource Include="Images\PomocnaSlagalica\image_part_014.jpg" />
+    <Resource Include="Images\PomocnaSlagalica\image_part_015.jpg" />
+    <Resource Include="Images\PomocnaSlagalica\image_part_016.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="if_puzzle_40829.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\1\.picasaoriginals\1.jpg" />
+    <Resource Include="Images\1\16\image_part_001.jpg" />
+    <Resource Include="Images\1\16\image_part_002.jpg" />
+    <Resource Include="Images\1\16\image_part_003.jpg" />
+    <Resource Include="Images\1\16\image_part_004.jpg" />
+    <Resource Include="Images\1\16\image_part_005.jpg" />
+    <Resource Include="Images\1\16\image_part_006.jpg" />
+    <Resource Include="Images\1\16\image_part_007.jpg" />
+    <Resource Include="Images\1\16\image_part_008.jpg" />
+    <Resource Include="Images\1\16\image_part_009.jpg" />
+    <Resource Include="Images\1\16\image_part_010.jpg" />
+    <Resource Include="Images\1\16\image_part_011.jpg" />
+    <Resource Include="Images\1\16\image_part_012.jpg" />
+    <Resource Include="Images\1\16\image_part_013.jpg" />
+    <Resource Include="Images\1\16\image_part_014.jpg" />
+    <Resource Include="Images\1\16\image_part_015.jpg" />
+    <Resource Include="Images\1\16\image_part_016.jpg" />
+    <Resource Include="Images\1\25\image_part_001.jpg" />
+    <Resource Include="Images\1\25\image_part_002.jpg" />
+    <Resource Include="Images\1\25\image_part_003.jpg" />
+    <Resource Include="Images\1\25\image_part_004.jpg" />
+    <Resource Include="Images\1\25\image_part_005.jpg" />
+    <Resource Include="Images\1\25\image_part_006.jpg" />
+    <Resource Include="Images\1\25\image_part_007.jpg" />
+    <Resource Include="Images\1\25\image_part_008.jpg" />
+    <Resource Include="Images\1\25\image_part_009.jpg" />
+    <Resource Include="Images\1\25\image_part_010.jpg" />
+    <Resource Include="Images\1\25\image_part_011.jpg" />
+    <Resource Include="Images\1\25\image_part_012.jpg" />
+    <Resource Include="Images\1\25\image_part_013.jpg" />
+    <Resource Include="Images\1\25\image_part_014.jpg" />
+    <Resource Include="Images\1\25\image_part_015.jpg" />
+    <Resource Include="Images\1\25\image_part_016.jpg" />
+    <Resource Include="Images\1\25\image_part_017.jpg" />
+    <Resource Include="Images\1\25\image_part_018.jpg" />
+    <Resource Include="Images\1\25\image_part_019.jpg" />
+    <Resource Include="Images\1\25\image_part_020.jpg" />
+    <Resource Include="Images\1\25\image_part_021.jpg" />
+    <Resource Include="Images\1\25\image_part_022.jpg" />
+    <Resource Include="Images\1\25\image_part_023.jpg" />
+    <Resource Include="Images\1\25\image_part_024.jpg" />
+    <Resource Include="Images\1\25\image_part_025.jpg" />
+    <Resource Include="Images\1\36\image_part_001.jpg" />
+    <Resource Include="Images\1\36\image_part_002.jpg" />
+    <Resource Include="Images\1\36\image_part_003.jpg" />
+    <Resource Include="Images\1\36\image_part_004.jpg" />
+    <Resource Include="Images\1\36\image_part_005.jpg" />
+    <Resource Include="Images\1\36\image_part_006.jpg" />
+    <Resource Include="Images\1\36\image_part_007.jpg" />
+    <Resource Include="Images\1\36\image_part_008.jpg" />
+    <Resource Include="Images\1\36\image_part_009.jpg" />
+    <Resource Include="Images\1\36\image_part_010.jpg" />
+    <Resource Include="Images\1\36\image_part_011.jpg" />
+    <Resource Include="Images\1\36\image_part_012.jpg" />
+    <Resource Include="Images\1\36\image_part_013.jpg" />
+    <Resource Include="Images\1\36\image_part_014.jpg" />
+    <Resource Include="Images\1\36\image_part_015.jpg" />
+    <Resource Include="Images\1\36\image_part_016.jpg" />
+    <Resource Include="Images\1\36\image_part_017.jpg" />
+    <Resource Include="Images\1\36\image_part_018.jpg" />
+    <Resource Include="Images\1\36\image_part_019.jpg" />
+    <Resource Include="Images\1\36\image_part_020.jpg" />
+    <Resource Include="Images\1\36\image_part_021.jpg" />
+    <Resource Include="Images\1\36\image_part_022.jpg" />
+    <Resource Include="Images\1\36\image_part_023.jpg" />
+    <Resource Include="Images\1\36\image_part_024.jpg" />
+    <Resource Include="Images\1\36\image_part_025.jpg" />
+    <Resource Include="Images\1\36\image_part_026.jpg" />
+    <Resource Include="Images\1\36\image_part_027.jpg" />
+    <Resource Include="Images\1\36\image_part_028.jpg" />
+    <Resource Include="Images\1\36\image_part_029.jpg" />
+    <Resource Include="Images\1\36\image_part_030.jpg" />
+    <Resource Include="Images\1\36\image_part_031.jpg" />
+    <Resource Include="Images\1\36\image_part_032.jpg" />
+    <Resource Include="Images\1\36\image_part_033.jpg" />
+    <Resource Include="Images\1\36\image_part_034.jpg" />
+    <Resource Include="Images\1\36\image_part_035.jpg" />
+    <Resource Include="Images\1\36\image_part_036.jpg" />
+    <Resource Include="Images\1\Mountain.jpg" />
+    <Resource Include="Images\2\.picasaoriginals\2.jpg" />
+    <Resource Include="Images\2\16\image_part_001.jpg" />
+    <Resource Include="Images\2\16\image_part_002.jpg" />
+    <Resource Include="Images\2\16\image_part_003.jpg" />
+    <Resource Include="Images\2\16\image_part_004.jpg" />
+    <Resource Include="Images\2\16\image_part_005.jpg" />
+    <Resource Include="Images\2\16\image_part_006.jpg" />
+    <Resource Include="Images\2\16\image_part_007.jpg" />
+    <Resource Include="Images\2\16\image_part_008.jpg" />
+    <Resource Include="Images\2\16\image_part_009.jpg" />
+    <Resource Include="Images\2\16\image_part_010.jpg" />
+    <Resource Include="Images\2\16\image_part_011.jpg" />
+    <Resource Include="Images\2\16\image_part_012.jpg" />
+    <Resource Include="Images\2\16\image_part_013.jpg" />
+    <Resource Include="Images\2\16\image_part_014.jpg" />
+    <Resource Include="Images\2\16\image_part_015.jpg" />
+    <Resource Include="Images\2\16\image_part_016.jpg" />
+    <Resource Include="Images\2\25\image_part_001.jpg" />
+    <Resource Include="Images\2\25\image_part_002.jpg" />
+    <Resource Include="Images\2\25\image_part_003.jpg" />
+    <Resource Include="Images\2\25\image_part_004.jpg" />
+    <Resource Include="Images\2\25\image_part_005.jpg" />
+    <Resource Include="Images\2\25\image_part_006.jpg" />
+    <Resource Include="Images\2\25\image_part_007.jpg" />
+    <Resource Include="Images\2\25\image_part_008.jpg" />
+    <Resource Include="Images\2\25\image_part_009.jpg" />
+    <Resource Include="Images\2\25\image_part_010.jpg" />
+    <Resource Include="Images\2\25\image_part_011.jpg" />
+    <Resource Include="Images\2\25\image_part_012.jpg" />
+    <Resource Include="Images\2\25\image_part_013.jpg" />
+    <Resource Include="Images\2\25\image_part_014.jpg" />
+    <Resource Include="Images\2\25\image_part_015.jpg" />
+    <Resource Include="Images\2\25\image_part_016.jpg" />
+    <Resource Include="Images\2\25\image_part_017.jpg" />
+    <Resource Include="Images\2\25\image_part_018.jpg" />
+    <Resource Include="Images\2\25\image_part_019.jpg" />
+    <Resource Include="Images\2\25\image_part_020.jpg" />
+    <Resource Include="Images\2\25\image_part_021.jpg" />
+    <Resource Include="Images\2\25\image_part_022.jpg" />
+    <Resource Include="Images\2\25\image_part_023.jpg" />
+    <Resource Include="Images\2\25\image_part_024.jpg" />
+    <Resource Include="Images\2\25\image_part_025.jpg" />
+    <Resource Include="Images\2\36\image_part_001.jpg" />
+    <Resource Include="Images\2\36\image_part_002.jpg" />
+    <Resource Include="Images\2\36\image_part_003.jpg" />
+    <Resource Include="Images\2\36\image_part_004.jpg" />
+    <Resource Include="Images\2\36\image_part_005.jpg" />
+    <Resource Include="Images\2\36\image_part_006.jpg" />
+    <Resource Include="Images\2\36\image_part_007.jpg" />
+    <Resource Include="Images\2\36\image_part_008.jpg" />
+    <Resource Include="Images\2\36\image_part_009.jpg" />
+    <Resource Include="Images\2\36\image_part_010.jpg" />
+    <Resource Include="Images\2\36\image_part_011.jpg" />
+    <Resource Include="Images\2\36\image_part_012.jpg" />
+    <Resource Include="Images\2\36\image_part_013.jpg" />
+    <Resource Include="Images\2\36\image_part_014.jpg" />
+    <Resource Include="Images\2\36\image_part_015.jpg" />
+    <Resource Include="Images\2\36\image_part_016.jpg" />
+    <Resource Include="Images\2\36\image_part_017.jpg" />
+    <Resource Include="Images\2\36\image_part_018.jpg" />
+    <Resource Include="Images\2\36\image_part_019.jpg" />
+    <Resource Include="Images\2\36\image_part_020.jpg" />
+    <Resource Include="Images\2\36\image_part_021.jpg" />
+    <Resource Include="Images\2\36\image_part_022.jpg" />
+    <Resource Include="Images\2\36\image_part_023.jpg" />
+    <Resource Include="Images\2\36\image_part_024.jpg" />
+    <Resource Include="Images\2\36\image_part_025.jpg" />
+    <Resource Include="Images\2\36\image_part_026.jpg" />
+    <Resource Include="Images\2\36\image_part_027.jpg" />
+    <Resource Include="Images\2\36\image_part_028.jpg" />
+    <Resource Include="Images\2\36\image_part_029.jpg" />
+    <Resource Include="Images\2\36\image_part_030.jpg" />
+    <Resource Include="Images\2\36\image_part_031.jpg" />
+    <Resource Include="Images\2\36\image_part_032.jpg" />
+    <Resource Include="Images\2\36\image_part_033.jpg" />
+    <Resource Include="Images\2\36\image_part_034.jpg" />
+    <Resource Include="Images\2\36\image_part_035.jpg" />
+    <Resource Include="Images\2\36\image_part_036.jpg" />
+    <Resource Include="Images\2\Winter.jpg" />
+    <Resource Include="Images\3\.picasaoriginals\3.jpg" />
+    <Resource Include="Images\3\16\image_part_001.jpg" />
+    <Resource Include="Images\3\16\image_part_002.jpg" />
+    <Resource Include="Images\3\16\image_part_003.jpg" />
+    <Resource Include="Images\3\16\image_part_004.jpg" />
+    <Resource Include="Images\3\16\image_part_005.jpg" />
+    <Resource Include="Images\3\16\image_part_006.jpg" />
+    <Resource Include="Images\3\16\image_part_007.jpg" />
+    <Resource Include="Images\3\16\image_part_008.jpg" />
+    <Resource Include="Images\3\16\image_part_009.jpg" />
+    <Resource Include="Images\3\16\image_part_010.jpg" />
+    <Resource Include="Images\3\16\image_part_011.jpg" />
+    <Resource Include="Images\3\16\image_part_012.jpg" />
+    <Resource Include="Images\3\16\image_part_013.jpg" />
+    <Resource Include="Images\3\16\image_part_014.jpg" />
+    <Resource Include="Images\3\16\image_part_015.jpg" />
+    <Resource Include="Images\3\16\image_part_016.jpg" />
+    <Resource Include="Images\3\25\image_part_001.jpg" />
+    <Resource Include="Images\3\25\image_part_002.jpg" />
+    <Resource Include="Images\3\25\image_part_003.jpg" />
+    <Resource Include="Images\3\25\image_part_004.jpg" />
+    <Resource Include="Images\3\25\image_part_005.jpg" />
+    <Resource Include="Images\3\25\image_part_006.jpg" />
+    <Resource Include="Images\3\25\image_part_007.jpg" />
+    <Resource Include="Images\3\25\image_part_008.jpg" />
+    <Resource Include="Images\3\25\image_part_009.jpg" />
+    <Resource Include="Images\3\25\image_part_010.jpg" />
+    <Resource Include="Images\3\25\image_part_011.jpg" />
+    <Resource Include="Images\3\25\image_part_012.jpg" />
+    <Resource Include="Images\3\25\image_part_013.jpg" />
+    <Resource Include="Images\3\25\image_part_014.jpg" />
+    <Resource Include="Images\3\25\image_part_015.jpg" />
+    <Resource Include="Images\3\25\image_part_016.jpg" />
+    <Resource Include="Images\3\25\image_part_017.jpg" />
+    <Resource Include="Images\3\25\image_part_018.jpg" />
+    <Resource Include="Images\3\25\image_part_019.jpg" />
+    <Resource Include="Images\3\25\image_part_020.jpg" />
+    <Resource Include="Images\3\25\image_part_021.jpg" />
+    <Resource Include="Images\3\25\image_part_022.jpg" />
+    <Resource Include="Images\3\25\image_part_023.jpg" />
+    <Resource Include="Images\3\25\image_part_024.jpg" />
+    <Resource Include="Images\3\25\image_part_025.jpg" />
+    <Resource Include="Images\3\36\image_part_001.jpg" />
+    <Resource Include="Images\3\36\image_part_002.jpg" />
+    <Resource Include="Images\3\36\image_part_003.jpg" />
+    <Resource Include="Images\3\36\image_part_004.jpg" />
+    <Resource Include="Images\3\36\image_part_005.jpg" />
+    <Resource Include="Images\3\36\image_part_006.jpg" />
+    <Resource Include="Images\3\36\image_part_007.jpg" />
+    <Resource Include="Images\3\36\image_part_008.jpg" />
+    <Resource Include="Images\3\36\image_part_009.jpg" />
+    <Resource Include="Images\3\36\image_part_010.jpg" />
+    <Resource Include="Images\3\36\image_part_011.jpg" />
+    <Resource Include="Images\3\36\image_part_012.jpg" />
+    <Resource Include="Images\3\36\image_part_013.jpg" />
+    <Resource Include="Images\3\36\image_part_014.jpg" />
+    <Resource Include="Images\3\36\image_part_015.jpg" />
+    <Resource Include="Images\3\36\image_part_016.jpg" />
+    <Resource Include="Images\3\36\image_part_017.jpg" />
+    <Resource Include="Images\3\36\image_part_018.jpg" />
+    <Resource Include="Images\3\36\image_part_019.jpg" />
+    <Resource Include="Images\3\36\image_part_020.jpg" />
+    <Resource Include="Images\3\36\image_part_021.jpg" />
+    <Resource Include="Images\3\36\image_part_022.jpg" />
+    <Resource Include="Images\3\36\image_part_023.jpg" />
+    <Resource Include="Images\3\36\image_part_024.jpg" />
+    <Resource Include="Images\3\36\image_part_025.jpg" />
+    <Resource Include="Images\3\36\image_part_026.jpg" />
+    <Resource Include="Images\3\36\image_part_027.jpg" />
+    <Resource Include="Images\3\36\image_part_028.jpg" />
+    <Resource Include="Images\3\36\image_part_029.jpg" />
+    <Resource Include="Images\3\36\image_part_030.jpg" />
+    <Resource Include="Images\3\36\image_part_031.jpg" />
+    <Resource Include="Images\3\36\image_part_032.jpg" />
+    <Resource Include="Images\3\36\image_part_033.jpg" />
+    <Resource Include="Images\3\36\image_part_034.jpg" />
+    <Resource Include="Images\3\36\image_part_035.jpg" />
+    <Resource Include="Images\3\36\image_part_036.jpg" />
+    <Resource Include="Images\3\Castle.jpg" />
+    <Resource Include="Images\4\.picasaoriginals\4.jpg" />
+    <Resource Include="Images\4\16\image_part_001.jpg" />
+    <Resource Include="Images\4\16\image_part_002.jpg" />
+    <Resource Include="Images\4\16\image_part_003.jpg" />
+    <Resource Include="Images\4\16\image_part_004.jpg" />
+    <Resource Include="Images\4\16\image_part_005.jpg" />
+    <Resource Include="Images\4\16\image_part_006.jpg" />
+    <Resource Include="Images\4\16\image_part_007.jpg" />
+    <Resource Include="Images\4\16\image_part_008.jpg" />
+    <Resource Include="Images\4\16\image_part_009.jpg" />
+    <Resource Include="Images\4\16\image_part_010.jpg" />
+    <Resource Include="Images\4\16\image_part_011.jpg" />
+    <Resource Include="Images\4\16\image_part_012.jpg" />
+    <Resource Include="Images\4\16\image_part_013.jpg" />
+    <Resource Include="Images\4\16\image_part_014.jpg" />
+    <Resource Include="Images\4\16\image_part_015.jpg" />
+    <Resource Include="Images\4\16\image_part_016.jpg" />
+    <Resource Include="Images\4\25\image_part_001.jpg" />
+    <Resource Include="Images\4\25\image_part_002.jpg" />
+    <Resource Include="Images\4\25\image_part_003.jpg" />
+    <Resource Include="Images\4\25\image_part_004.jpg" />
+    <Resource Include="Images\4\25\image_part_005.jpg" />
+    <Resource Include="Images\4\25\image_part_006.jpg" />
+    <Resource Include="Images\4\25\image_part_007.jpg" />
+    <Resource Include="Images\4\25\image_part_008.jpg" />
+    <Resource Include="Images\4\25\image_part_009.jpg" />
+    <Resource Include="Images\4\25\image_part_010.jpg" />
+    <Resource Include="Images\4\25\image_part_011.jpg" />
+    <Resource Include="Images\4\25\image_part_012.jpg" />
+    <Resource Include="Images\4\25\image_part_013.jpg" />
+    <Resource Include="Images\4\25\image_part_014.jpg" />
+    <Resource Include="Images\4\25\image_part_015.jpg" />
+    <Resource Include="Images\4\25\image_part_016.jpg" />
+    <Resource Include="Images\4\25\image_part_017.jpg" />
+    <Resource Include="Images\4\25\image_part_018.jpg" />
+    <Resource Include="Images\4\25\image_part_019.jpg" />
+    <Resource Include="Images\4\25\image_part_020.jpg" />
+    <Resource Include="Images\4\25\image_part_021.jpg" />
+    <Resource Include="Images\4\25\image_part_022.jpg" />
+    <Resource Include="Images\4\25\image_part_023.jpg" />
+    <Resource Include="Images\4\25\image_part_024.jpg" />
+    <Resource Include="Images\4\25\image_part_025.jpg" />
+    <Resource Include="Images\4\36\image_part_001.jpg" />
+    <Resource Include="Images\4\36\image_part_002.jpg" />
+    <Resource Include="Images\4\36\image_part_003.jpg" />
+    <Resource Include="Images\4\36\image_part_004.jpg" />
+    <Resource Include="Images\4\36\image_part_005.jpg" />
+    <Resource Include="Images\4\36\image_part_006.jpg" />
+    <Resource Include="Images\4\36\image_part_007.jpg" />
+    <Resource Include="Images\4\36\image_part_008.jpg" />
+    <Resource Include="Images\4\36\image_part_009.jpg" />
+    <Resource Include="Images\4\36\image_part_010.jpg" />
+    <Resource Include="Images\4\36\image_part_011.jpg" />
+    <Resource Include="Images\4\36\image_part_012.jpg" />
+    <Resource Include="Images\4\36\image_part_013.jpg" />
+    <Resource Include="Images\4\36\image_part_014.jpg" />
+    <Resource Include="Images\4\36\image_part_015.jpg" />
+    <Resource Include="Images\4\36\image_part_016.jpg" />
+    <Resource Include="Images\4\36\image_part_017.jpg" />
+    <Resource Include="Images\4\36\image_part_018.jpg" />
+    <Resource Include="Images\4\36\image_part_019.jpg" />
+    <Resource Include="Images\4\36\image_part_020.jpg" />
+    <Resource Include="Images\4\36\image_part_021.jpg" />
+    <Resource Include="Images\4\36\image_part_022.jpg" />
+    <Resource Include="Images\4\36\image_part_023.jpg" />
+    <Resource Include="Images\4\36\image_part_024.jpg" />
+    <Resource Include="Images\4\36\image_part_025.jpg" />
+    <Resource Include="Images\4\36\image_part_026.jpg" />
+    <Resource Include="Images\4\36\image_part_027.jpg" />
+    <Resource Include="Images\4\36\image_part_028.jpg" />
+    <Resource Include="Images\4\36\image_part_029.jpg" />
+    <Resource Include="Images\4\36\image_part_030.jpg" />
+    <Resource Include="Images\4\36\image_part_031.jpg" />
+    <Resource Include="Images\4\36\image_part_032.jpg" />
+    <Resource Include="Images\4\36\image_part_033.jpg" />
+    <Resource Include="Images\4\36\image_part_034.jpg" />
+    <Resource Include="Images\4\36\image_part_035.jpg" />
+    <Resource Include="Images\4\36\image_part_036.jpg" />
+    <Resource Include="Images\4\Railway.jpg" />
+    <Resource Include="Images\5\.picasaoriginals\5.jpg" />
+    <Resource Include="Images\5\16\image_part_001.jpg" />
+    <Resource Include="Images\5\16\image_part_002.jpg" />
+    <Resource Include="Images\5\16\image_part_003.jpg" />
+    <Resource Include="Images\5\16\image_part_004.jpg" />
+    <Resource Include="Images\5\16\image_part_005.jpg" />
+    <Resource Include="Images\5\16\image_part_006.jpg" />
+    <Resource Include="Images\5\16\image_part_007.jpg" />
+    <Resource Include="Images\5\16\image_part_008.jpg" />
+    <Resource Include="Images\5\16\image_part_009.jpg" />
+    <Resource Include="Images\5\16\image_part_010.jpg" />
+    <Resource Include="Images\5\16\image_part_011.jpg" />
+    <Resource Include="Images\5\16\image_part_012.jpg" />
+    <Resource Include="Images\5\16\image_part_013.jpg" />
+    <Resource Include="Images\5\16\image_part_014.jpg" />
+    <Resource Include="Images\5\16\image_part_015.jpg" />
+    <Resource Include="Images\5\16\image_part_016.jpg" />
+    <Resource Include="Images\5\25\image_part_001.jpg" />
+    <Resource Include="Images\5\25\image_part_002.jpg" />
+    <Resource Include="Images\5\25\image_part_003.jpg" />
+    <Resource Include="Images\5\25\image_part_004.jpg" />
+    <Resource Include="Images\5\25\image_part_005.jpg" />
+    <Resource Include="Images\5\25\image_part_006.jpg" />
+    <Resource Include="Images\5\25\image_part_007.jpg" />
+    <Resource Include="Images\5\25\image_part_008.jpg" />
+    <Resource Include="Images\5\25\image_part_009.jpg" />
+    <Resource Include="Images\5\25\image_part_010.jpg" />
+    <Resource Include="Images\5\25\image_part_011.jpg" />
+    <Resource Include="Images\5\25\image_part_012.jpg" />
+    <Resource Include="Images\5\25\image_part_013.jpg" />
+    <Resource Include="Images\5\25\image_part_014.jpg" />
+    <Resource Include="Images\5\25\image_part_015.jpg" />
+    <Resource Include="Images\5\25\image_part_016.jpg" />
+    <Resource Include="Images\5\25\image_part_017.jpg" />
+    <Resource Include="Images\5\25\image_part_018.jpg" />
+    <Resource Include="Images\5\25\image_part_019.jpg" />
+    <Resource Include="Images\5\25\image_part_020.jpg" />
+    <Resource Include="Images\5\25\image_part_021.jpg" />
+    <Resource Include="Images\5\25\image_part_022.jpg" />
+    <Resource Include="Images\5\25\image_part_023.jpg" />
+    <Resource Include="Images\5\25\image_part_024.jpg" />
+    <Resource Include="Images\5\25\image_part_025.jpg" />
+    <Resource Include="Images\5\36\image_part_001.jpg" />
+    <Resource Include="Images\5\36\image_part_002.jpg" />
+    <Resource Include="Images\5\36\image_part_003.jpg" />
+    <Resource Include="Images\5\36\image_part_004.jpg" />
+    <Resource Include="Images\5\36\image_part_005.jpg" />
+    <Resource Include="Images\5\36\image_part_006.jpg" />
+    <Resource Include="Images\5\36\image_part_007.jpg" />
+    <Resource Include="Images\5\36\image_part_008.jpg" />
+    <Resource Include="Images\5\36\image_part_009.jpg" />
+    <Resource Include="Images\5\36\image_part_010.jpg" />
+    <Resource Include="Images\5\36\image_part_011.jpg" />
+    <Resource Include="Images\5\36\image_part_012.jpg" />
+    <Resource Include="Images\5\36\image_part_013.jpg" />
+    <Resource Include="Images\5\36\image_part_014.jpg" />
+    <Resource Include="Images\5\36\image_part_015.jpg" />
+    <Resource Include="Images\5\36\image_part_016.jpg" />
+    <Resource Include="Images\5\36\image_part_017.jpg" />
+    <Resource Include="Images\5\36\image_part_018.jpg" />
+    <Resource Include="Images\5\36\image_part_019.jpg" />
+    <Resource Include="Images\5\36\image_part_020.jpg" />
+    <Resource Include="Images\5\36\image_part_021.jpg" />
+    <Resource Include="Images\5\36\image_part_022.jpg" />
+    <Resource Include="Images\5\36\image_part_023.jpg" />
+    <Resource Include="Images\5\36\image_part_024.jpg" />
+    <Resource Include="Images\5\36\image_part_025.jpg" />
+    <Resource Include="Images\5\36\image_part_026.jpg" />
+    <Resource Include="Images\5\36\image_part_027.jpg" />
+    <Resource Include="Images\5\36\image_part_028.jpg" />
+    <Resource Include="Images\5\36\image_part_029.jpg" />
+    <Resource Include="Images\5\36\image_part_030.jpg" />
+    <Resource Include="Images\5\36\image_part_031.jpg" />
+    <Resource Include="Images\5\36\image_part_032.jpg" />
+    <Resource Include="Images\5\36\image_part_033.jpg" />
+    <Resource Include="Images\5\36\image_part_034.jpg" />
+    <Resource Include="Images\5\36\image_part_035.jpg" />
+    <Resource Include="Images\5\36\image_part_036.jpg" />
+    <Resource Include="Images\5\Sky.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\qm.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\qm2.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.2.2.1.0\build\net452\Fody.targets" Condition="Exists('..\packages\Fody.2.2.1.0\build\net452\Fody.targets')" />
@@ -252,4 +825,8 @@
   </PropertyGroup>
   <Import Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.Sql.UnitTesting.targets" Condition="$(VisualStudioVersion) != '15.0' And '$(SQLDBExtensionsRefPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.Sql.UnitTesting.targets" Condition="$(VisualStudioVersion) != '15.0' And '$(SQLDBExtensionsRefPath)' == ''" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
 </Project>

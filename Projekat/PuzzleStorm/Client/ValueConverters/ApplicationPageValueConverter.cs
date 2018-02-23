@@ -18,6 +18,21 @@ namespace Client {
                 case ApplicationPage.CreateAccount:
                     return new CreateAccount();
 
+                case ApplicationPage.GamePage:
+                    return new GamePage();
+
+                case ApplicationPage.MainPage:
+                    return new MainPage();
+
+                case ApplicationPage.GameOverPage:
+                    return new GameOverPage();
+
+                case ApplicationPage.LobbyPage:
+                    return new LobbyPage();
+
+                case ApplicationPage.CreateRoom:
+                    return new CreateRoomPage();
+
                 default:
                     Debugger.Break();
                     return null;

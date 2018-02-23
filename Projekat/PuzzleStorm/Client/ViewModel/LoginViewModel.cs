@@ -1,13 +1,18 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using DTOLibrary.Enums;
+using Client.Helpers.Communication;
+using Client.Helpers.Enums;
+using Communicator;
+using StormCommonData.Enums;
 using DTOLibrary.Requests;
 using DTOLibrary.Responses;
 using EasyNetQ;
 using MaterialDesignThemes.Wpf;
+using PropertyChanged;
 
 namespace Client {
 
@@ -37,69 +42,43 @@ namespace Client {
         public LoginViewModel()
         {
             LoginCommand = new RelayCommandWithParameter(async (parameter) => await Login(parameter));
-            CreateAccButtonCommand = new RelayCommand(async () => await CreateButton());
+            CreateAccButtonCommand = new RelayCommand(CreateButton);
         }
 
         #endregion
 
         #region Metods
 
-        // Login f-ja
-        public async Task Login(object parameter)
-        {
-            try {
-                using (
-                    var bus =
-                        RabbitHutch.CreateBus(
-                            "amqp://ygunknwy:pAncRrH8Gxk3ULDyy-Wju7NIqdBThwCJ@sheep.rmq.cloudamqp.com/ygunknwy")) {
+        #region Login
 
-                        var myRequest = new LoginRequest() {
-                            Username = UserName,
-                            Password = ((PasswordBox)parameter).Password
-                        };
+        public async Task Login(object parameter) {
 
-                        var response = bus.Request<LoginRequest, LoginResponse>(myRequest);
+            LoginRequest myRequest = new LoginRequest() {
+                Username = UserName,
+                Password = ((PasswordBox)parameter).Password
+            };
+            
+            LoginResponse response = await ClientUtils.PerformRequestAsync(API.Instance.LoginAsync, myRequest, "Just a moment..");
+            if (response == null) return;
+            
+            Player.Instance.Id = response.PlayerId;
+            Player.Instance.UserName = UserName;
 
-                    if (response.Status == OperationStatus.Successfull)
-                    {
-                        var sampleMessageDialog = new SampleMessageDialog
-                        {
-                            Message = {Text = "Uspesno ste se ulogovali!"}
-                        };
-
-                        await DialogHost.Show(sampleMessageDialog);
-
-                        ((MainWindow) Application.Current.MainWindow).MainFrame.Content = new MainPage();
-                    }
-                    else
-                    {
-                        var sampleMessageDialog = new SampleMessageDialog {
-                            Message = { Text = "Greska prilikom logovanja!" }
-                        };
-
-                        await DialogHost.Show(sampleMessageDialog);
-                    }
-
-                }
-            }
-            catch (Exception ex) {
-                var sampleMessageDialog = new SampleMessageDialog {
-                    Message = { Text = "Problem: " + ex.Message }
-                };
-
-                await DialogHost.Show(sampleMessageDialog);
-            }
-
-
+            ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new MainPage();
         }
 
+        #endregion
 
-        //Create button f-ja
-        public async Task CreateButton()
+        public void ActivateTransition(WindowTransition transition)
         {
+            if (transition == WindowTransition.HomeToLogin)
+                ClientUtils.SwitchState.HomeToLogin();
+        }
+        
+        //Create button f-ja
+        public void CreateButton() {
             //((WindowViewModel)((MainWindow)Application.Current.MainWindow).DataContext).CurrentPage = ApplicationPage.CreateAccount;
-            ((MainWindow) Application.Current.MainWindow).MainFrame.Content = new CreateAccount();
-            Task.Delay(500);
+            ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new CreateAccount();
         }
         #endregion
     }

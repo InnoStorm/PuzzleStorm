@@ -4,7 +4,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using DTOLibrary.Enums;
+using Client.Helpers.Communication;
+using Communicator;
+using StormCommonData.Enums;
 using DTOLibrary.Requests;
 using DTOLibrary.Responses;
 using MaterialDesignThemes.Wpf;
@@ -50,55 +52,32 @@ namespace Client {
         // Login f-ja
         public async Task Create(object parameter)
         {
+ 
+            RegistrationRequest myRequest = new RegistrationRequest()
+            {
+                Username = UserName,
+                Password = ((PasswordBox) parameter).Password,
+                Email = Email
+            };
 
-            try {
-                using (
-                    var bus =
-                        RabbitHutch.CreateBus(
-                            "amqp://ygunknwy:pAncRrH8Gxk3ULDyy-Wju7NIqdBThwCJ@sheep.rmq.cloudamqp.com/ygunknwy")) {
+            RegistrationResponse response =
+                await ClientUtils.PerformRequestAsync(API.Instance.RegisterAsync, myRequest, "Creating new account..");
 
-                    var myRequest = new RegistrationRequest() {
-                        Username = UserName,
-                        Password = ((PasswordBox)parameter).Password,
-                        Email = Email
-                    };
+            if (response == null) return;
 
-                    var response = bus.Request<RegistrationRequest, RegistrationResponse>(myRequest);
+            var sampleMessageDialog = new SampleMessageDialog {
+                Message = { Text = "New account created successfully!" }
+            };
 
-                    if (response.Status == OperationStatus.Successfull) {
-                        var sampleMessageDialog = new SampleMessageDialog {
-                            Message = { Text = "Uspesno ste se kreirali novi nalog!" }
-                        };
+            await DialogHost.Show(sampleMessageDialog);
 
-                        await DialogHost.Show(sampleMessageDialog);
-
-                        ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new LoginPage();
-                    }
-                    else {
-                        var sampleMessageDialog = new SampleMessageDialog {
-                            Message = { Text = "Greska prilikom kreiranja novog naloga.\n" + response.Details }
-                        };
-
-                        await DialogHost.Show(sampleMessageDialog);
-                    }
-
-                }
-            }
-            catch (Exception ex) {
-                var sampleMessageDialog = new SampleMessageDialog {
-                    Message = { Text = "Problem: " + ex.Message }
-                };
-
-                await DialogHost.Show(sampleMessageDialog);
-            }
-
-
+            ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new LoginPage();
         }
 
         public void BackToLoginPage()
         {
 
-            ((WindowViewModel)((MainWindow)Application.Current.MainWindow).DataContext).CurrentPage = ApplicationPage.Login;
+            //((WindowViewModel)((MainWindow)Application.Current.MainWindow).DataContext).CurrentPage = ApplicationPage.Login;
             ((MainWindow) Application.Current.MainWindow).MainFrame.Content = new LoginPage();
             //((MainWindow) Application.Current.MainWindow).MainFrame.Source = new System.Uri("Pages/LoginPage.xaml", UriKind.Relative);
 
